@@ -16,9 +16,6 @@ export class Item extends BaseEntity {
         this.Status = status;
         this.BuyPrice = buyPrice;
         this.SellPrice = sellPrice;
-
-        this.WhenCreated = new Date();
-        this.WhenUpdated = new Date();
     }
 
     @PrimaryColumn()
@@ -54,53 +51,37 @@ export class Item extends BaseEntity {
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
         this.Sku = sku;
-
-        this.WhenUpdated = new Date();
     }
 
     public AddStock(amount: number) {
         this.Quantity += amount;
-
-        this.WhenUpdated = new Date();
     }
 
     public RemoveStock(amount: number) {
         if (amount > this.Quantity) return;
 
         this.Quantity -= amount;
-
-        this.WhenUpdated = new Date();
     }
 
     public SetStock(amount: number) {
         if (amount < 0) return;
 
         this.Quantity = amount;
-
-        this.WhenUpdated = new Date();
     }
 
     public UpdateStatus(status: ItemStatus) {
         this.Status = status;
-
-        this.WhenUpdated = new Date();
     }
 
     public SetBuyPrice(price: number) {
         this.BuyPrice = price;
-
-        this.WhenUpdated = new Date();
     }
 
     public SetSellPrice(price: number) {
         this.SellPrice = price;
-
-        this.WhenUpdated = new Date();
     }
 
     public AssignToPurchase(purchase: Purchase) {
         this.Purchase = purchase;
-
-        this.WhenUpdated = new Date();
     }
 }

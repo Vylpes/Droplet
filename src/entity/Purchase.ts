@@ -14,9 +14,6 @@ export class Purchase extends BaseEntity {
         this.Description = description;
         this.Status = PurchaseStatus.Ordered;
         this.Price = price;
-
-        this.WhenCreated = new Date();
-        this.WhenUpdated = new Date();
     }
 
     @PrimaryColumn()
@@ -43,19 +40,13 @@ export class Purchase extends BaseEntity {
     public UpdateBasicDetails(description: string, price: number) {
         this.Description = description;
         this.Price = price;
-
-        this.WhenUpdated = new Date();
     }
 
     public UpdateStatus(status: PurchaseStatus) {
         this.Status = status;
-
-        this.WhenUpdated = new Date();
     }
 
     public AddItemToOrder(item: Item) {
         this.Items.push(item);
-
-        this.WhenUpdated = new Date();
     }
 }
