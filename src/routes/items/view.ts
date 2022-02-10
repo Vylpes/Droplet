@@ -17,7 +17,7 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const item = await Item.GetItem(itemId);
+            const item = await Item.FetchOneById<Item>(Item, itemId);
 
             if (!item) {
                 next(createHttpError(404));

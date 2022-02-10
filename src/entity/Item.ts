@@ -1,10 +1,14 @@
-import { Column, Entity, getConnection, PrimaryColumn } from "typeorm";
+import { Column, Entity, getConnection, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/ItemStatus";
+import BaseEntity from "../contracts/BaseEntity";
+import { Purchase } from "./Purchase";
 
 @Entity()
-export class Item {
+export class Item extends BaseEntity {
     constructor(name: string, sku: string, quantity: number, status: ItemStatus, buyPrice: number = -1, sellPrice: number = -1) {
+        super();
+
         this.Id = uuid();
         this.Name = name;
         this.Sku = sku;
@@ -12,6 +16,9 @@ export class Item {
         this.Status = status;
         this.BuyPrice = buyPrice;
         this.SellPrice = sellPrice;
+
+        this.WhenCreated = new Date();
+        this.WhenUpdated = new Date();
     }
 
     @PrimaryColumn()
@@ -32,170 +39,68 @@ export class Item {
     @Column("decimal", { precision: 20, scale: 2 })
     BuyPrice: number;
 
-    @Column("decimal", { precision: 20, scale: 2 })@Column()
+    @Column("decimal", { precision: 20, scale: 2 })
     SellPrice: number;
+
+    @Column()
+    WhenCreated: Date;
+
+    @Column()
+    WhenUpdated: Date;
+
+    @ManyToOne(_ => Purchase, purchase => purchase.Items)
+    Purchase: Purchase;
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
         this.Sku = sku;
+
+        this.WhenUpdated = new Date();
     }
 
     public AddStock(amount: number) {
         this.Quantity += amount;
+
+        this.WhenUpdated = new Date();
     }
 
     public RemoveStock(amount: number) {
         if (amount > this.Quantity) return;
 
         this.Quantity -= amount;
+
+        this.WhenUpdated = new Date();
     }
 
     public SetStock(amount: number) {
         if (amount < 0) return;
 
         this.Quantity = amount;
+
+        this.WhenUpdated = new Date();
     }
 
     public UpdateStatus(status: ItemStatus) {
         this.Status = status;
+
+        this.WhenUpdated = new Date();
     }
 
     public SetBuyPrice(price: number) {
         this.BuyPrice = price;
+
+        this.WhenUpdated = new Date();
     }
 
     public SetSellPrice(price: number) {
         this.SellPrice = price;
+
+        this.WhenUpdated = new Date();
     }
 
-    public static async CreateItem(name: string, sku: string, quantity: number, status: ItemStatus, buyPrice?: number, sellPrice?: number): Promise<Item> {
-        const connection = getConnection();
+    public AssignToPurchase(purchase: Purchase) {
+        this.Purchase = purchase;
 
-        const repo = connection.getRepository(Item);
-
-        const item = new Item(name, sku, quantity, status, buyPrice, sellPrice);
-
-        await repo.save(item);
-
-        return item;
-    }
-
-    public static async GetAllItems(): Promise<Item[]> {
-        const connection = getConnection();
-        
-        const repo = connection.getRepository(Item);
-
-        const items = await repo.find();
-
-        return items;
-    }
-
-    public static async GetItem(id: string): Promise<Item> {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        return item;
-    }
-
-    public static async UpdateItemDetails(id: string, name: string, sku: string, quantity: number, buyPrice: number, sellPrice: number) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.EditBasicDetails(name, sku);
-        item.SetStock(quantity);
-        item.SetBuyPrice(buyPrice);
-        item.SetSellPrice(sellPrice);
-
-        await repo.save(item);
-    }
-
-    public static async AddItemStock(id: string, amount: number) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.AddStock(amount);
-
-        await repo.save(item);
-    }
-
-    public static async RemoveItemStock(id: string, amount: number) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.RemoveStock(amount);
-
-        await repo.save(item);
-    }
-
-    public static async UpdateItemStatus(id: string, status: ItemStatus) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.UpdateStatus(status);
-
-        await repo.save(item);
-    }
-
-    public static async UpdateItemBuyPrice(id: string, price: number) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.SetBuyPrice(price);
-
-        await repo.save(item);
-    }
-
-    public static async UpdateItemSellPrice(id: string, price: number) {
-        const connection = getConnection();
-
-        const repo = connection.getRepository(Item);
-
-        const item = await repo.findOne(id);
-
-        if (!item) {
-            return;
-        }
-
-        item.SetSellPrice(price);
-
-        await repo.save(item);
+        this.WhenUpdated = new Date();
     }
 }

@@ -23,7 +23,14 @@ export default class Update extends Page {
             const buyPrice = req.body.buyPrice;
             const sellPrice = req.body.sellPrice;
 
-            await Item.UpdateItemDetails(itemId, name, sku, quantity, buyPrice, sellPrice);
+            const item = await Item.FetchOneById<Item>(Item, itemId);
+            
+            item.EditBasicDetails(name, sku);
+            item.SetStock(quantity);
+            item.SetBuyPrice(buyPrice);
+            item.SetSellPrice(sellPrice);
+
+            await item.Save(Item, item);
 
             res.redirect(`/items/${itemId}`);
         });

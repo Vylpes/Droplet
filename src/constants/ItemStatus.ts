@@ -1,5 +1,5 @@
 export enum ItemStatus {
-    Unsold,
+    Unlisted,
     Listed,
     Sold,
     Dispatched,

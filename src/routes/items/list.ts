@@ -10,7 +10,7 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const items = await Item.GetAllItems();
+            const items = await Item.FetchAll<Item>(Item);
 
             res.locals.items = items;
 

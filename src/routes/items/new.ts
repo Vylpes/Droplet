@@ -16,8 +16,10 @@ export default class New extends Page {
             const quantity = req.body.quantity;
             const buyPrice = req.body.buyPrice;
             const sellPrice = req.body.sellPrice;
+            
+            const item = new Item(name, sku, quantity, buyPrice, sellPrice);
 
-            await Item.CreateItem(name, sku, quantity, ItemStatus.Unsold, buyPrice, sellPrice);
+            await item.Save(Item, item);
 
             res.redirect('/items');
         });
