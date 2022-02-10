@@ -1,1 +1,0 @@
-{"version":3,"file":"IBasicResponse.js","sourceRoot":"","sources":["../../src/contracts/IBasicResponse.ts"],"names":[],"mappings":";;;AAGC,CAAC;AAEF,SAAgB,gBAAgB,CAAC,YAAqB,IAAI,EAAE,OAAgB;IACxE,OAAO;QACH,SAAS,EAAE,SAAS;QACpB,OAAO,EAAE,OAAO;KACnB,CAAA;AACL,CAAC;AALD,4CAKC"}

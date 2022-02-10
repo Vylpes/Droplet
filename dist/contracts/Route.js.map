@@ -1,1 +1,0 @@
-{"version":3,"file":"Route.js","sourceRoot":"","sources":["../../src/contracts/Route.ts"],"names":[],"mappings":";;;AAAA,qCAAgC;AAMhC,MAAa,KAAK;IAGd;QACI,IAAI,CAAC,OAAO,GAAG,gBAAM,EAAE,CAAC;IAC5B,CAAC;IAED,IAAI,MAAM;QACN,OAAO,IAAI,CAAC,OAAO,CAAC;IACxB,CAAC;IAED,KAAK;QACD,OAAO,IAAI,CAAC,OAAO,CAAC;IACxB,CAAC;CACJ;AAdD,sBAcC"}
