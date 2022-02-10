@@ -1,0 +1,54 @@
+extends ../layout
+
+block content
+    .row
+        .col
+            h1= item.Name
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#edit-item-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row
+        .col
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary SKU
+                        p= item.Sku
+                    .mb-2
+                        p.mb-0.text-secondary Quantity
+                        p= item.Quantity
+                    .mb-2
+                        p.mb-0.text-secondary Buy Price
+                        p= item.BuyPrice
+                    .mb-2
+                        p.mb-0.text-secondary Sell Price
+                        p= item.SellPrice
+    form(method='POST' action='/items/' + item.Id + '/update').modal.fade#edit-item-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Item
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name' value=item.Name).form-control
+                    .form-group.mb-3
+                        label Sku
+                        input(type='text' name='sku' value=item.Sku).form-control
+                    .form-group.mb-3
+                        label Quantity
+                        input(type='number' step=".01" name='quantity' value=item.Quantity).form-control
+                    .form-group.mb-3
+                        label Buy Price
+                        input(type='number' step=".01" name='buyPrice' value=item.BuyPrice).form-control
+                    .form-group.mb-3
+                        label Sell Price
+                        input(type='number' step=".01" name='sellPrice' value=item.SellPrice).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update

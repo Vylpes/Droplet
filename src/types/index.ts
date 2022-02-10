@@ -6,5 +6,6 @@ declare module 'express-session' {
         User?: User;
         error?: string;
         success?: string;
+        code?: number;
     }
 }

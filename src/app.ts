@@ -14,7 +14,7 @@ import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
 import { IndexRouter } from "./routes";
 import UserRouter from "./routes/user";
-import ItemsRouter from "./routes/ItemsRouter";
+import ItemsRouter from "./routes/itemsRouter";
 
 export class App {
     private _app: Express;

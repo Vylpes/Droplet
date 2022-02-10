@@ -50,6 +50,12 @@ export class Item {
         this.Quantity -= amount;
     }
 
+    public SetStock(amount: number) {
+        if (amount < 0) return;
+
+        this.Quantity = amount;
+    }
+
     public UpdateStatus(status: ItemStatus) {
         this.Status = status;
     }
@@ -94,7 +100,7 @@ export class Item {
         return item;
     }
 
-    public static async UpdateItemDetails(id: string, name: string, sku: string) {
+    public static async UpdateItemDetails(id: string, name: string, sku: string, quantity: number, buyPrice: number, sellPrice: number) {
         const connection = getConnection();
 
         const repo = connection.getRepository(Item);
@@ -106,6 +112,9 @@ export class Item {
         }
 
         item.EditBasicDetails(name, sku);
+        item.SetStock(quantity);
+        item.SetBuyPrice(buyPrice);
+        item.SetSellPrice(sellPrice);
 
         await repo.save(item);
     }
