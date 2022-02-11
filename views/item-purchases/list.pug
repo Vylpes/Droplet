@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+    .row
+        .col
+            h1 Item Purchases
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-purchase-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    table#item-purchases-list-table
+        thead
+            tr
+                th Description
+                th Status
+                th Price
+                th Items
+                th
+        tbody
+            each row in purchases
+                tr
+                    td= row.Description
+                    td= row.Status
+                    td= row.Price
+                    td= row.Items.length
+                    td
+                        a(href="/item-purchases/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/item-purchases/new').modal.fade#new-purchase-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Purchase
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Description
+                        input(type='text' name='description').form-control
+                    .form-group.mb-3
+                        label Price
+                        input(type='number' step=".01" name='price').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/item-purchases/list.js')

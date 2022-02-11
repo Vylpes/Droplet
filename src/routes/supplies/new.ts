@@ -3,6 +3,8 @@ import { ItemStatus } from "../../constants/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import { Supply } from "../../entity/Supply";
+import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -17,20 +19,20 @@ export default class New extends Page {
             const quantity = req.body.quantity;
             const purchaseId = req.body.purchaseId;
             
-            const item = new Item(name, sku, quantity);
+            const supply = new Supply(name, sku, quantity);
 
-            await item.Save(Item, item);
+            await supply.Save(Supply, supply);
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-                "Items"
+            const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, [
+                "Supplies"
             ]);
 
-            purchase.AddItemToOrder(item);
+            purchase.AddSupplyToOrder(supply);
 
-            await purchase.Save(ItemPurchase, purchase);
+            await purchase.Save(SupplyPurchase, purchase);
             await purchase.CalculateItemPrices();
 
-            res.redirect(`/item-purchases/${purchaseId}`);
+            res.redirect(`/supply-purchases/${purchaseId}`);
         });
     }
 }

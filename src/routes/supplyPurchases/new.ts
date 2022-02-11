@@ -3,6 +3,7 @@ import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -15,11 +16,11 @@ export default class New extends Page {
             const description = req.body.description;
             const price = req.body.price;
             
-            const purchase = new ItemPurchase(description, price);
+            const purchase = new SupplyPurchase(description, price);
 
-            await purchase.Save(ItemPurchase, purchase);
+            await purchase.Save(SupplyPurchase, purchase);
 
-            res.redirect('/item-purchases');
+            res.redirect('/supply-purchases');
         });
     }
 }

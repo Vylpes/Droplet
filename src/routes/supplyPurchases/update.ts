@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -21,16 +22,16 @@ export default class Update extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
+            const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, Id, [
+                "Supplies"
             ]);
 
             purchase.UpdateBasicDetails(description, price);
 
-            await purchase.Save(ItemPurchase, purchase);
+            await purchase.Save(SupplyPurchase, purchase);
             await purchase.CalculateItemPrices();
 
-            res.redirect(`/item-purchases/${Id}`);
+            res.redirect(`/supply-purchases/${Id}`);
         });
     }
 }

@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {
@@ -18,8 +19,8 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
+            const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, Id, [
+                "Supplies"
             ]);
 
             if (!purchase) {
@@ -28,7 +29,7 @@ export default class view extends Page {
 
             res.locals.purchase = purchase;
 
-            res.render('item-purchases/view', res.locals.viewData);
+            res.render('supply-purchases/view', res.locals.viewData);
         });
     }
 }

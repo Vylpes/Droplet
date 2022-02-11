@@ -1,0 +1,102 @@
+extends ../layout
+
+block content
+    a(href="/supply-purchases/").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1= purchase.Description
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-item-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Item
+                button(data-bs-toggle='modal' data-bs-target='#edit-purchase-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary Description
+                        p= purchase.Description
+                    .mb-2
+                        p.mb-0.text-secondary Status
+                        p= purchase.Status
+                    .mb-2
+                        p.mb-0.text-secondary Price
+                        p= purchase.Price
+                    .mb-2
+                        p.mb-0.text-secondary Items
+                        p= purchase.Supplies.length
+        .col-8
+            .card
+                .card-header Supplies
+                .card-body
+                    table#supplies-list-table
+                        thead
+                            tr
+                                th Name
+                                th SKU
+                                th Quantity
+                                th Status
+                                th Buy Price
+                                th Sell Price
+                                th
+                        tbody
+                            each row in purchase.Supplies
+                                tr
+                                    td= row.Name
+                                    td= row.Sku
+                                    td= row.Quantity
+                                    td= row.Status
+                                    td= row.BuyPrice
+                                    td= row.SellPrice
+                                    td
+                                        a(href="/supplies/" + row.Id).btn.text-primary
+                                            i.fas.fa-eye
+                                            span.ms-1 View
+    form(method='POST' action='/supply-purchases/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Purchase
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='description' value=purchase.Description).form-control
+                    .form-group.mb-3
+                        label Price
+                        input(type='number' step=".01" name='price' value=purchase.Price).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/supplies/new').modal.fade#new-item-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Supply
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group
+                        input(type='hidden' name='purchaseId' value=purchase.Id)
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name').form-control
+                    .form-group.mb-3
+                        label Sku
+                        input(type='text' name='sku').form-control
+                    .form-group.mb-3
+                        label Quantity
+                        input(type='number' step="1" name='quantity').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+block scripts
+    script(src='/js/supply-purchases/view.js')

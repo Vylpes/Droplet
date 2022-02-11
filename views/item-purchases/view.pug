@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    a(href="/purchases/").btn.text-primary
+    a(href="/item-purchases/").btn.text-primary
         i.fas.fa-chevron-circle-left
         span.ms-1 Back to List
     .row.mt-3
@@ -59,7 +59,7 @@ block content
                                         a(href="/items/" + row.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
-    form(method='POST' action='/purchases/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
+    form(method='POST' action='/item-purchases/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -99,4 +99,4 @@ block content
                             i.fas.fa-check-square
                             span.ms-1 Create
 block scripts
-    script(src='/js/purchases/view.js')
+    script(src='/js/item-purchases/view.js')

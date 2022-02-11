@@ -3,13 +3,13 @@ extends ../layout
 block content
     .row
         .col
-            h1 Purchases
+            h1 Supplies
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
                 button(data-bs-toggle='modal' data-bs-target='#new-purchase-modal').btn.text-primary
                     i.fas.fa-plus-square
                     span.ms-1 New
-    table#purchases-list-table
+    table#supply-purchases-list-table
         thead
             tr
                 th Description
@@ -23,12 +23,12 @@ block content
                     td= row.Description
                     td= row.Status
                     td= row.Price
-                    td= row.Items.length
+                    td= row.Supplies.length
                     td
-                        a(href="/purchases/" + row.Id).btn.text-primary
+                        a(href="/supply-purchases/" + row.Id).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
-    form(method='POST' action='/purchases/new').modal.fade#new-purchase-modal
+    form(method='POST' action='/supply-purchases/new').modal.fade#new-purchase-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -47,4 +47,4 @@ block content
                             span.ms-1 Create
 
 block scripts
-    script(src='/js/purchases/list.js')
+    script(src='/js/supply-purchases/list.js')

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { Supply } from "../../entity/Supply";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -17,20 +17,19 @@ export default class Update extends Page {
             if (!Id) {
                 next(createHttpError(404));
             }
+
+            const name = req.body.name;
+            const sku = req.body.sku;
+            const quantity = req.body.quantity;
+
+            const supply = await Supply.FetchOneById<Supply>(Supply, Id);
             
-            const description = req.body.description;
-            const price = req.body.price;
+            supply.EditBasicDetails(name, sku);
+            supply.SetStock(quantity);
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
-            ]);
+            await supply.Save(Supply, supply);
 
-            purchase.UpdateBasicDetails(description, price);
-
-            await purchase.Save(ItemPurchase, purchase);
-            await purchase.CalculateItemPrices();
-
-            res.redirect(`/item-purchases/${Id}`);
+            res.redirect(`/supplies/${Id}`);
         });
     }
 }

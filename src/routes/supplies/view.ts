@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { Supply } from "../../entity/Supply";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {
@@ -18,17 +18,17 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
+            const supply = await Supply.FetchOneById<Supply>(Supply, Id, [
+                "Purchase"
             ]);
 
-            if (!purchase) {
+            if (!supply) {
                 next(createHttpError(404));
             }
 
-            res.locals.purchase = purchase;
+            res.locals.item = supply;
 
-            res.render('item-purchases/view', res.locals.viewData);
+            res.render('supplies/view', res.locals.viewData);
         });
     }
 }
