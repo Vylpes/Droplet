@@ -1,4 +1,4 @@
-export enum PurchaseStatus {
+export enum SupplyPurchaseStatus {
     Ordered,
     Received,
     Inventoried,

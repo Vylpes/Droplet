@@ -1,18 +1,18 @@
 import { Column, Entity, getConnection, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/ItemStatus";
-import { PurchaseStatus } from "../constants/PurchaseStatus";
+import { ItemPurchaseStatus } from "../constants/ItemPurchaseStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 
 @Entity()
-export class Purchase extends BaseEntity {
+export class ItemPurchase extends BaseEntity {
     constructor(description: string, price: number) {
         super();
 
         this.Id = uuid();
         this.Description = description;
-        this.Status = PurchaseStatus.Ordered;
+        this.Status = ItemPurchaseStatus.Ordered;
         this.Price = price;
     }
 
@@ -23,16 +23,10 @@ export class Purchase extends BaseEntity {
     Description: string;
 
     @Column()
-    Status: PurchaseStatus;
+    Status: ItemPurchaseStatus;
 
     @Column("decimal", { precision: 20, scale: 2 })
     Price: number
-
-    @Column()
-    WhenCreated: Date;
-
-    @Column()
-    WhenUpdated: Date;
 
     @OneToMany(_ => Item, item => item.Purchase)
     Items: Item[];
@@ -42,7 +36,7 @@ export class Purchase extends BaseEntity {
         this.Price = price;
     }
 
-    public UpdateStatus(status: PurchaseStatus) {
+    public UpdateStatus(status: ItemPurchaseStatus) {
         this.Status = status;
     }
 

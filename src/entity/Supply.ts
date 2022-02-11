@@ -2,10 +2,10 @@ import { Column, Entity, getConnection, ManyToOne, OneToMany, PrimaryColumn } fr
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/ItemStatus";
 import BaseEntity from "../contracts/BaseEntity";
-import { ItemPurchase } from "./ItemPurchase";
+import { SupplyPurchase } from "./SupplyPurchase";
 
 @Entity()
-export class Item extends BaseEntity {
+export class Supply extends BaseEntity {
     constructor(name: string, sku: string, quantity: number) {
         super();
 
@@ -43,8 +43,8 @@ export class Item extends BaseEntity {
     @Column("decimal", { precision: 20, scale: 2 })
     SellPrice: number;
 
-    @ManyToOne(_ => ItemPurchase, purchase => purchase.Items)
-    Purchase: ItemPurchase;
+    @ManyToOne(_ => SupplyPurchase, purchase => purchase.Supplies)
+    Purchase: SupplyPurchase;
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
@@ -79,7 +79,7 @@ export class Item extends BaseEntity {
         this.SellPrice = price;
     }
 
-    public AssignToPurchase(purchase: ItemPurchase) {
+    public AssignToPurchase(purchase: SupplyPurchase) {
         this.Purchase = purchase;
     }
 }

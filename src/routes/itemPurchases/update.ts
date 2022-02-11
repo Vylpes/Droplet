@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { Purchase } from "../../entity/Purchase";
+import { ItemPurchase } from "../../entity/ItemPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -21,13 +21,13 @@ export default class Update extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = await Purchase.FetchOneById(Purchase, Id, [
+            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
                 "Items"
             ]);
 
             purchase.UpdateBasicDetails(description, price);
 
-            await purchase.Save(Purchase, purchase);
+            await purchase.Save(ItemPurchase, purchase);
             await purchase.CalculateItemPrices();
 
             res.redirect(`/purchases/${Id}`);

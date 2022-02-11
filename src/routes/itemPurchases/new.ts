@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
-import { PurchaseStatus } from "../../constants/PurchaseStatus";
+import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { Purchase } from "../../entity/Purchase";
+import { ItemPurchase } from "../../entity/ItemPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -15,9 +15,9 @@ export default class New extends Page {
             const description = req.body.description;
             const price = req.body.price;
             
-            const purchase = new Purchase(description, price);
+            const purchase = new ItemPurchase(description, price);
 
-            await purchase.Save(Purchase, purchase);
+            await purchase.Save(ItemPurchase, purchase);
 
             res.redirect('/purchases');
         });

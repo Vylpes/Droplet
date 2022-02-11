@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { Purchase } from "../../entity/Purchase";
+import { ItemPurchase } from "../../entity/ItemPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -21,13 +21,13 @@ export default class New extends Page {
 
             await item.Save(Item, item);
 
-            const purchase = await Purchase.FetchOneById(Purchase, purchaseId, [
+            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
                 "Items"
             ]);
 
             purchase.AddItemToOrder(item);
 
-            await purchase.Save(Purchase, purchase);
+            await purchase.Save(ItemPurchase, purchase);
             await purchase.CalculateItemPrices();
 
             res.redirect(`/purchases/${purchaseId}`);

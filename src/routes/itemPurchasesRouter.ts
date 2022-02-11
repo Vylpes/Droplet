@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
-import list from "./purchases/list";
-import newPage from "./purchases/new";
-import Update from "./purchases/update";
-import view from "./purchases/view";
+import list from "./itemPurchases/list";
+import newPage from "./itemPurchases/new";
+import Update from "./itemPurchases/update";
+import view from "./itemPurchases/view";
 
 export default class PurchasesRouter extends Route {
     private list: list;

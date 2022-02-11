@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { Purchase } from "../../entity/Purchase";
+import { ItemPurchase } from "../../entity/ItemPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {
@@ -18,7 +18,7 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const purchase = await Purchase.FetchOneById(Purchase, Id, [
+            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
                 "Items"
             ]);
 
