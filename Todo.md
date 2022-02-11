@@ -1,3 +1,11 @@
+# Listings
+- [x] Create Listings
+- [x] Assign another item to Listing
+- [x] Mark Listing as Unsold
+- [x] Renew Listing
+- [ ] Split by status
+- [ ] Add link to eBay listing from item number
+
 # Items
 - [ ] Split by status
 
@@ -7,14 +15,7 @@
 # Supplies
 - [ ] Split by status
 
-# SUpply Purchases
-- [ ] Split by status
-
-# Listings
-- [x] Create Listings
-- [x] Assign another item to Listing
-- [x] Mark Listing as Unsold
-- [ ] Renew Listing
+# Supply Purchases
 - [ ] Split by status
 
 # Orders

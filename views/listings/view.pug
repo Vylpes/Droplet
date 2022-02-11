@@ -12,9 +12,12 @@ block content
                 button(data-bs-toggle='modal' data-bs-target='#add-item-modal').btn.text-secondary
                     i.fas.fa-plus-square
                     span.ms-1 Add Item
+                button(data-bs-toggle='modal' data-bs-target='#renew-listing-modal').btn.text-secondary
+                    i.fas.fa-calendar
+                    span.ms-1 Renew
                 button(data-bs-toggle='modal' data-bs-target='#end-listing-modal').btn.text-secondary
                     i.fas.fa-times-circle
-                    span.ms-1 End Listing
+                    span.ms-1 End
                 button(data-bs-toggle='modal' data-bs-target='#edit-listing-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
@@ -99,6 +102,20 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Yes
+    form(method='POST' action='/listings/' + listing.Id + '/renew').modal.fade#renew-listing-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Renew Listing
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label End Date
+                        input(type='date' name='endDate' value=listing.EndDate).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Renew
     form(method='POST' action='/listings/' + listing.Id + '/assign-item').modal.fade#add-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
