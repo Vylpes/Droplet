@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
 import AssignItem from "./listings/assignItem";
+import End from "./listings/end";
 import list from "./listings/list";
 import newPage from "./listings/new";
 import Update from "./listings/update";
@@ -12,6 +13,7 @@ export default class ListingsRouter extends Route {
     private view: view;
     private update: Update;
     private assignItem: AssignItem;
+    private end: End;
 
     constructor() {
         super();
@@ -21,6 +23,7 @@ export default class ListingsRouter extends Route {
         this.view = new view(super.router);
         this.update = new Update(super.router);
         this.assignItem = new AssignItem(super.router);
+        this.end = new End(super.router);
     }
 
     public Route(): Router {
@@ -29,6 +32,7 @@ export default class ListingsRouter extends Route {
         this.view.Route();
         this.update.Route();
         this.assignItem.Route();
+        this.end.Route();
 
         return this.router;
     }

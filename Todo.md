@@ -1,19 +1,27 @@
-- [x] Items
-- [x] Purchases
-- [x] Supplies
-- [x] Supplies Purchase
-- [ ] Returns
+# Items
+- [ ] Split by status
+
+# Item Purchases
+- [ ] Split by status
+
+# Supplies
+- [ ] Split by status
+
+# SUpply Purchases
+- [ ] Split by status
 
 # Listings
 - [x] Create Listings
 - [x] Assign another item to Listing
-- [ ] Mark Listing as Unsold
+- [x] Mark Listing as Unsold
 - [ ] Renew Listing
+- [ ] Split by status
 
 # Orders
 - [ ] Create Orders
 - [ ] Add tracking number and link to track it
 - [ ] Create Order from Listing
+- [ ] Split by status
 
 # Statuses
 - [ ] Mark Item Purchase as received
@@ -32,6 +40,17 @@
 - [ ] Assign item to Storage Bin
 - [ ] Move item to different Storage Bin
 
+# Returns
+- [ ] Create Return and Generate RMA
+- [ ] Change Status to Item received
+- [ ] Change Status to Return Completed
+- [ ] Change Status to Return Partially Refunded
+- [ ] Change Status to Return Disputed
+
+# Disputes
+- [ ] Create Dispute
+- [ ] Mark Dispute as Resolved
+
 # Notes
 - [ ] Item Notes
 - [ ] Purchase Notes
@@ -39,6 +58,7 @@
 - [ ] Listing Notes
 - [ ] Order Notes
 - [ ] Return Notes
+- [ ] Dispute Notes
 
 # Generators
 - [ ] RMA Generator
