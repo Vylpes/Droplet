@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page"
-import { Item } from "../../entity/Item";
+import { Purchase } from "../../entity/Purchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class List extends Page {
@@ -10,11 +10,13 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const items = await Item.FetchAll<Item>(Item);
+            const purchases = await Purchase.FetchAll(Purchase, [
+                "Items"
+            ]);
 
-            res.locals.items = items;
+            res.locals.purchases = purchases;
 
-            res.render('items/list', res.locals.viewData);
+            res.render('purchases/list', res.locals.viewData);
         });
     }
 }

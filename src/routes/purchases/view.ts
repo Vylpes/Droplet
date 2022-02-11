@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
+import { Purchase } from "../../entity/Purchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {
@@ -10,22 +11,24 @@ export default class view extends Page {
     }
 
     public OnGet(): void {
-        super.router.get('/:itemId', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const itemId = req.params.itemId;
+        super.router.get('/:Id', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+            const Id = req.params.Id;
 
-            if (!itemId) {
+            if (!Id) {
                 next(createHttpError(404));
             }
 
-            const item = await Item.FetchOneById<Item>(Item, itemId);
+            const purchase = await Purchase.FetchOneById(Purchase, Id, [
+                "Items"
+            ]);
 
-            if (!item) {
+            if (!purchase) {
                 next(createHttpError(404));
             }
 
-            res.locals.item = item;
+            res.locals.purchase = purchase;
 
-            res.render('items/view', res.locals.viewData);
+            res.render('purchases/view', res.locals.viewData);
         });
     }
 }

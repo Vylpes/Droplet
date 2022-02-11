@@ -49,4 +49,16 @@ export class Purchase extends BaseEntity {
     public AddItemToOrder(item: Item) {
         this.Items.push(item);
     }
+
+    public async CalculateItemPrices() {
+        if (!this.Items) return;
+
+        const pricePerItem = this.Price / this.Items.length;
+
+        for (const item of this.Items) {
+            item.BuyPrice = pricePerItem;
+
+            await item.Save(Item, item);
+        }
+    }
 }

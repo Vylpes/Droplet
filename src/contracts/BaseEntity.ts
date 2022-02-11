@@ -25,22 +25,22 @@ export default class BaseEntity {
         await repository.save(entity);
     }
 
-    public static async FetchAll<T>(target: EntityTarget<T>): Promise<T[]> {
+    public static async FetchAll<T>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
         const connection = getConnection();
 
         const repository = connection.getRepository<T>(target);
 
-        const all = await repository.find();
+        const all = await repository.find({ relations: relations || [] });
 
         return all;
     }
 
-    public static async FetchOneById<T>(target: EntityTarget<T>, id: string): Promise<T> {
+    public static async FetchOneById<T>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T> {
         const connection = getConnection();
 
         const repository = connection.getRepository<T>(target);
 
-        const single = await repository.findOne(id);
+        const single = await repository.findOne(id, { relations: relations || [] });
 
         return single;
     }
