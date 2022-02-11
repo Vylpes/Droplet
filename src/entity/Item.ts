@@ -6,16 +6,17 @@ import { Purchase } from "./Purchase";
 
 @Entity()
 export class Item extends BaseEntity {
-    constructor(name: string, sku: string, quantity: number, status: ItemStatus, buyPrice: number = -1, sellPrice: number = -1) {
+    constructor(name: string, sku: string, quantity: number) {
         super();
 
         this.Id = uuid();
         this.Name = name;
         this.Sku = sku;
         this.Quantity = quantity;
-        this.Status = status;
-        this.BuyPrice = buyPrice;
-        this.SellPrice = sellPrice;
+        this.StartingQuantity = quantity;
+        this.Status = ItemStatus.Unlisted;
+        this.BuyPrice = -1;
+        this.SellPrice = -1;
     }
 
     @PrimaryColumn()
@@ -29,6 +30,9 @@ export class Item extends BaseEntity {
 
     @Column()
     Quantity: number;
+
+    @Column()
+    StartingQuantity: number;
     
     @Column()
     Status: ItemStatus;

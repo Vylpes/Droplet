@@ -56,7 +56,7 @@ export class Purchase extends BaseEntity {
         const pricePerItem = this.Price / this.Items.length;
 
         for (const item of this.Items) {
-            item.BuyPrice = pricePerItem;
+            item.BuyPrice = pricePerItem / item.StartingQuantity;
 
             await item.Save(Item, item);
         }
