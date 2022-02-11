@@ -1,7 +1,10 @@
 extends ../layout
 
 block content
-    .row
+    a(href="/purchases/").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
         .col
             h1= purchase.Description
         .col
@@ -12,7 +15,7 @@ block content
                 button(data-bs-toggle='modal' data-bs-target='#edit-purchase-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
-    .row
+    .row.mt-3
         .col-4
             .card
                 .card-header Basic Details

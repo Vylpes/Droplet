@@ -1,7 +1,10 @@
 extends ../layout
 
 block content
-    .row
+    a(href="/purchases/" + item.Purchase.Id).btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to Purchase
+    .row.mt-3
         .col
             h1= item.Name
         .col
@@ -9,7 +12,7 @@ block content
                 button(data-bs-toggle='modal' data-bs-target='#edit-item-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
-    .row
+    .row.mt-3
         .col
             .card
                 .card-header Basic Details
@@ -41,13 +44,7 @@ block content
                         input(type='text' name='sku' value=item.Sku).form-control
                     .form-group.mb-3
                         label Quantity
-                        input(type='number' step=".01" name='quantity' value=item.Quantity).form-control
-                    .form-group.mb-3
-                        label Buy Price
-                        input(type='number' step=".01" name='buyPrice' value=item.BuyPrice).form-control
-                    .form-group.mb-3
-                        label Sell Price
-                        input(type='number' step=".01" name='sellPrice' value=item.SellPrice).form-control
+                        input(type='number' step="1" name='quantity' value=item.Quantity).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

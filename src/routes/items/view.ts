@@ -17,7 +17,9 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const item = await Item.FetchOneById<Item>(Item, itemId);
+            const item = await Item.FetchOneById<Item>(Item, itemId, [
+                "Purchase"
+            ]);
 
             if (!item) {
                 next(createHttpError(404));
