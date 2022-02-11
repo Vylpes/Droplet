@@ -1,0 +1,103 @@
+extends ../layout
+
+block content
+    a(href="/listings/").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1= listing.Name
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-item-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Item
+                button(data-bs-toggle='modal' data-bs-target='#edit-listing-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary Listing Number
+                        p= listing.ListingNumber
+                    .mb-2
+                        p.mb-0.text-secondary Price
+                        p= listing.Price
+                    .mb-2
+                        p.mb-0.text-secondary Status
+                        p= listing.Status
+                    .mb-2
+                        p.mb-0.text-secondary End Date
+                        p= listing.EndDate
+                    .mb-2
+                        p.mb-0.text-secondary Relisted Times
+                        p= listing.RelistedTimes
+                    .mb-2
+                        p.mb-0.text-secondary Items
+                        p= listing.Items.length
+        .col-8
+            .card
+                .card-header Items
+                .card-body
+                    table#items-list-table
+                        thead
+                            tr
+                                th Name
+                                th SKU
+                                th Quantity
+                                th Status
+                                th Buy Price
+                                th
+                        tbody
+                            each row in listing.Items
+                                tr
+                                    td= row.Name
+                                    td= row.Sku
+                                    td= row.Quantity
+                                    td= row.Status
+                                    td= row.BuyPrice
+                                    td
+                                        a(href="/items/" + row.Id).btn.text-primary
+                                            i.fas.fa-eye
+                                            span.ms-1 View
+    form(method='POST' action='/listings/' + listing.Id + '/update').modal.fade#edit-listing-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Listing
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name' value=listing.Name).form-control
+                    .form-group.mb-3
+                        label Listing Number
+                        input(type='text' name='listingNumber' value=listing.ListingNumber).form-control
+                    .form-group.mb-3
+                        label Price
+                        input(type='number' step=".01" name='price' value=listing.Price).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/listings/' + listing.Id + '/assign-item').modal.fade#add-item-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Item
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Item
+                        select(name='itemId').form-control
+                            each row in items
+                                option(value=row.Id)= row.Sku + " " + row.Name
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+block scripts
+    script(src='/js/listings/view.js')

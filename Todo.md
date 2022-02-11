@@ -1,13 +1,21 @@
-# v0.1
 - [x] Items
 - [x] Purchases
-- [ ] Supplies
-- [ ] Supplies Purchase
-- [ ] Listings
-- [ ] Orders
+- [x] Supplies
+- [x] Supplies Purchase
 - [ ] Returns
 
-## Statuses
+# Listings
+- [x] Create Listings
+- [x] Assign another item to Listing
+- [ ] Mark Listing as Unsold
+- [ ] Renew Listing
+
+# Orders
+- [ ] Create Orders
+- [ ] Add tracking number and link to track it
+- [ ] Create Order from Listing
+
+# Statuses
 - [ ] Mark Item Purchase as received
 - [ ] Mark Item Purchase as inventoried
 - [ ] Mark Item Purchase as completed
@@ -17,14 +25,14 @@
 - [ ] Mark Supply Purchase as completed
 - [ ] Mark Supply Purchase as rejected
 
-## Storage
+# Storage
 - [ ] Storage Buildings
 - [ ] Storage Units
 - [ ] Storage Bins
 - [ ] Assign item to Storage Bin
 - [ ] Move item to different Storage Bin
 
-## Notes
+# Notes
 - [ ] Item Notes
 - [ ] Purchase Notes
 - [ ] Supply Notes
@@ -32,18 +40,22 @@
 - [ ] Order Notes
 - [ ] Return Notes
 
-## Generators
+# Generators
 - [ ] RMA Generator
 - [ ] SKU Generator
-
-# Upcoming
 - [ ] SKU Label Generator
-- [ ] eBay Fees Calculator
-- [ ] Charts
+
+# Warnings
 - [ ] Low stock warnings
 - [ ] Low supply warnings
-- [ ] Listing goals
-- [ ] Audit trail
+
+# Profit
+- [ ] eBay Fees Calculator
 - [ ] Calculate Estimated Profit per Item
 - [ ] Calculate Running Estimated Profit per Purchase
 - [ ] Calculate minimum selling price
+
+# Other
+- [ ] Charts
+- [ ] Listing goals
+- [ ] Audit trail

@@ -1,7 +1,10 @@
 import { Column, EntityTarget, getConnection, PrimaryColumn } from "typeorm";
+import { v4 } from "uuid";
 
 export default class BaseEntity {
     constructor() {
+        this.Id = v4();
+        
         this.WhenCreated = new Date();
         this.WhenUpdated = new Date();
     }

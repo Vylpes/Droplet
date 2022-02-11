@@ -1,8 +1,9 @@
-import { Column, Entity, getConnection, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/ItemStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { ItemPurchase } from "./ItemPurchase";
+import { Listing } from "./Listing";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -45,6 +46,9 @@ export class Item extends BaseEntity {
 
     @ManyToOne(_ => ItemPurchase, purchase => purchase.Items)
     Purchase: ItemPurchase;
+
+    @ManyToMany(() => Listing)
+    Listings: Listing[];
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
