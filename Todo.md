@@ -10,13 +10,12 @@
 - [x] Split by status
 
 # Supply Purchases
-- [ ] Split by status
+- [x] Split by status
 
 # Orders
 - [ ] Create Orders
 - [ ] Add tracking number and link to track it
 - [ ] Create Order from Listing
-- [ ] Split by status
 
 # Statuses
 - [ ] Mark Item Purchase as received

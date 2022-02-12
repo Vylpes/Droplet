@@ -12,7 +12,7 @@ export default class Update extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        super.router.post('/view/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
             if (!Id) {
@@ -31,7 +31,7 @@ export default class Update extends Page {
             await purchase.Save(SupplyPurchase, purchase);
             await purchase.CalculateItemPrices();
 
-            res.redirect(`/supply-purchases/${Id}`);
+            res.redirect(`/supply-purchases/view/${Id}`);
         });
     }
 }
