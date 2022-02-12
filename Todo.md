@@ -13,9 +13,13 @@
 - [x] Split by status
 
 # Orders
-- [ ] Create Orders
+- [x] Create Order from Listing
+- [x] Mark Order as Paid
+- [x] Mark Order as Dispatched
+- [x] Mark Order as Cancelled
+- [x] Add listing to order
 - [ ] Add tracking number and link to track it
-- [ ] Create Order from Listing
+- [ ] Apply discount
 
 # Statuses
 - [ ] Mark Item Purchase as received
@@ -88,6 +92,3 @@
 - [ ] Listing Goal
 - [ ] Low stock warning
 - [ ] Low supply warning
-
-# Other
-- [ ] Audit trail

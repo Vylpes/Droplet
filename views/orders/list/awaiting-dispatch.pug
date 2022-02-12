@@ -1,0 +1,75 @@
+extends ../../layout
+
+block content
+    .row
+        .col
+            h1 Orders
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-order-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link(href="/orders/awaiting-payment") Awaiting Payment
+        li.nav-item
+            a.nav-link.active(href="/orders/awaiting-dispatch") Awaiting Dispatch
+        li.nav-item
+            a.nav-link(href="/orders/dispatched") Dispatched
+        li.nav-item
+            a.nav-link(href="/orders/cancelled") Cancelled
+        li.nav-item
+            a.nav-link(href="/orders/returned") Returned
+    table#orders-list-table
+        thead
+            tr
+                th Order Number
+                th Buyer
+                th Price
+                th Offer Accepted
+                th Dispatch By
+                th
+        tbody
+            each row in orders
+                tr
+                    td
+                        a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + row.OrderNumber, target="_blank")= row.OrderNumber
+                    td
+                        a(href="https://ebay.co.uk/usr/" + row.Buyer, target="_blank")= row.Buyer
+                    td= row.Price
+                    td= row.OfferAccepted
+                    td= row.DispatchBy
+                    td
+                        a(href="/orders/view/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/orders/new').modal.fade#new-order-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Order
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Order Number
+                        input(type='text' name='orderNumber').form-control
+                    .form-group.mb-3
+                        label Buyer
+                        input(type='text' name='buyer').form-control
+                    .form-group.mb-3
+                        label Offer Accepted
+                        select(name='offerAccepted').form-control
+                            option(value="false") No
+                            option(value="true") Yes
+                    .form-group.mb-3
+                        label Listing
+                        select(name='listingId').form-control
+                            each row in listings
+                                option(value=row.Id)= row.ListingNumber + " " + row.Name
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/orders/list.js')

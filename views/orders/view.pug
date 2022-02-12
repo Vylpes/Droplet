@@ -1,0 +1,142 @@
+extends ../layout
+
+block content
+    a(href="/orders/awaiting-payment").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1 Order
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-listing-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Listing
+                button(data-bs-toggle='modal' data-bs-target='#mark-as-paid-modal').btn.text-secondary
+                    i.fas.fa-calendar
+                    span.ms-1 Mark as Paid
+                button(data-bs-toggle='modal' data-bs-target='#mark-as-dispatched-modal').btn.text-secondary
+                    i.fas.fa-times-circle
+                    span.ms-1 Mark as Dispatched
+                button(data-bs-toggle='modal' data-bs-target='#edit-order-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary Order Number
+                        p
+                            a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + order.OrderNumber, target="_blank")= order.OrderNumber
+                    .mb-2
+                        p.mb-0.text-secondary Price
+                        p= order.Price
+                    .mb-2
+                        p.mb-0.text-secondary Offer Accepted
+                        p= order.OfferAccepted
+                    .mb-2
+                        p.mb-0.text-secondary Buyer
+                        p
+                            a(href="https://www.ebay.co.uk/usr/" + order.Buyer, target="_blank")= order.Buyer
+                    .mb-2
+                        p.mb-0.text-secondary Status
+                        p= order.Status
+                    .mb-2
+                        p.mb-0.text-secondary Dispatch By
+                        p= order.DispatchBy
+                    .mb-2
+                        p.mb-0.text-secondary Listings
+                        p= order.Listings.length
+        .col-8
+            .card
+                .card-header Listings
+                .card-body
+                    table#listings-list-table
+                        thead
+                            tr
+                                th Listing Number
+                                th Name
+                                th Price
+                                th End Date
+                                th
+                        tbody
+                            each row in order.Listings
+                                tr
+                                    td
+                                        a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
+                                    td= row.Name
+                                    td= row.Price
+                                    td= row.EndDate
+                                    td
+                                        a(href="/listings/view/" + row.Id).btn.text-primary
+                                            i.fas.fa-eye
+                                            span.ms-1 View
+    form(method='POST' action='/orders/view/' + order.Id + '/update').modal.fade#edit-order-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Order
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Order Number
+                        input(type='text' name='orderNumber' value=order.OrderNumber).form-control
+                    .form-group.mb-3
+                        label Buyer
+                        input(type='text' name='buyer' value=order.Buyer).form-control
+                    .form-group.mb-3
+                        label Offer Accepted
+                        select(name='offerAccepted').form-control
+                            option(value=order.OfferAccepted) No Change
+                            option(value="false") No
+                            option(value="true") Yes
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/orders/view/' + order.Id + '/paid').modal.fade#mark-as-paid-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Mark As Paid
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Are you sure you want to mark this order as paid?
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Yes
+    form(method='POST' action='/orders/view/' + order.Id + '/dispatch').modal.fade#mark-as-dispatched-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Mark As Dispatched
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Are you sure you want to mark this order as dispatched?
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Yes
+    form(method='POST' action='/orders/view/' + order.Id + '/assign-listing').modal.fade#add-listing-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Listing
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Listing
+                        select(name='listingId').form-control
+                            each row in listings
+                                option(value=row.Id)= row.ListingNumber + " " + row.Name
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+block scripts
+    script(src='/js/orders/view.js')

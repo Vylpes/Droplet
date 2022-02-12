@@ -5,6 +5,7 @@ import { ListingStatus } from "../constants/ListingStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
+import { Order } from "./Order";
 
 @Entity()
 export class Listing extends BaseEntity {
@@ -41,6 +42,9 @@ export class Listing extends BaseEntity {
     @ManyToMany(() => Item)
     @JoinTable()
     Items: Item[];
+
+    @ManyToOne(() => Order, order => order.Listings)
+    Order: Order;
 
     public UpdateBasicDetails(name: string, listingNumber: string, price: number) {
         this.Name = name;

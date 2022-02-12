@@ -39,7 +39,7 @@ export default class New extends Page {
 
             await item.Save(Item, item);
 
-            res.redirect('/listings');
+            res.redirect('/listings/active');
         });
     }
 }

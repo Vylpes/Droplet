@@ -30,7 +30,7 @@ export default class New extends Page {
             await purchase.Save(ItemPurchase, purchase);
             await purchase.CalculateItemPrices();
 
-            res.redirect(`/item-purchases/${purchaseId}`);
+            res.redirect(`/item-purchases/view/${purchaseId}`);
         });
     }
 }
