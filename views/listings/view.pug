@@ -28,7 +28,8 @@ block content
                 .card-body
                     .mb-2
                         p.mb-0.text-secondary Listing Number
-                        p= listing.ListingNumber
+                        p
+                            a(href="https://ebay.co.uk/itm/" + listing.ListingNumber, target="_blank")= listing.ListingNumber
                     .mb-2
                         p.mb-0.text-secondary Price
                         p= listing.Price

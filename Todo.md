@@ -3,8 +3,8 @@
 - [x] Assign another item to Listing
 - [x] Mark Listing as Unsold
 - [x] Renew Listing
+- [x] Add link to eBay listing from item number
 - [ ] Split by status
-- [ ] Add link to eBay listing from item number
 
 # Items
 - [ ] Split by status
