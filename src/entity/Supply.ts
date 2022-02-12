@@ -1,4 +1,4 @@
-import { Column, Entity, getConnection, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/ItemStatus";
 import { SupplyStatus } from "../constants/SupplyStatus";
@@ -48,8 +48,8 @@ export class Supply extends BaseEntity {
     @ManyToOne(_ => SupplyPurchase, purchase => purchase.Supplies)
     Purchase: SupplyPurchase;
 
-    @ManyToOne(_ => Order, order => order.Supplies)
-    Order: Order;
+    @ManyToMany(_ => Order)
+    Orders: Order[];
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
@@ -59,7 +59,7 @@ export class Supply extends BaseEntity {
     }
 
     public AddStock(amount: number) {
-        this.Quantity += amount;
+        this.Quantity = Number(this.Quantity) + Number(amount);
 
         this.WhenUpdated = new Date();
     }
@@ -67,7 +67,7 @@ export class Supply extends BaseEntity {
     public RemoveStock(amount: number) {
         if (amount > this.Quantity) return;
 
-        this.Quantity -= amount;
+        this.Quantity = Number(this.Quantity) - Number(amount);
 
         if (this.Quantity == 0) {
             this.Status = SupplyStatus.Used;

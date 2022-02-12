@@ -43,8 +43,9 @@ export class Listing extends BaseEntity {
     @JoinTable()
     Items: Item[];
 
-    @ManyToOne(() => Order, order => order.Listings)
-    Order: Order;
+    @ManyToMany(() => Order)
+    @JoinTable()
+    Orders: Order[];
 
     public UpdateBasicDetails(name: string, listingNumber: string, price: number) {
         this.Name = name;

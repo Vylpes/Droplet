@@ -41,10 +41,12 @@ export class Order extends BaseEntity {
     @Column()
     Buyer: string;
 
-    @OneToMany(() => Listing, listing => listing.Order)
+    @ManyToMany(() => Listing)
+    @JoinTable()
     Listings: Listing[];
 
-    @OneToMany(() => Supply, supply => supply.Order)
+    @ManyToMany(() => Supply)
+    @JoinTable()
     Supplies: Supply[];
 
     public UpdateBasicDetails(orderNumber: string, offerAccepted: boolean, buyer: string) {
