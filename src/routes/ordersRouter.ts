@@ -8,6 +8,7 @@ import Dispatch from "./orders/dispatch";
 import Update from "./orders/update";
 import view from "./orders/view";
 import Discount from "./orders/discount";
+import AssignSupply from "./orders/assignSupply";
 
 export default class OrdersRouter extends Route {
     private list: list;
@@ -15,6 +16,7 @@ export default class OrdersRouter extends Route {
     private view: view;
     private update: Update;
     private assignListing: AssignListing;
+    private assignSupply: AssignSupply;
     private paid: Paid;
     private dispatch: Dispatch;
     private discount: Discount;
@@ -27,6 +29,7 @@ export default class OrdersRouter extends Route {
         this.view = new view(super.router);
         this.update = new Update(super.router);
         this.assignListing = new AssignListing(super.router);
+        this.assignSupply = new AssignSupply(super.router);
         this.paid = new Paid(super.router);
         this.dispatch = new Dispatch(super.router);
         this.discount = new Discount(super.router);
@@ -38,6 +41,7 @@ export default class OrdersRouter extends Route {
         this.view.Route();
         this.update.Route();
         this.assignListing.Route();
+        this.assignSupply.Route();
         this.paid.Route();
         this.dispatch.Route();
         this.discount.Route();

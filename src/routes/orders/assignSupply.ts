@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { ItemStatus } from "../../constants/ItemStatus";
-import { ListingStatus } from "../../constants/ListingStatus";
-import { SupplyStatus } from "../../constants/SupplyStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -11,38 +9,38 @@ import { Order } from "../../entity/Order";
 import { Supply } from "../../entity/Supply";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import List from "../itemPurchases/list";
 
-export default class view extends Page {
+export default class AssignSupply extends Page {
     constructor(router: Router) {
         super(router);
     }
 
-    public OnGet(): void {
-        super.router.get('/view/:Id', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+    public OnPost(): void {
+        super.router.post('/view/:Id/assign-supply', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
             if (!Id) {
                 next(createHttpError(404));
             }
+            
+            const supplyId = req.body.supplyId;
+            const amount = req.body.amount;
+
+            const supply = await Supply.FetchOneById(Supply, supplyId);
 
             const order = await Order.FetchOneById(Order, Id, [
-                "Listings",
                 "Supplies"
             ]);
 
-            const listings = await Listing.FetchAll(Listing);
-            const supplies = await Supply.FetchAll(Supply);
+            order.AddSupplyToOrder(supply);
 
-            if (!order) {
-                next(createHttpError(404));
-            }
+            await order.Save(Order, order);
 
-            res.locals.order = order;
-            res.locals.listings = listings.filter(x => x.Status == ListingStatus.Active);
-            res.locals.supplies = supplies.filter(x => x.Status == SupplyStatus.Unused);
+            supply.RemoveStock(amount);
 
-            res.render('orders/view', res.locals.viewData);
+            await supply.Save(Supply, supply);
+
+            res.redirect(`/orders/view/${Id}`);
         });
     }
 }

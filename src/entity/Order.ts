@@ -7,6 +7,7 @@ import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
+import { Supply } from "./Supply";
 
 @Entity()
 export class Order extends BaseEntity {
@@ -43,6 +44,9 @@ export class Order extends BaseEntity {
     @OneToMany(() => Listing, listing => listing.Order)
     Listings: Listing[];
 
+    @OneToMany(() => Supply, supply => supply.Order)
+    Supplies: Supply[];
+
     public UpdateBasicDetails(orderNumber: string, offerAccepted: boolean, buyer: string) {
         this.OrderNumber = orderNumber;
         this.OfferAccepted = offerAccepted;
@@ -77,10 +81,18 @@ export class Order extends BaseEntity {
         this.WhenUpdated = new Date();
     }
 
+    public AddSupplyToOrder(supply: Supply) {
+        this.Supplies.push(supply);
+
+        this.WhenUpdated = new Date();
+    }
+
     public ApplyDiscount(amount: number) {
         if (amount > Number(this.Price)) return;
 
         this.Price = Number(this.Price) - Number(amount);
+
+        this.WhenUpdated = new Date();
     }
 
     private CalculateNextWeekday(additionalDays: number): Date {

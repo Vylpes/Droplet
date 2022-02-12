@@ -20,7 +20,8 @@
 - [x] Add listing to order
 - [ ] Add tracking number and link to track it
 - [x] Apply discount
-- [ ] Add supply to order
+- [x] Add supply to order
+- [ ] Convert to many to many on listings and supplies
 
 # Statuses
 - [ ] Mark Item Purchase as received
