@@ -16,8 +16,11 @@ block content
                     i.fas.fa-calendar
                     span.ms-1 Mark as Paid
                 button(data-bs-toggle='modal' data-bs-target='#mark-as-dispatched-modal').btn.text-secondary
-                    i.fas.fa-times-circle
+                    i.fas.fa-plus-circle
                     span.ms-1 Mark as Dispatched
+                button(data-bs-toggle='modal' data-bs-target='#apply-discount-modal').btn.text-secondary
+                    i.fas.fa-times-circle
+                    span.ms-1 Discount
                 button(data-bs-toggle='modal' data-bs-target='#edit-order-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
@@ -122,6 +125,20 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Yes
+    form(method='POST' action='/orders/view/' + order.Id + '/discount').modal.fade#apply-discount-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Apply Discount
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Amount
+                        input(type='number' step=".01" name='amount').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Apply
     form(method='POST' action='/orders/view/' + order.Id + '/assign-listing').modal.fade#add-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content

@@ -77,10 +77,10 @@ export class Order extends BaseEntity {
         this.WhenUpdated = new Date();
     }
 
-    public ApplyDiscoint(amount: number) {
-        if (amount > this.Price) return;
+    public ApplyDiscount(amount: number) {
+        if (amount > Number(this.Price)) return;
 
-        this.Price -= amount;
+        this.Price = Number(this.Price) - Number(amount);
     }
 
     private CalculateNextWeekday(additionalDays: number): Date {

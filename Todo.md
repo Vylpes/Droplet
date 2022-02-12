@@ -19,7 +19,8 @@
 - [x] Mark Order as Cancelled
 - [x] Add listing to order
 - [ ] Add tracking number and link to track it
-- [ ] Apply discount
+- [x] Apply discount
+- [ ] Add supply to order
 
 # Statuses
 - [ ] Mark Item Purchase as received
