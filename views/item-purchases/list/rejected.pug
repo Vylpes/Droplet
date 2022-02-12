@@ -1,4 +1,4 @@
-extends ../layout
+extends ../../layout
 
 block content
     .row
@@ -9,11 +9,21 @@ block content
                 button(data-bs-toggle='modal' data-bs-target='#new-purchase-modal').btn.text-primary
                     i.fas.fa-plus-square
                     span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link(href="/item-purchases/ordered") Ordered
+        li.nav-item
+            a.nav-link(href="/item-purchases/received") Received
+        li.nav-item
+            a.nav-link(href="/item-purchases/inventoried") Inventoried
+        li.nav-item
+            a.nav-link(href="/item-purchases/completed") Completed
+        li.nav-item
+            a.nav-link.active(href="/item-purchases/rejected") Rejected
     table#item-purchases-list-table
         thead
             tr
                 th Description
-                th Status
                 th Price
                 th Items
                 th
@@ -21,11 +31,10 @@ block content
             each row in purchases
                 tr
                     td= row.Description
-                    td= row.Status
                     td= row.Price
                     td= row.Items.length
                     td
-                        a(href="/item-purchases/" + row.Id).btn.text-primary
+                        a(href="/item-purchases/view/" + row.Id).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/item-purchases/new').modal.fade#new-purchase-modal

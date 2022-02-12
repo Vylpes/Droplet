@@ -24,7 +24,6 @@ block content
                 th Listing Number
                 th Name
                 th Price
-                th Status
                 th End Date
                 th
         tbody
@@ -34,7 +33,6 @@ block content
                         a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
                     td= row.Name
                     td= row.Price
-                    td= row.Status
                     td= row.EndDate
                     td
                         a(href="/listings/view/" + row.Id).btn.text-primary

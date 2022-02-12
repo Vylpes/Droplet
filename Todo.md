@@ -5,16 +5,9 @@
 - [x] Renew Listing
 - [x] Add link to eBay listing from item number
 - [x] Split by status
-- [ ] Add postage price
-
-# Items
-- [ ] Split by status
 
 # Item Purchases
-- [ ] Split by status
-
-# Supplies
-- [ ] Split by status
+- [x] Split by status
 
 # Supply Purchases
 - [ ] Split by status
@@ -67,9 +60,9 @@
 - [ ] SKU Generator
 - [ ] SKU Label Generator
 
-# Warnings
-- [ ] Low stock warnings
-- [ ] Low supply warnings
+# Postage Policy
+- [ ] Create Postage Policy
+- [ ] Add listing to postage policy
 
 # Profit
 - [ ] eBay Fees Calculator
@@ -77,7 +70,25 @@
 - [ ] Calculate Running Estimated Profit per Purchase
 - [ ] Calculate minimum selling price
 
+# Auctions
+- [ ] Create Auction
+- [ ] Create Bid
+- [ ] End Auction
+- [ ] Complete Auction
+
+# Dashboard Widgets
+- [ ] Listings Requiring Renewal
+- [ ] Listings Ending Today
+- [ ] Unlisted Items
+- [ ] Orders Requiring Dispatch
+- [ ] Open Returns
+- [ ] Open Disputes
+- [ ] Orders Needed to Be Inventoried
+- [ ] Auctions Ending Today
+- [ ] Auctions Requiring Renewal
+- [ ] Listing Goal
+- [ ] Low stock warning
+- [ ] Low supply warning
+
 # Other
-- [ ] Charts
-- [ ] Listing goals
 - [ ] Audit trail

@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    a(href="/item-purchases/").btn.text-primary
+    a(href="/item-purchases/ordered").btn.text-primary
         i.fas.fa-chevron-circle-left
         span.ms-1 Back to List
     .row.mt-3
@@ -44,7 +44,6 @@ block content
                                 th Quantity
                                 th Status
                                 th Buy Price
-                                th Sell Price
                                 th
                         tbody
                             each row in purchase.Items
@@ -54,12 +53,11 @@ block content
                                     td= row.Quantity
                                     td= row.Status
                                     td= row.BuyPrice
-                                    td= row.SellPrice
                                     td
                                         a(href="/items/" + row.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
-    form(method='POST' action='/item-purchases/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
+    form(method='POST' action='/item-purchases/view/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
