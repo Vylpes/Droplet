@@ -13,7 +13,7 @@ export default class Update extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        super.router.post('/view/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
             if (!Id) {
@@ -30,7 +30,7 @@ export default class Update extends Page {
 
             await listing.Save(Listing, listing);
 
-            res.redirect(`/listings/${Id}`);
+            res.redirect(`/listings/view/${Id}`);
         });
     }
 }

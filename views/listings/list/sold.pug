@@ -1,0 +1,73 @@
+extends ../../layout
+
+block content
+    .row
+        .col
+            h1 Listings
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-listing-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link(href="/listings/active") Active
+        li.nav-item
+            a.nav-link.active(href="/listings/sold") Sold
+        li.nav-item
+            a.nav-link(href="/listings/unsold") Unsold
+        li.nav-item
+            a.nav-link(href="/listings/expired") Expired
+    table#listings-list-table
+        thead
+            tr
+                th Listing Number
+                th Name
+                th Price
+                th Status
+                th End Date
+                th
+        tbody
+            each row in listings
+                tr
+                    td
+                        a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
+                    td= row.Name
+                    td= row.Price
+                    td= row.Status
+                    td= row.EndDate
+                    td
+                        a(href="/listings/view/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/listings/new').modal.fade#new-listing-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Listing
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Listing Number
+                        input(type='text' name='listingNumber').form-control
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name').form-control
+                    .form-group.mb-3
+                        label Item
+                        select(name='itemId').form-control
+                            each row in items
+                                option(value=row.Id)= row.Sku + " " + row.Name
+                    .form-group.mb-3
+                        label Price
+                        input(type='number' step=".01" name='price').form-control
+                    .form-group.mb-3
+                        label End Date
+                        input(type='date' name='endDate').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/listings/list.js')

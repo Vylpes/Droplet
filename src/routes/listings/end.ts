@@ -14,7 +14,7 @@ export default class End extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/end', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        super.router.post('/view/:Id/end', UserMiddleware.Authorise, async (req: Request, res: Response) => {
             const Id = req.params.Id;
 
             const listing = await Listing.FetchOneById(Listing, Id, [

@@ -4,7 +4,8 @@
 - [x] Mark Listing as Unsold
 - [x] Renew Listing
 - [x] Add link to eBay listing from item number
-- [ ] Split by status
+- [x] Split by status
+- [ ] Add postage price
 
 # Items
 - [ ] Split by status

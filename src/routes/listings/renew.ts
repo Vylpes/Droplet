@@ -14,7 +14,7 @@ export default class Renew extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/renew', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        super.router.post('/view/:Id/renew', UserMiddleware.Authorise, async (req: Request, res: Response) => {
             const Id = req.params.Id;
 
             const listing = await Listing.FetchOneById(Listing, Id, [
@@ -27,7 +27,7 @@ export default class Renew extends Page {
 
             await listing.Save(Listing, listing);
 
-            res.redirect(`/listings/${Id}`);
+            res.redirect(`/listings/view/${Id}`);
         });
     }
 }

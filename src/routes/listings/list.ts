@@ -1,4 +1,5 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
+import createHttpError from "http-errors";
 import { ItemStatus } from "../../constants/ItemStatus";
 import { ListingStatus } from "../../constants/ListingStatus";
 import { Page } from "../../contracts/Page"
@@ -14,17 +15,39 @@ export default class List extends Page {
     }
 
     public OnGet(): void {
-        super.router.get('/', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+            const status = req.params.status;
+
             const listings = await Listing.FetchAll(Listing, [
                 "Items"
             ]);
 
             const items = await Item.FetchAll(Item);
 
-            res.locals.listings = listings;
+            let listingsVisible: Listing[];
+
+            switch(status) {
+                case 'active':
+                    listingsVisible = listings.filter(x => x.Status == ListingStatus.Active);
+                    break;
+                case 'sold':
+                    listingsVisible = listings.filter(x => x.Status == ListingStatus.Sold);
+                    break;
+                case 'unsold':
+                    listingsVisible = listings.filter(x => x.Status == ListingStatus.Unsold);
+                    break;
+                case 'expired':
+                    listingsVisible = listings.filter(x => x.Status == ListingStatus.Active && x.EndDate < new Date());
+                    break;
+                default:
+                    next(createHttpError(404));
+                    return;
+            }
+
+            res.locals.listings = listingsVisible;
             res.locals.items = items.filter(x => x.Status == ItemStatus.Unlisted);
 
-            res.render('listings/list', res.locals.viewData);
+            res.render(`listings/list/${status}`, res.locals.viewData);
         });
     }
 }

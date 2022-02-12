@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    a(href="/listings/").btn.text-primary
+    a(href="/listings/active").btn.text-primary
         i.fas.fa-chevron-circle-left
         span.ms-1 Back to List
     .row.mt-3
@@ -70,7 +70,7 @@ block content
                                         a(href="/items/" + row.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
-    form(method='POST' action='/listings/' + listing.Id + '/update').modal.fade#edit-listing-modal
+    form(method='POST' action='/listings/view/' + listing.Id + '/update').modal.fade#edit-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -90,7 +90,7 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Update
-    form(method='POST' action='/listings/' + listing.Id + '/end').modal.fade#end-listing-modal
+    form(method='POST' action='/listings/view/' + listing.Id + '/end').modal.fade#end-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -103,7 +103,7 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Yes
-    form(method='POST' action='/listings/' + listing.Id + '/renew').modal.fade#renew-listing-modal
+    form(method='POST' action='/listings/view/' + listing.Id + '/renew').modal.fade#renew-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -117,7 +117,7 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Renew
-    form(method='POST' action='/listings/' + listing.Id + '/assign-item').modal.fade#add-item-modal
+    form(method='POST' action='/listings/view/' + listing.Id + '/assign-item').modal.fade#add-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header

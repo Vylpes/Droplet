@@ -14,7 +14,7 @@ export default class AssignItem extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/assign-item', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
             if (!Id) {

@@ -1,4 +1,4 @@
-extends ../layout
+extends ../../layout
 
 block content
     .row
@@ -9,6 +9,15 @@ block content
                 button(data-bs-toggle='modal' data-bs-target='#new-listing-modal').btn.text-primary
                     i.fas.fa-plus-square
                     span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link(href="/listings/active") Active
+        li.nav-item
+            a.nav-link(href="/listings/sold") Sold
+        li.nav-item
+            a.nav-link(href="/listings/unsold") Unsold
+        li.nav-item
+            a.nav-link.active(href="/listings/expired") Expired
     table#listings-list-table
         thead
             tr
@@ -28,7 +37,7 @@ block content
                     td= row.Status
                     td= row.EndDate
                     td
-                        a(href="/listings/" + row.Id).btn.text-primary
+                        a(href="/listings/view/" + row.Id).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/listings/new').modal.fade#new-listing-modal
