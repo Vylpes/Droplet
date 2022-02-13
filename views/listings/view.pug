@@ -37,6 +37,9 @@ block content
                         p.mb-0.text-secondary Status
                         p= listing.Status
                     .mb-2
+                        p.mb-0.text-secondary Quantity
+                        p= listing.Quantity
+                    .mb-2
                         p.mb-0.text-secondary End Date
                         p= listing.EndDate
                     .mb-2
@@ -54,7 +57,6 @@ block content
                             tr
                                 th Name
                                 th SKU
-                                th Quantity
                                 th Status
                                 th Buy Price
                                 th
@@ -63,7 +65,6 @@ block content
                                 tr
                                     td= row.Name
                                     td= row.Sku
-                                    td= row.Quantity
                                     td= row.Status
                                     td= row.BuyPrice
                                     td

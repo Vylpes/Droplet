@@ -33,7 +33,7 @@ export default class AssignItem extends Page {
 
             await listing.Save(Listing, listing);
 
-            item.UpdateStatus(ItemStatus.Listed);
+            item.MarkAsListed(listing.Quantity, ItemStatus.Unlisted);
 
             await item.Save(Item, item);
 

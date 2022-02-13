@@ -19,12 +19,10 @@ export default class Update extends Page {
 
             const name = req.body.name;
             const sku = req.body.sku;
-            const quantity = req.body.quantity;
 
             const item = await Item.FetchOneById<Item>(Item, itemId);
             
             item.EditBasicDetails(name, sku);
-            item.SetStock(quantity);
 
             await item.Save(Item, item);
 

@@ -23,7 +23,9 @@ export default class New extends Page {
             const amount = req.body.amount;
             const listingId = req.body.listingId;
 
-            const listing = await Listing.FetchOneById(Listing, listingId);
+            const listing = await Listing.FetchOneById(Listing, listingId, [
+                "Items"
+            ]);
             
             let order = new Order(orderNumber, offerAccepted, buyer);
 
@@ -31,7 +33,7 @@ export default class New extends Page {
 
             order = await Order.FetchOneById(Order, order.Id, [
                 "Listings"
-            ]);;
+            ]);
 
             order.AddListingToOrder(listing);
 
@@ -40,6 +42,12 @@ export default class New extends Page {
             listing.MarkAsSold(amount);
 
             await listing.Save(Listing, listing);
+
+            for (const item of listing.Items) {
+                item.MarkAsSold(amount, ItemStatus.Listed);
+
+                item.Save(Item, item);
+            }
 
             res.redirect('/orders/awaiting-payment');
         });

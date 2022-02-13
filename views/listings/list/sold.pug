@@ -55,7 +55,7 @@ block content
                         label Item
                         select(name='itemId').form-control
                             each row in items
-                                option(value=row.Id)= row.Sku + " " + row.Name
+                                option(value=row.Id)= row.Sku + " " + row.Name + " (" + row.UnlistedQuantity + " Unlisted)"
                     .form-group.mb-3
                         label Price
                         input(type='number' step=".01" name='price').form-control

@@ -36,7 +36,7 @@ export default class New extends Page {
 
             await listing.Save(Listing, listing);
 
-            item.RemoveStock(quantity);
+            item.MarkAsListed(quantity, ItemStatus.Unlisted);
 
             await item.Save(Item, item);
 

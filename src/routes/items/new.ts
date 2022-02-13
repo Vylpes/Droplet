@@ -21,13 +21,18 @@ export default class New extends Page {
 
             await item.Save(Item, item);
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
+            let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
                 "Items"
             ]);
 
             purchase.AddItemToOrder(item);
 
             await purchase.Save(ItemPurchase, purchase);
+
+            purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
+                "Items"
+            ]);
+
             await purchase.CalculateItemPrices();
 
             res.redirect(`/item-purchases/view/${purchaseId}`);

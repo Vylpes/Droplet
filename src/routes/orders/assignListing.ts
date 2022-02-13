@@ -42,7 +42,7 @@ export default class AssignListing extends Page {
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {
-                item.UpdateStatus(ItemStatus.Sold);
+                item.MarkAsSold(amount, ItemStatus.Listed);
 
                 await item.Save(Item, item);
             }

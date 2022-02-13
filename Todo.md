@@ -22,8 +22,11 @@
 - [x] Apply discount
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
-- [ ] Add quantity to listing
 - [x] Remove quantity from listing when ordered
+
+# Quantities
+- [x] Separate status quantities in Items
+- [ ] Edit Item Quantities
 
 # Statuses
 - [ ] Mark Item Purchase as received

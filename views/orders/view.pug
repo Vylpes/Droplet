@@ -100,7 +100,7 @@ block content
                                             td= row.Name
                                             td= row.BuyPrice
                                             td
-                                                a(href="/supplies/view/" + row.Id).btn.text-primary
+                                                a(href="/supplies/" + row.Id).btn.text-primary
                                                     i.fas.fa-eye
                                                     span.ms-1 View
     form(method='POST' action='/orders/view/' + order.Id + '/update').modal.fade#edit-order-modal

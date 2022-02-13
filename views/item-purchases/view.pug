@@ -50,7 +50,7 @@ block content
                                 tr
                                     td= row.Name
                                     td= row.Sku
-                                    td= row.Quantity
+                                    td= row.UnlistedQuantity + row.ListedQuantity + row.SoldQuantity + row.RejectedQuantity
                                     td= row.Status
                                     td= row.BuyPrice
                                     td

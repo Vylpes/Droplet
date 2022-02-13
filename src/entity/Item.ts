@@ -13,11 +13,13 @@ export class Item extends BaseEntity {
         this.Id = uuid();
         this.Name = name;
         this.Sku = sku;
-        this.Quantity = quantity;
-        this.StartingQuantity = quantity;
+        this.UnlistedQuantity = quantity;
         this.Status = ItemStatus.Unlisted;
-        this.BuyPrice = -1;
-        this.SellPrice = -1;
+
+        this.BuyPrice = 0;
+        this.ListedQuantity = 0;
+        this.SoldQuantity = 0;
+        this.RejectedQuantity = 0;
     }
 
     @PrimaryColumn()
@@ -30,19 +32,22 @@ export class Item extends BaseEntity {
     Sku: string;
 
     @Column()
-    Quantity: number;
+    UnlistedQuantity: number;
 
     @Column()
-    StartingQuantity: number;
+    ListedQuantity: number;
+
+    @Column()
+    SoldQuantity: number;
+
+    @Column()
+    RejectedQuantity: number;
     
     @Column()
     Status: ItemStatus;
 
     @Column("decimal", { precision: 20, scale: 2 })
     BuyPrice: number;
-
-    @Column("decimal", { precision: 20, scale: 2 })
-    SellPrice: number;
 
     @ManyToOne(_ => ItemPurchase, purchase => purchase.Items)
     Purchase: ItemPurchase;
@@ -53,41 +58,107 @@ export class Item extends BaseEntity {
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
         this.Sku = sku;
+
+        this.WhenUpdated = new Date();
     }
 
-    public AddStock(amount: number) {
-        this.Quantity = Number(this.Quantity) + Number(amount);
-    }
+    public EditQuantities(unlisted: number, listed: number, sold: number, rejected: number) {
+        this.UnlistedQuantity = unlisted;
+        this.ListedQuantity = listed;
+        this.SoldQuantity = sold;
+        this.RejectedQuantity = rejected;
 
-    public RemoveStock(amount: number) {
-        if (amount > this.Quantity) return;
-
-        this.Quantity = Number(this.Quantity) - Number(amount);
-
-        if (this.Quantity == 0) {
-            this.Status = ItemStatus.Listed;
-        }
-    }
-
-    public SetStock(amount: number) {
-        if (amount < 0) return;
-
-        this.Quantity = amount;
+        this.WhenUpdated = new Date();
     }
 
     public UpdateStatus(status: ItemStatus) {
         this.Status = status;
+
+        this.WhenUpdated = new Date();
     }
 
     public SetBuyPrice(price: number) {
         this.BuyPrice = price;
-    }
 
-    public SetSellPrice(price: number) {
-        this.SellPrice = price;
+        this.WhenUpdated = new Date();
     }
 
     public AssignToPurchase(purchase: ItemPurchase) {
         this.Purchase = purchase;
+
+        this.WhenUpdated = new Date();
+    }
+
+    public MarkAsUnlisted(amount: number, fromStatus: ItemStatus) {
+        this.RemoveFromStatus(amount, fromStatus);
+        this.UnlistedQuantity = Number(this.UnlistedQuantity) + Number(amount);
+
+        this.CalculateStatus();
+
+        this.WhenUpdated = new Date();
+    }
+
+    public MarkAsListed(amount: number, fromStatus: ItemStatus) {
+        this.RemoveFromStatus(amount, fromStatus);
+        this.ListedQuantity = Number(this.ListedQuantity) + Number(amount);
+
+        this.CalculateStatus();
+
+        this.WhenUpdated = new Date();
+    }
+
+    public MarkAsSold(amount: number, fromStatus: ItemStatus) {
+        this.RemoveFromStatus(amount, fromStatus);
+        this.SoldQuantity = Number(this.SoldQuantity) + Number(amount);
+
+        this.CalculateStatus();
+
+        this.WhenUpdated = new Date();
+    }
+
+    public MarkAsRejected(amount: number, fromStatus: ItemStatus) {
+        this.RemoveFromStatus(amount, fromStatus);
+        this.RejectedQuantity = Number(this.RejectedQuantity) + Number(amount);
+
+        this.CalculateStatus();
+
+        this.WhenUpdated = new Date();
+    }
+
+    private RemoveFromStatus(amount: number, fromStatus: ItemStatus) {
+        switch (fromStatus) {
+            case ItemStatus.Unlisted:
+                if (this.UnlistedQuantity < amount) return;
+                this.UnlistedQuantity = Number(this.UnlistedQuantity) - Number(amount);
+                break;
+            case ItemStatus.Listed:
+                if (this.ListedQuantity < amount) return;
+                this.ListedQuantity = Number(this.ListedQuantity) - Number(amount);
+                break;
+            case ItemStatus.Sold:
+                if (this.SoldQuantity < amount) return;
+                this.SoldQuantity = Number(this.SoldQuantity) - Number(amount);
+                break;
+            case ItemStatus.Rejected:
+                if (this.RejectedQuantity < amount) return;
+                this.RejectedQuantity = Number(this.RejectedQuantity) - Number(amount);
+                break;
+            default:
+                return;
+        }
+    }
+
+    private CalculateStatus() {
+        if (this.UnlistedQuantity > 0) {
+            this.Status = ItemStatus.Unlisted;
+        } else if (this.ListedQuantity > 0) {
+            this.Status = ItemStatus.Listed;
+        } else if (this.SoldQuantity > 0) {
+            this.Status = ItemStatus.Sold;
+        } else if (this.RejectedQuantity > 0) {
+            this.Status = ItemStatus.Rejected;
+        } else {
+            this.Status = ItemStatus.Rejected;
+        }
     }
 }
