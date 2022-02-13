@@ -23,6 +23,7 @@ export default class AssignListing extends Page {
             }
             
             const listingId = req.body.listingId;
+            const amount = req.body.amount;
 
             const listing = await Listing.FetchOneById(Listing, listingId, [
                 "Items"
@@ -36,8 +37,8 @@ export default class AssignListing extends Page {
 
             await order.Save(Order, order);
 
-            listing.MarkAsSold();
-
+            listing.MarkAsSold(amount);
+            
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {

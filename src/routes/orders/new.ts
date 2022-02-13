@@ -20,6 +20,7 @@ export default class New extends Page {
             const orderNumber = req.body.orderNumber;
             const offerAccepted = req.body.offerAccepted;
             const buyer = req.body.buyer;
+            const amount = req.body.amount;
             const listingId = req.body.listingId;
 
             const listing = await Listing.FetchOneById(Listing, listingId);
@@ -36,7 +37,7 @@ export default class New extends Page {
 
             await order.Save(Order, order);
 
-            listing.MarkAsSold();
+            listing.MarkAsSold(amount);
 
             await listing.Save(Listing, listing);
 

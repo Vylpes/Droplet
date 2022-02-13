@@ -23,7 +23,7 @@
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
 - [ ] Add quantity to listing
-- [ ] Remove quantity from listing when ordered
+- [x] Remove quantity from listing when ordered
 
 # Statuses
 - [ ] Mark Item Purchase as received

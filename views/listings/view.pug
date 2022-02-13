@@ -86,6 +86,9 @@ block content
                     .form-group.mb-3
                         label Price
                         input(type='number' step=".01" name='price' value=listing.Price).form-control
+                    .form-group.mb-3
+                        label Quantity
+                        input(type='number' step="1" name='quantity' value=listing.Quantity).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

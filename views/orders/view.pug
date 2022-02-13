@@ -178,6 +178,9 @@ block content
                         select(name='listingId').form-control
                             each row in listings
                                 option(value=row.Id)= row.ListingNumber + " " + row.Name
+                    .form-group.mb-3
+                        label Amount
+                        input(type='number' step='1' name='amount').form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

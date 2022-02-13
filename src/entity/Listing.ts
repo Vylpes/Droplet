@@ -9,16 +9,18 @@ import { Order } from "./Order";
 
 @Entity()
 export class Listing extends BaseEntity {
-    constructor(name: string, listingNumber: string, price: number, endDate: Date) {
+    constructor(name: string, listingNumber: string, price: number, endDate: Date, quantity: number) {
         super();
 
         this.Name = name;
         this.ListingNumber = listingNumber;
         this.Price = price;
         this.EndDate = endDate;
+        this.Quantity = quantity;
 
         this.Status = ListingStatus.Active;
         this.RelistedTimes = 0;
+        this.OriginalQuantity = this.Quantity;
     }
 
     @Column()
@@ -39,6 +41,12 @@ export class Listing extends BaseEntity {
     @Column()
     RelistedTimes: number;
 
+    @Column()
+    Quantity: number;
+
+    @Column()
+    OriginalQuantity: number;
+
     @ManyToMany(() => Item)
     @JoinTable()
     Items: Item[];
@@ -47,22 +55,31 @@ export class Listing extends BaseEntity {
     @JoinTable()
     Orders: Order[];
 
-    public UpdateBasicDetails(name: string, listingNumber: string, price: number) {
+    public UpdateBasicDetails(name: string, listingNumber: string, price: number, quantity: number) {
         this.Name = name;
         this.ListingNumber = listingNumber;
         this.Price = price;
+        this.Quantity = quantity;
+        this.OriginalQuantity = quantity;
 
         this.WhenUpdated = new Date();
     }
 
-    public MarkAsSold() {
-        this.Status = ListingStatus.Sold;
+    public MarkAsSold(amount: number) {
+        if (amount > this.Quantity) return;
+
+        this.Quantity = Number(this.Quantity) - Number(amount);
+
+        if (this.Quantity == 0) {
+            this.Status = ListingStatus.Sold;
+        }
 
         this.WhenUpdated = new Date();
     }
 
     public MarkAsUnsold() {
         this.Status = ListingStatus.Unsold;
+        this.Quantity = this.OriginalQuantity;
 
         this.WhenUpdated = new Date();
     }

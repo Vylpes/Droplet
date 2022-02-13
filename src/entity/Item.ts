@@ -56,13 +56,17 @@ export class Item extends BaseEntity {
     }
 
     public AddStock(amount: number) {
-        this.Quantity += amount;
+        this.Quantity = Number(this.Quantity) + Number(amount);
     }
 
     public RemoveStock(amount: number) {
         if (amount > this.Quantity) return;
 
-        this.Quantity -= amount;
+        this.Quantity = Number(this.Quantity) - Number(amount);
+
+        if (this.Quantity == 0) {
+            this.Status = ItemStatus.Listed;
+        }
     }
 
     public SetStock(amount: number) {

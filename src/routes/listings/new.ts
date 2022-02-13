@@ -19,11 +19,12 @@ export default class New extends Page {
             const listingNumber = req.body.listingNumber;
             const price = req.body.price;
             const endDate = req.body.endDate;
+            const quantity = req.body.quantity;
             const itemId = req.body.itemId;
 
             const item = await Item.FetchOneById(Item, itemId);
             
-            let listing = new Listing(name, listingNumber, price, endDate);
+            let listing = new Listing(name, listingNumber, price, endDate, quantity);
 
             await listing.Save(Listing, listing);
 
@@ -35,7 +36,7 @@ export default class New extends Page {
 
             await listing.Save(Listing, listing);
 
-            item.UpdateStatus(ItemStatus.Listed);
+            item.RemoveStock(quantity);
 
             await item.Save(Item, item);
 
