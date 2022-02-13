@@ -25,7 +25,6 @@ export default class Update extends Page {
             const supply = await Supply.FetchOneById<Supply>(Supply, Id);
             
             supply.EditBasicDetails(name, sku);
-            supply.SetStock(quantity);
 
             await supply.Save(Supply, supply);
 

@@ -21,14 +21,18 @@ block content
                         p.mb-0.text-secondary SKU
                         p= item.Sku
                     .mb-2
-                        p.mb-0.text-secondary Quantity
-                        p= item.Quantity
-                    .mb-2
                         p.mb-0.text-secondary Buy Price
                         p= item.BuyPrice
+        .col
+            .card
+                .card-header Quantity
+                .card-body
                     .mb-2
-                        p.mb-0.text-secondary Sell Price
-                        p= item.SellPrice
+                        p.mb-0.text-secondary Unused
+                        p= item.UnusedQuantity
+                    .mb-2
+                        p.mb-0.text-secondary Used
+                        p= item.UsedQuantity
     form(method='POST' action='/supplies/' + item.Id + '/update').modal.fade#edit-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content

@@ -48,10 +48,16 @@ export class SupplyPurchase extends BaseEntity {
     public async CalculateItemPrices() {
         if (!this.Supplies) return;
 
-        const pricePerSupply = this.Price / this.Supplies.length;
+        const pricePerSupply = this.Price / this.Supplies.filter(x => (x.UnusedQuantity + x.UsedQuantity) != 0).length;
 
         for (const supply of this.Supplies) {
-            supply.BuyPrice = pricePerSupply / supply.StartingQuantity;
+            const totalQuantity = supply.UnusedQuantity + supply.UsedQuantity;
+
+            if (totalQuantity == 0) {
+                supply.BuyPrice = 0;
+            } else {
+                supply.BuyPrice = pricePerSupply / (supply.UnusedQuantity + supply.UsedQuantity);
+            }
 
             await supply.Save(Supply, supply);
         }

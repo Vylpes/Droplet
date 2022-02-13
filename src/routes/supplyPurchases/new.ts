@@ -20,7 +20,7 @@ export default class New extends Page {
 
             await purchase.Save(SupplyPurchase, purchase);
 
-            res.redirect('/supply-purchases');
+            res.redirect('/supply-purchases/ordered');
         });
     }
 }

@@ -26,7 +26,9 @@
 
 # Quantities
 - [x] Separate status quantities in Items
+- [x] Separate status quantities in Supplies
 - [ ] Edit Item Quantities
+- [ ] Edit Supply QuantitiesBuyPrice
 
 # Statuses
 - [ ] Mark Item Purchase as received
