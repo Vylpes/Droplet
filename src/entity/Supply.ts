@@ -1,7 +1,7 @@
 import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/ItemStatus";
-import { SupplyStatus } from "../constants/SupplyStatus";
+import { ItemStatus } from "../constants/Status/ItemStatus";
+import { SupplyStatus } from "../constants/Status/SupplyStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Order } from "./Order";
 import { SupplyPurchase } from "./SupplyPurchase";

@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
+import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";

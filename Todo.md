@@ -24,7 +24,7 @@
 - [x] Mark Order as Dispatched
 - [x] Mark Order as Cancelled
 - [x] Add listing to order
-- [ ] Add tracking number and link to track it
+- [x] Add tracking number and link to track it
 - [x] Apply discount
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
@@ -105,3 +105,4 @@
 # Cleanup
 - [ ] Add validation rules
 - [ ] Clean up views
+- [ ] Clean up code

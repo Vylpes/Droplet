@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
-import { SupplyPurchaseStatus } from "../../constants/SupplyPurchaseStatus";
+import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
+import { SupplyPurchaseStatus } from "../../constants/Status/SupplyPurchaseStatus";
 import { Page } from "../../contracts/Page"
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";

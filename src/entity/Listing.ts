@@ -1,7 +1,7 @@
 import { Column, Entity, getConnection, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/ItemStatus";
-import { ListingStatus } from "../constants/ListingStatus";
+import { ItemStatus } from "../constants/Status/ItemStatus";
+import { ListingStatus } from "../constants/Status/ListingStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";

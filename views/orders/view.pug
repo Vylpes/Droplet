@@ -9,6 +9,9 @@ block content
             h1 Order
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-tracking-number-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Tracking Number
                 button(data-bs-toggle='modal' data-bs-target='#add-listing-modal').btn.text-secondary
                     i.fas.fa-plus-square
                     span.ms-1 Add Listing
@@ -103,6 +106,27 @@ block content
                                                 a(href="/supplies/" + row.Id).btn.text-primary
                                                     i.fas.fa-eye
                                                     span.ms-1 View
+            .row.mb-3
+                .col
+                    .card
+                        .card-header Tracking Numbers
+                        .card-body
+                            table#tracking-numbers-table
+                                thead
+                                    tr
+                                        th Number
+                                        th Service
+                                tbody
+                                    each row in order.TrackingNumbers
+                                        tr
+                                            if row.Service == 0
+                                                td
+                                                    a(href="https://www.royalmail.com/track-your-item#/tracking-results/" + row.Number, target="_blank")= row.Number
+                                                td Royal Mail
+                                            if row.Service == 1
+                                                td
+                                                    a(href="https://www.myhermes.co.uk/track#/parcel/" + row.Number, target="_blank")= row.Number
+                                                td Hermes
     form(method='POST' action='/orders/view/' + order.Id + '/update').modal.fade#edit-order-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
@@ -200,6 +224,25 @@ block content
                     .form-group.mb-3
                         label Amount
                         input(type='number' step='1' name='amount').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
+    form(method='POST' action='/orders/view/' + order.Id + '/assign-tracking-number').modal.fade#add-tracking-number-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Tracking Number
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Number
+                        input(type='text' name='number').form-control
+                    .form-group.mb-3
+                        label Service
+                        select(name='service').form-control
+                            option(value="0") Royal Mail
+                            option(value="1") Hermes
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
