@@ -12,6 +12,12 @@
 # Supply Purchases
 - [x] Split by status
 
+# Quantities
+- [x] Separate status quantities in Items
+- [x] Separate status quantities in Supplies
+- [x] Edit Item Quantities
+- [x] Edit Supply Quantities
+
 # Orders
 - [x] Create Order from Listing
 - [x] Mark Order as Paid
@@ -23,12 +29,6 @@
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
 - [x] Remove quantity from listing when ordered
-
-# Quantities
-- [x] Separate status quantities in Items
-- [x] Separate status quantities in Supplies
-- [ ] Edit Item Quantities
-- [ ] Edit Supply QuantitiesBuyPrice
 
 # Statuses
 - [ ] Mark Item Purchase as received
@@ -101,3 +101,7 @@
 - [ ] Listing Goal
 - [ ] Low stock warning
 - [ ] Low supply warning
+
+# Cleanup
+- [ ] Add validation rules
+- [ ] Clean up views

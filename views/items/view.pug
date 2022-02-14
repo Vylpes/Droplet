@@ -9,6 +9,9 @@ block content
             h1= item.Name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#edit-quantity-modal').btn.text-secondary
+                    i.fas.fa-edit
+                    span.ms-1 Quantity
                 button(data-bs-toggle='modal' data-bs-target='#edit-item-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
@@ -52,6 +55,29 @@ block content
                     .form-group.mb-3
                         label Sku
                         input(type='text' name='sku' value=item.Sku).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/items/' + item.Id + '/update-quantity').modal.fade#edit-quantity-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Quantity
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Unlisted
+                        input(type='number' step="1" name='unlisted' value=item.UnlistedQuantity).form-control
+                    .form-group.mb-3
+                        label Listed
+                        input(type='number' step="1" name='listed' value=item.ListedQuantity).form-control
+                    .form-group.mb-3
+                        label Sold
+                        input(type='number' step="1" name='sold' value=item.SoldQuantity).form-control
+                    .form-group.mb-3
+                        label Rejected
+                        input(type='number' step="1" name='rejected' value=item.RejectedQuantity).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

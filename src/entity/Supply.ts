@@ -57,7 +57,8 @@ export class Supply extends BaseEntity {
 
     public AddStock(amount: number) {
         this.UnusedQuantity = Number(this.UnusedQuantity) + Number(amount);
-        this.Status = SupplyStatus.Unused;
+
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
@@ -68,9 +69,7 @@ export class Supply extends BaseEntity {
         this.UnusedQuantity = Number(this.UnusedQuantity) - Number(amount);
         this.UsedQuantity = Number(this.UsedQuantity) + Number(amount);
 
-        if (this.UnusedQuantity == 0) {
-            this.Status = SupplyStatus.Used;
-        }
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
@@ -78,6 +77,8 @@ export class Supply extends BaseEntity {
     public SetStock(unused: number, used: number) {
         this.UnusedQuantity = unused;
         this.UsedQuantity = used;
+
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
@@ -98,5 +99,13 @@ export class Supply extends BaseEntity {
         this.Purchase = purchase;
 
         this.WhenUpdated = new Date();
+    }
+
+    private CalculateStatus() {
+        if (this.UnusedQuantity == 0) {
+            this.Status = SupplyStatus.Used;
+        } else {
+            this.Status = SupplyStatus.Unused;
+        }
     }
 }

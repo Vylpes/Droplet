@@ -44,7 +44,6 @@ block content
                                 th Quantity
                                 th Status
                                 th Buy Price
-                                th Sell Price
                                 th
                         tbody
                             each row in purchase.Supplies
@@ -54,7 +53,6 @@ block content
                                     td= row.UnusedQuantity + row.UsedQuantity
                                     td= row.Status
                                     td= row.BuyPrice
-                                    td= row.SellPrice
                                     td
                                         a(href="/supplies/" + row.Id).btn.text-primary
                                             i.fas.fa-eye

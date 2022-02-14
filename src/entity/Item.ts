@@ -68,6 +68,8 @@ export class Item extends BaseEntity {
         this.SoldQuantity = sold;
         this.RejectedQuantity = rejected;
 
+        this.CalculateStatus();
+
         this.WhenUpdated = new Date();
     }
 
