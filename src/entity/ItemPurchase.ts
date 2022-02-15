@@ -1,7 +1,7 @@
 import { Column, Entity, getConnection, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/ItemStatus";
-import { ItemPurchaseStatus } from "../constants/ItemPurchaseStatus";
+import { ItemStatus } from "../constants/Status/ItemStatus";
+import { ItemPurchaseStatus } from "../constants/Status/ItemPurchaseStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 
@@ -47,10 +47,16 @@ export class ItemPurchase extends BaseEntity {
     public async CalculateItemPrices() {
         if (!this.Items) return;
 
-        const pricePerItem = this.Price / this.Items.length;
+        const pricePerItem = this.Price / this.Items.filter(x => (x.UnlistedQuantity + x.ListedQuantity + x.SoldQuantity + x.RejectedQuantity) > 0).length;
 
         for (const item of this.Items) {
-            item.BuyPrice = pricePerItem / item.StartingQuantity;
+            const totalQuantity = item.UnlistedQuantity + item.ListedQuantity + item.SoldQuantity + item.RejectedQuantity;
+
+            if (totalQuantity == 0) {
+                item.BuyPrice = 0;
+            } else {
+                item.BuyPrice = pricePerItem / totalQuantity;
+            }
 
             await item.Save(Item, item);
         }

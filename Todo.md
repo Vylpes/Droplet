@@ -12,18 +12,23 @@
 # Supply Purchases
 - [x] Split by status
 
+# Quantities
+- [x] Separate status quantities in Items
+- [x] Separate status quantities in Supplies
+- [x] Edit Item Quantities
+- [x] Edit Supply Quantities
+
 # Orders
 - [x] Create Order from Listing
 - [x] Mark Order as Paid
 - [x] Mark Order as Dispatched
 - [x] Mark Order as Cancelled
 - [x] Add listing to order
-- [ ] Add tracking number and link to track it
+- [x] Add tracking number and link to track it
 - [x] Apply discount
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
-- [ ] Add quantity to listing
-- [ ] Remove quantity from listing when ordered
+- [x] Remove quantity from listing when ordered
 
 # Statuses
 - [ ] Mark Item Purchase as received
@@ -96,3 +101,8 @@
 - [ ] Listing Goal
 - [ ] Low stock warning
 - [ ] Low supply warning
+
+# Cleanup
+- [ ] Add validation rules
+- [ ] Clean up views
+- [ ] Clean up code

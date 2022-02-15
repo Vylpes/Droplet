@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { ItemStatus } from "../../constants/ItemStatus";
-import { ListingStatus } from "../../constants/ListingStatus";
-import { SupplyStatus } from "../../constants/SupplyStatus";
+import { ItemStatus } from "../../constants/Status/ItemStatus";
+import { ListingStatus } from "../../constants/Status/ListingStatus";
+import { SupplyStatus } from "../../constants/Status/SupplyStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -28,7 +28,8 @@ export default class view extends Page {
 
             const order = await Order.FetchOneById(Order, Id, [
                 "Listings",
-                "Supplies"
+                "Supplies",
+                "TrackingNumbers"
             ]);
 
             const listings = await Listing.FetchAll(Listing);

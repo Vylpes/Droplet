@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
-import { ItemStatus } from "../../constants/ItemStatus";
+import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
+import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -19,11 +19,12 @@ export default class New extends Page {
             const listingNumber = req.body.listingNumber;
             const price = req.body.price;
             const endDate = req.body.endDate;
+            const quantity = req.body.quantity;
             const itemId = req.body.itemId;
 
             const item = await Item.FetchOneById(Item, itemId);
             
-            let listing = new Listing(name, listingNumber, price, endDate);
+            let listing = new Listing(name, listingNumber, price, endDate, quantity);
 
             await listing.Save(Listing, listing);
 
@@ -35,7 +36,7 @@ export default class New extends Page {
 
             await listing.Save(Listing, listing);
 
-            item.UpdateStatus(ItemStatus.Listed);
+            item.MarkAsListed(quantity, ItemStatus.Unlisted);
 
             await item.Save(Item, item);
 

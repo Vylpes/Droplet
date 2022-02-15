@@ -23,10 +23,11 @@ export default class Update extends Page {
             const name = req.body.name;
             const listingNumber = req.body.listingNumber;
             const price = req.body.price;
+            const quantity = req.body.quantity;
 
             const listing = await Listing.FetchOneById(Listing, Id);
 
-            listing.UpdateBasicDetails(name, listingNumber, price);
+            listing.UpdateBasicDetails(name, listingNumber, price, quantity);
 
             await listing.Save(Listing, listing);
 

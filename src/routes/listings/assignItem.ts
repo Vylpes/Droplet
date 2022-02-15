@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { ItemStatus } from "../../constants/ItemStatus";
+import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -33,7 +33,7 @@ export default class AssignItem extends Page {
 
             await listing.Save(Listing, listing);
 
-            item.UpdateStatus(ItemStatus.Listed);
+            item.MarkAsListed(listing.Quantity, ItemStatus.Unlisted);
 
             await item.Save(Item, item);
 

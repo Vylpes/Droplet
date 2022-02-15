@@ -1,13 +1,14 @@
 import { Column, Entity, getConnection, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/ItemStatus";
-import { ListingStatus } from "../constants/ListingStatus";
-import { OrderStatus } from "../constants/OrderStatus";
+import { ItemStatus } from "../constants/Status/ItemStatus";
+import { ListingStatus } from "../constants/Status/ListingStatus";
+import { OrderStatus } from "../constants/Status/OrderStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
 import { Supply } from "./Supply";
+import { TrackingNumber } from "./TrackingNumber";
 
 @Entity()
 export class Order extends BaseEntity {
@@ -49,6 +50,9 @@ export class Order extends BaseEntity {
     @JoinTable()
     Supplies: Supply[];
 
+    @OneToMany(() => TrackingNumber, order => order.Order)
+    TrackingNumbers: TrackingNumber[];
+
     public UpdateBasicDetails(orderNumber: string, offerAccepted: boolean, buyer: string) {
         this.OrderNumber = orderNumber;
         this.OfferAccepted = offerAccepted;
@@ -85,6 +89,12 @@ export class Order extends BaseEntity {
 
     public AddSupplyToOrder(supply: Supply) {
         this.Supplies.push(supply);
+
+        this.WhenUpdated = new Date();
+    }
+
+    public AddTrackingNumberToOrder(trackingNumber: TrackingNumber) {
+        this.TrackingNumbers.push(trackingNumber);
 
         this.WhenUpdated = new Date();
     }

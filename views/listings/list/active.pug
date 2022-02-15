@@ -55,13 +55,16 @@ block content
                         label Item
                         select(name='itemId').form-control
                             each row in items
-                                option(value=row.Id)= row.Sku + " " + row.Name
+                                option(value=row.Id)= row.Sku + " " + row.Name + " (" + row.UnlistedQuantity + " Unlisted)"
                     .form-group.mb-3
                         label Price
                         input(type='number' step=".01" name='price').form-control
                     .form-group.mb-3
                         label End Date
                         input(type='date' name='endDate').form-control
+                    .form-group.mb-3
+                        label Quantity
+                        input(type='number' step='1' name='quantity').form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

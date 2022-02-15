@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/ItemPurchaseStatus";
-import { ItemStatus } from "../../constants/ItemStatus";
+import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
+import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -26,12 +26,12 @@ export default class End extends Page {
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {
-                item.UpdateStatus(ItemStatus.Unlisted);
+                item.MarkAsUnlisted(listing.Quantity, ItemStatus.Listed);
 
                 await item.Save(Item, item);
             }
 
-            res.redirect('/listings');
+            res.redirect('/listings/active');
         });
     }
 }

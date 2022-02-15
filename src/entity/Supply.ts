@@ -1,7 +1,7 @@
 import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/ItemStatus";
-import { SupplyStatus } from "../constants/SupplyStatus";
+import { ItemStatus } from "../constants/Status/ItemStatus";
+import { SupplyStatus } from "../constants/Status/SupplyStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Order } from "./Order";
 import { SupplyPurchase } from "./SupplyPurchase";
@@ -14,11 +14,11 @@ export class Supply extends BaseEntity {
         this.Id = uuid();
         this.Name = name;
         this.Sku = sku;
-        this.Quantity = quantity;
-        this.StartingQuantity = quantity;
+        this.UnusedQuantity = quantity;
         this.Status = SupplyStatus.Unused;
-        this.BuyPrice = -1;
-        this.SellPrice = -1;
+
+        this.BuyPrice = 0;
+        this.UsedQuantity = 0;
     }
 
     @PrimaryColumn()
@@ -31,19 +31,16 @@ export class Supply extends BaseEntity {
     Sku: string;
 
     @Column()
-    Quantity: number;
+    UnusedQuantity: number;
 
     @Column()
-    StartingQuantity: number;
+    UsedQuantity: number;
     
     @Column()
     Status: SupplyStatus;
 
     @Column("decimal", { precision: 20, scale: 2 })
     BuyPrice: number;
-
-    @Column("decimal", { precision: 20, scale: 2 })
-    SellPrice: number;
 
     @ManyToOne(_ => SupplyPurchase, purchase => purchase.Supplies)
     Purchase: SupplyPurchase;
@@ -59,27 +56,29 @@ export class Supply extends BaseEntity {
     }
 
     public AddStock(amount: number) {
-        this.Quantity = Number(this.Quantity) + Number(amount);
+        this.UnusedQuantity = Number(this.UnusedQuantity) + Number(amount);
+
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
 
     public RemoveStock(amount: number) {
-        if (amount > this.Quantity) return;
+        if (amount > this.UnusedQuantity) return;
 
-        this.Quantity = Number(this.Quantity) - Number(amount);
+        this.UnusedQuantity = Number(this.UnusedQuantity) - Number(amount);
+        this.UsedQuantity = Number(this.UsedQuantity) + Number(amount);
 
-        if (this.Quantity == 0) {
-            this.Status = SupplyStatus.Used;
-        }
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
 
-    public SetStock(amount: number) {
-        if (amount < 0) return;
+    public SetStock(unused: number, used: number) {
+        this.UnusedQuantity = unused;
+        this.UsedQuantity = used;
 
-        this.Quantity = amount;
+        this.CalculateStatus();
 
         this.WhenUpdated = new Date();
     }
@@ -96,15 +95,17 @@ export class Supply extends BaseEntity {
         this.WhenUpdated = new Date();
     }
 
-    public SetSellPrice(price: number) {
-        this.SellPrice = price;
-
-        this.WhenUpdated = new Date();
-    }
-
     public AssignToPurchase(purchase: SupplyPurchase) {
         this.Purchase = purchase;
 
         this.WhenUpdated = new Date();
+    }
+
+    private CalculateStatus() {
+        if (this.UnusedQuantity == 0) {
+            this.Status = SupplyStatus.Used;
+        } else {
+            this.Status = SupplyStatus.Unused;
+        }
     }
 }
