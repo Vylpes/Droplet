@@ -18,7 +18,7 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const status = req.params.status;
+            let status = req.params.status;
 
             const orders = await Order.FetchAll(Order, [
                 "Listings"
@@ -33,8 +33,11 @@ export default class List extends Page {
                     visible = orders.filter(x => x.Status == OrderStatus.AwaitingPayment);
                     break;
                 case 'awaiting-dispatch':
-                        visible = orders.filter(x => x.Status == OrderStatus.AwaitingDispatch);
-                        break;
+                    visible = orders.filter(x => x.Status == OrderStatus.AwaitingDispatch);
+                    break;
+                case 'recently-dispatched':
+                    visible = orders.filter(x => x.Status == OrderStatus.Dispatched && x.DispatchBy > new Date(new Date().getTime () - (1000 * 60 * 60 * 32)));
+                    break;
                 case 'dispatched':
                     visible = orders.filter(x => x.Status == OrderStatus.Dispatched);
                     break;

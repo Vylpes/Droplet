@@ -77,6 +77,7 @@ export class Order extends BaseEntity {
     public MarkAsDispatched() {
         this.Status = OrderStatus.Dispatched;
 
+        this.DispatchBy = new Date();
         this.WhenUpdated = new Date();
     }
 

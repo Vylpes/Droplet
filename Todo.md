@@ -29,7 +29,7 @@
 - [x] Add supply to order
 - [x] Convert to many to many on listings and supplies
 - [x] Remove quantity from listing when ordered
-- [ ] Mark order as delivered
+- [x] Mark order as delivered
 
 # Statuses
 - [x] Mark Item Purchase as received
@@ -40,8 +40,6 @@
 - [x] Mark Supply Purchase as inventoried
 - [x] Mark Supply Purchase as completed
 - [x] Mark Supply Purchase as rejected
-- [ ] Auto mark item purchase as complete once all items sold
-- [ ] Auto mark supply purchase as complete once all supplies used
 
 # Storage
 - [ ] Storage Buildings
