@@ -16,7 +16,7 @@ block content
                     i.fas.fa-edit
                     span.ms-1 Edit
     .row.mt-3
-        .col
+        .col-4
             .card
                 .card-header Basic Details
                 .card-body
@@ -26,7 +26,7 @@ block content
                     .mb-2
                         p.mb-0.text-secondary Buy Price
                         p= item.BuyPrice
-        .col
+        .col-4
             .card
                 .card-header Quantity
                 .card-body
@@ -42,6 +42,23 @@ block content
                     .mb-2
                         p.mb-0.text-secondary Rejected
                         p= item.RejectedQuantity
+        .col-4
+            .card
+                .card-header Storage
+                .card-body
+                    unless item.Storage == null
+                        .mb-2
+                            p.mb-0.text-secondary Building
+                            p
+                                a(href="/storage/list/unit/" + item.Storage.Parent.Parent.Id)= item.Storage.Parent.Parent.Name
+                        .mb-2
+                            p.mb-0.text-secondary Unit
+                            p
+                                a(href="/storage/list/bin/" + item.Storage.Parent.Id)= item.Storage.Parent.Name
+                        .mb-2
+                            p.mb-0.text-secondary Bin
+                            p
+                                a(href="/storage/view/" + item.Storage.Id)= item.Storage.Name
     form(method='POST' action='/items/' + item.Id + '/update').modal.fade#edit-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content

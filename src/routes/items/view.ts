@@ -18,7 +18,10 @@ export default class view extends Page {
             }
 
             const item = await Item.FetchOneById<Item>(Item, itemId, [
-                "Purchase"
+                "Purchase",
+                "Storage",
+                "Storage.Parent",
+                "Storage.Parent.Parent"
             ]);
 
             if (!item) {

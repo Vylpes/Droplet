@@ -42,11 +42,12 @@
 - [x] Mark Supply Purchase as rejected
 
 # Storage
-- [ ] Storage Buildings
-- [ ] Storage Units
-- [ ] Storage Bins
-- [ ] Assign item to Storage Bin
-- [ ] Move item to different Storage Bin
+- [x] Storage Buildings
+- [x] Storage Units
+- [x] Storage Bins
+- [x] Assign item to Storage Bin
+- [x] Move item to different Storage Bin
+- [ ] Auto work out SKU based on this information
 
 # Returns
 - [ ] Create Return and Generate RMA
@@ -69,8 +70,8 @@
 - [ ] Dispute Notes
 
 # Generators
-- [ ] RMA Generator
-- [ ] SKU Generator
+- [ ] Custom RMA Generator
+- [ ] Custom SKU Generator
 - [ ] SKU Label Generator
 
 # Postage Policy

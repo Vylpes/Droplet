@@ -20,6 +20,7 @@ import SuppliesRouters from "./routes/suppliesRouter";
 import SupplyPurchasesRouter from "./routes/SupplyPurchasesRouter";
 import ListingsRouter from "./routes/listingsRouter";
 import OrdersRouter from "./routes/ordersRouter";
+import StorageRouter from "./routes/storageRouter";
 
 export class App {
     private _app: Express;
@@ -34,6 +35,7 @@ export class App {
     private _supplyPurchasesRouter: SupplyPurchasesRouter;
     private _listingsRouter: ListingsRouter;
     private _ordersRouter: OrdersRouter;
+    private _storageRouter: StorageRouter;
 
     constructor() {
         this._app = express();
@@ -48,6 +50,7 @@ export class App {
         this._supplyPurchasesRouter = new SupplyPurchasesRouter();
         this._listingsRouter = new ListingsRouter();
         this._ordersRouter = new OrdersRouter();
+        this._storageRouter = new StorageRouter();
     }
 
     public Start(port: number) {
@@ -99,6 +102,7 @@ export class App {
         this._app.use('/supply-purchases', this._supplyPurchasesRouter.Route());
         this._app.use('/listings', this._listingsRouter.Route());
         this._app.use('/orders', this._ordersRouter.Route());
+        this._app.use('/storage', this._storageRouter.Route());
     }
 
     private SetupErrors() {

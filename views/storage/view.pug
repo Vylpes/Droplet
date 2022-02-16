@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+    a(href="/storage/list/bin/" + storage.Parent.Id).btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1= storage.Name
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-item-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Item
+    .row.mt-3
+        .col
+            .card
+                .card-header Items
+                .card-body
+                    table#items-list-table
+                        thead
+                            tr
+                                th SKU
+                                th Name
+                                th 
+                        tbody
+                            each row in storage.Items
+                                tr
+                                    td= row.Sku
+                                    td= row.Name
+                                    td
+                                        a(href="/items/" + row.Id)
+                                            i.fas.fa-eye
+                                            span.ms-1 View
+    form(method='POST' action='/storage/view/' + storage.Id + '/assign-item').modal.fade#add-item-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Item
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Item
+                        select(name='listingId').form-control
+                            optgroup(label='No Storage Set')
+                                each row in items
+                                    option(value=row.Id)= row.Sku + " " + row.Name
+                            each row in storages
+                                optgroup(label=row.Name)
+                                    each rowItem in row.Items
+                                        option(value=rowItem.Id)= rowItem.Sku + " " + rowItem.Name
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
+block scripts
+    script(src='/js/storage/view.js')

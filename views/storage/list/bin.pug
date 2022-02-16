@@ -1,0 +1,54 @@
+extends ../../layout
+
+block content
+    a(href="/storage/list/unit/" + storage.Parent.Id).btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row
+        .col
+            h1= storage.Name
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-storage-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    table#storage-list-table
+        thead
+            tr
+                th SKU Prefix
+                th Name
+                th Items
+                th
+        tbody
+            each row in storages
+                tr
+                    td= row.SkuPrefix
+                    td= row.Name
+                    td= row.Items.length
+                    td
+                        a(href="/storage/view/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/storage/new').modal.fade#new-storage-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Bin
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group
+                        input(type='hidden' name='type' value='bin')
+                        input(type='hidden' name='parentId' value=storage.Id)
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name').form-control
+                    .form-group.mb-3
+                        label SKU Prefix
+                        input(type='text' name='skuPrefix').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/storage/list.js')

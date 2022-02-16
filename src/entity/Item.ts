@@ -4,6 +4,7 @@ import { ItemStatus } from "../constants/Status/ItemStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
+import { Storage } from "./Storage";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -54,6 +55,9 @@ export class Item extends BaseEntity {
 
     @ManyToMany(() => Listing)
     Listings: Listing[];
+
+    @ManyToOne(() => Storage, storage => storage.Items)
+    Storage?: Storage;
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;
@@ -125,6 +129,10 @@ export class Item extends BaseEntity {
         this.CalculateStatus();
 
         this.WhenUpdated = new Date();
+    }
+
+    public SetStorageBin(storage: Storage) {
+        this.Storage = storage;
     }
 
     private RemoveFromStatus(amount: number, fromStatus: ItemStatus) {
