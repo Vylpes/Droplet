@@ -29,13 +29,23 @@ export default class AssignItem extends Page {
                 "Items"
             ]);
 
-            const item = await Item.FetchOneById(Item, itemId, [
+            let item = await Item.FetchOneById(Item, itemId, [
                 "Storage"
             ]);
 
             storage.AddItemToBin(item);
 
             await storage.Save(Storage, storage);
+
+            item = await Item.FetchOneById(Item, itemId, [
+                "Storage",
+                "Storage.Parent",
+                "Storage.Parent.Parent"
+            ]);
+
+            item.GenerateSku();
+
+            await item.Save(Item, item);
 
             res.redirect(`/storage/view/${Id}`);
         });

@@ -15,6 +15,8 @@ export class Storage extends BaseEntity {
         this.Name = name;
         this.SkuPrefix = skuPrefix;
         this.StorageType = storageType;
+
+        this.ItemCounter = 0;
     }
 
     @Column()
@@ -25,6 +27,9 @@ export class Storage extends BaseEntity {
 
     @Column()
     StorageType: StorageType;
+
+    @Column()
+    ItemCounter: number;
 
     @ManyToOne(() => Storage, storage => storage.Children)
     Parent?: Storage;
@@ -50,5 +55,6 @@ export class Storage extends BaseEntity {
         if (this.StorageType != StorageType.Bin) return;
 
         this.Items.push(item);
+        this.ItemCounter++;
     }
 }

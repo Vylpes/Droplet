@@ -41,7 +41,7 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label Item
-                        select(name='listingId').form-control
+                        select(name='itemId').form-control
                             optgroup(label='No Storage Set')
                                 each row in items
                                     option(value=row.Id)= row.Sku + " " + row.Name

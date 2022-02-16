@@ -18,11 +18,10 @@ export default class Update extends Page {
             }
 
             const name = req.body.name;
-            const sku = req.body.sku;
 
             const item = await Item.FetchOneById<Item>(Item, itemId);
             
-            item.EditBasicDetails(name, sku);
+            item.EditBasicDetails(name);
 
             await item.Save(Item, item);
 

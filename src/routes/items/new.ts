@@ -13,11 +13,10 @@ export default class New extends Page {
     public OnPost(): void {
         super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
             const name = req.body.name;
-            const sku = req.body.sku;
             const quantity = req.body.quantity;
             const purchaseId = req.body.purchaseId;
             
-            const item = new Item(name, sku, quantity);
+            const item = new Item(name, quantity);
 
             await item.Save(Item, item);
 

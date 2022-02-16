@@ -47,7 +47,7 @@
 - [x] Storage Bins
 - [x] Assign item to Storage Bin
 - [x] Move item to different Storage Bin
-- [ ] Auto work out SKU based on this information
+- [x] Auto work out SKU based on this information
 
 # Returns
 - [ ] Create Return and Generate RMA

@@ -8,12 +8,11 @@ import { Storage } from "./Storage";
 
 @Entity()
 export class Item extends BaseEntity {
-    constructor(name: string, sku: string, quantity: number) {
+    constructor(name: string, quantity: number) {
         super();
 
         this.Id = uuid();
         this.Name = name;
-        this.Sku = sku;
         this.UnlistedQuantity = quantity;
         this.Status = ItemStatus.Unlisted;
 
@@ -21,6 +20,7 @@ export class Item extends BaseEntity {
         this.ListedQuantity = 0;
         this.SoldQuantity = 0;
         this.RejectedQuantity = 0;
+        this.Sku = "";
     }
 
     @PrimaryColumn()
@@ -59,9 +59,8 @@ export class Item extends BaseEntity {
     @ManyToOne(() => Storage, storage => storage.Items)
     Storage?: Storage;
 
-    public EditBasicDetails(name: string, sku: string) {
+    public EditBasicDetails(name: string) {
         this.Name = name;
-        this.Sku = sku;
 
         this.WhenUpdated = new Date();
     }
@@ -75,6 +74,17 @@ export class Item extends BaseEntity {
         this.CalculateStatus();
 
         this.WhenUpdated = new Date();
+    }
+
+    public GenerateSku() {
+        const buildingPrefix = this.Storage?.Parent?.Parent?.SkuPrefix || "";
+        const unitPrefix = this.Storage?.Parent?.SkuPrefix || "";
+        const binPrefix = this.Storage?.SkuPrefix || "";
+        const itemCounter = this.Storage?.ItemCounter || 0;
+
+        const itemCounterString = String(itemCounter);
+
+        this.Sku = `${buildingPrefix}${unitPrefix}${binPrefix}-${itemCounterString.padStart(4, '0')}`
     }
 
     public UpdateStatus(status: ItemStatus) {
