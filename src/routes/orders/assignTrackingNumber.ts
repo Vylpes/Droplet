@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
+import { TrackingNumberType } from "../../constants/TrackingNumberType";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
@@ -27,7 +28,7 @@ export default class AssignTrackingNumber extends Page {
             const number = req.body.number;
             const service = req.body.service;
 
-            const trackingNumber = new TrackingNumber(number, service);
+            const trackingNumber = new TrackingNumber(number, service, TrackingNumberType.Order);
 
             await trackingNumber.Save(TrackingNumber, trackingNumber);
 

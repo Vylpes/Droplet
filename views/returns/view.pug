@@ -1,0 +1,163 @@
+extends ../layout
+
+block content
+    a(href="/returns/opened").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1 Return
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#mark-as-started-modal').btn.text-secondary
+                    i.fas.fa-calendar
+                    span.ms-1 Mark as Started
+                button(data-bs-toggle='modal' data-bs-target='#mark-as-posted-modal').btn.text-secondary
+                    i.fas.fa-plus-circle
+                    span.ms-1 Mark as Posted
+                button(data-bs-toggle='modal' data-bs-target='#mark-as-received-modal').btn.text-secondary
+                    i.fas.fa-calendar
+                    span.ms-1 Mark as Received
+                button(data-bs-toggle='modal' data-bs-target='#refund-modal').btn.text-secondary
+                    i.fas.fa-plus-circle
+                    span.ms-1 Refund
+                button(data-bs-toggle='modal' data-bs-target='#close-modal').btn.text-secondary
+                    i.fas.fa-plus-circle
+                    span.ms-1 Close
+                button(data-bs-toggle='modal' data-bs-target='#edit-return-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary Return Number
+                        p
+                            a(href="https://www.ebay.co.uk/rt/ReturnDetails?returnId=" + ret.ReturnNumber, target="_blank")= ret.ReturnNumber
+                    .mb-2
+                        p.mb-0.text-secondary RMA
+                        p= ret.RMA
+                    .mb-2
+                        p.mb-0.text-secondary Return By
+                        p= ret.ReturnBy
+                    .mb-2
+                        p.mb-0.text-secondary Status
+                        p= ret.Status
+                    .mb-2
+                        p.mb-0.text-secondary Refund Amount
+                        p= ret.RefundAmount
+                    .mb-2
+                        p.mb-0.text-secondary Order
+                        p
+                            a(href="/orders/view/" + ret.Order.Id, target="_blank")= ret.Order.OrderNumber
+        .col-8
+            .row.mb-3
+                .col
+                    .card
+                        .card-header Tracking Numbers
+                        .card-body
+                            table#tracking-numbers-table
+                                thead
+                                    tr
+                                        th Number
+                                        th Service
+                                tbody
+                                    each row in ret.TrackingNumbers
+                                        tr
+                                            if row.Service == 0
+                                                td
+                                                    a(href="https://www.royalmail.com/track-your-item#/tracking-results/" + row.Number, target="_blank")= row.Number
+                                                td Royal Mail
+                                            if row.Service == 1
+                                                td
+                                                    a(href="https://www.myhermes.co.uk/track#/parcel/" + row.Number, target="_blank")= row.Number
+                                                td Hermes
+    form(method='POST' action='/returns/view/' + ret.Id + '/update').modal.fade#edit-return-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Order
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Return Number
+                        input(type='text' name='returnNumber' value=ret.ReturnNumber).form-control
+                    .form-group.mb-3
+                        label Return By
+                        input(type='date' name='returnBy' value=ret.ReturnBy).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/returns/view/' + ret.Id + '/started').modal.fade#mark-as-started-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Mark As Started
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Return By
+                        input(type='date' name='returnBy').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Submit
+    form(method='POST' action='/returns/view/' + ret.Id + '/posted').modal.fade#mark-as-posted-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Mark As Posted
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Are you sure you want to mark this return as posted?
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Yes
+    form(method='POST' action='/returns/view/' + ret.Id + '/received').modal.fade#mark-as-received-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Mark As Received
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Return By
+                        input(type='date' name='returnBy').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Submit
+    form(method='POST' action='/returns/view/' + ret.Id + '/refund').modal.fade#refund-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Refund
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Refund Amount
+                        input(type='number' step='.01' name='refundAmount').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Submit
+    form(method='POST' action='/returns/view/' + ret.Id + '/close').modal.fade#close-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Close
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Are you sure you want to mark this return as closed?
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Yes
+block scripts
+    script(src='/js/returns/view.js')

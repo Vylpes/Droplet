@@ -50,11 +50,10 @@
 - [x] Auto work out SKU based on this information
 
 # Returns
-- [ ] Create Return and Generate RMA
-- [ ] Change Status to Item received
-- [ ] Change Status to Return Completed
-- [ ] Change Status to Return Partially Refunded
-- [ ] Change Status to Return Disputed
+- [x] Create Return and Generate RMA
+- [x] Change Status to Item received
+- [x] Change Status to Return Completed
+- [x] Change Status to Return Partially Refunded
 
 # Disputes
 - [ ] Create Dispute

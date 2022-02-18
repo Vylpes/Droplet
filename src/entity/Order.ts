@@ -3,10 +3,12 @@ import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/Status/ItemStatus";
 import { ListingStatus } from "../constants/Status/ListingStatus";
 import { OrderStatus } from "../constants/Status/OrderStatus";
+import { TrackingNumberType } from "../constants/TrackingNumberType";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
+import { Return } from "./Return";
 import { Supply } from "./Supply";
 import { TrackingNumber } from "./TrackingNumber";
 
@@ -53,6 +55,9 @@ export class Order extends BaseEntity {
     @OneToMany(() => TrackingNumber, order => order.Order)
     TrackingNumbers: TrackingNumber[];
 
+    @ManyToOne(() => Return, ret => ret.Order)
+    Returns: Return[];
+
     public UpdateBasicDetails(orderNumber: string, offerAccepted: boolean, buyer: string) {
         this.OrderNumber = orderNumber;
         this.OfferAccepted = offerAccepted;
@@ -81,6 +86,10 @@ export class Order extends BaseEntity {
         this.WhenUpdated = new Date();
     }
 
+    public MarkAsReturned() {
+        this.Status = OrderStatus.Returned;
+    }
+
     public AddListingToOrder(listing: Listing) {
         this.Listings.push(listing);
         this.Price = Number(this.Price) + Number(listing.Price);
@@ -95,6 +104,8 @@ export class Order extends BaseEntity {
     }
 
     public AddTrackingNumberToOrder(trackingNumber: TrackingNumber) {
+        if (trackingNumber.Type != TrackingNumberType.Order) return;
+
         this.TrackingNumbers.push(trackingNumber);
 
         this.WhenUpdated = new Date();

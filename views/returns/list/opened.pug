@@ -1,0 +1,75 @@
+extends ../../layout
+
+block content
+    .row
+        .col
+            h1 Returns
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-return-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link.active(href="/returns/opened") Opened
+        li.nav-item
+            a.nav-link(href="/returns/started") Started
+        li.nav-item
+            a.nav-link(href="/returns/posted") Posted
+        li.nav-item
+            a.nav-link(href="/returns/received") Received
+        li.nav-item
+            a.nav-link(href="/returns/refunded") Refunded
+        li.nav-item
+            a.nav-link(href="/returns/closed") Closed
+        li.nav-item
+            a.nav-link(href="/returns/expired") Expired
+    table#returns-list-table
+        thead
+            tr
+                th Refund Number
+                th RMA
+                th Order Number
+                th
+        tbody
+            each row in returns
+                tr
+                    td
+                        a(href="https://www.ebay.co.uk/rt/ReturnDetails?returnId=" + row.ReturnNumber, target="_blank")= row.ReturnNumber
+                    td= row.RMA
+                    td
+                        a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + row.Order.OrderNumber, target="_blank")= row.Order.OrderNumber
+                    td
+                        a(href="/returns/view/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/returns/new').modal.fade#new-return-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Return
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Return Number
+                        input(type='text' name='returnNumber').form-control
+                    .form-group.mb-3
+                        label Order
+                        select(name='orderId').form-control
+                            each row in orders
+                                option(value=row.Id)= row.OrderNumber + " " + row.Buyer
+                    .form-group.mb-3
+                        label Postal Service
+                        select(name='trackingService').form-control
+                            option(value="0") Royal Mail
+                            option(value="1") Hermes
+                    .form-group.mb-3
+                        label Tracking Number
+                        input(type='text' name='trackingNumber').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/returns/list.js')

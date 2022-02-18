@@ -1,9 +1,10 @@
-import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus } from "../constants/Status/ItemStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
+import { Return } from "./Return";
 import { Storage } from "./Storage";
 
 @Entity()
