@@ -1,6 +1,7 @@
 export enum NoteType {
     Item,
-    Purchase,
+    ItemPurchase,
+    SupplyPurchase,
     Supply,
     Listing,
     Order,
