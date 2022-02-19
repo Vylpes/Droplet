@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
+import AddNote from "./supplyPurchases/addNote";
 import list from "./supplyPurchases/list";
 import newPage from "./supplyPurchases/new";
 import Update from "./supplyPurchases/update";
@@ -12,6 +13,7 @@ export default class SupplyPurchasesRouter extends Route {
     private view: view;
     private update: Update;
     private updateStatus: UpdateStatus;
+    private addNote: AddNote;
 
     constructor() {
         super();
@@ -21,6 +23,7 @@ export default class SupplyPurchasesRouter extends Route {
         this.view = new view(super.router);
         this.update = new Update(super.router);
         this.updateStatus = new UpdateStatus(super.router);
+        this.addNote = new AddNote(super.router);
     }
 
     public Route(): Router {
@@ -29,6 +32,7 @@ export default class SupplyPurchasesRouter extends Route {
         this.view.Route();
         this.update.Route();
         this.updateStatus.Route();
+        this.addNote.Route();
 
         return this.router;
     }
