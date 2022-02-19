@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
+import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import Note from "../../entity/Note";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {
@@ -26,7 +28,10 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
+            const notes = await Note.FetchAllForId(NoteType.ItemPurchase, Id);
+
             res.locals.purchase = purchase;
+            res.locals.notes = notes.sort((a, b) => a.WhenCreated < b.WhenCreated ? -1 : a.WhenCreated > b.WhenCreated ? 1 : 0);
 
             res.render('item-purchases/view', res.locals.viewData);
         });
