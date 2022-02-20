@@ -1,0 +1,73 @@
+extends ../layout
+
+block content
+    a(href="/postage-policies").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1= policy.Name
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#edit-policy-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Basic Details
+                .card-body
+                    .mb-2
+                        p.mb-0.text-secondary Cost To Buyer
+                        p= policy.CostToBuyer
+                    .mb-2
+                        p.mb-0.text-secondary Actual Cost
+                        p= policy.ActualCost
+        .col-8
+            .row.mb-3
+                .col
+                    .card
+                        .card-header Listings
+                        .card-body
+                            table#listings-list-table
+                                thead
+                                    tr
+                                        th Listing Number
+                                        th Name
+                                        th Price
+                                        th End Date
+                                        th
+                                tbody
+                                    each row in order.Listings
+                                        tr
+                                            td
+                                                a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
+                                            td= row.Name
+                                            td= row.Price
+                                            td= row.EndDate
+                                            td
+                                                a(href="/listings/view/" + row.Id, target="_blank").btn.text-primary
+                                                    i.fas.fa-eye
+                                                    span.ms-1 View
+    form(method='POST' action='/postage-policies/view/' + policy.Id + '/update').modal.fade#edit-policy-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit Postage Policy
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name' value=policy.Name).form-control
+                    .form-group.mb-3
+                        label Cost To Buyer
+                        input(type='number' step='.01' name='costToBuyer' value=policy.CostToBuyer).form-control
+                    .form-group.mb-3
+                        label Actual Cost
+                        input(type='number' step='.01' name='actualCost' value=policy.ActualCost).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+block scripts
+    script(src='/js/postage-policies/view.js')

@@ -8,6 +8,7 @@ import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
+import PostagePolicy from "./PostagePolicy";
 import { Return } from "./Return";
 import { Supply } from "./Supply";
 import { TrackingNumber } from "./TrackingNumber";
@@ -54,6 +55,9 @@ export class Order extends BaseEntity {
 
     @OneToMany(() => TrackingNumber, order => order.Order)
     TrackingNumbers: TrackingNumber[];
+
+    @ManyToOne(() => PostagePolicy, policy => policy.Orders)
+    PostagePolicy: PostagePolicy;
 
     @ManyToOne(() => Return, ret => ret.Order)
     Returns: Return[];
@@ -109,6 +113,10 @@ export class Order extends BaseEntity {
         this.TrackingNumbers.push(trackingNumber);
 
         this.WhenUpdated = new Date();
+    }
+
+    public AddPostagePolicyToOrder(policy: PostagePolicy) {
+        this.PostagePolicy = policy;
     }
 
     public ApplyDiscount(amount: number) {

@@ -6,6 +6,7 @@ import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 import { ItemPurchase } from "./ItemPurchase";
 import { Order } from "./Order";
+import PostagePolicy from "./PostagePolicy";
 
 @Entity()
 export class Listing extends BaseEntity {
@@ -55,6 +56,9 @@ export class Listing extends BaseEntity {
     @JoinTable()
     Orders: Order[];
 
+    @ManyToOne(() => PostagePolicy, policy => policy.Listings)
+    PostagePolicy: PostagePolicy;
+
     public UpdateBasicDetails(name: string, listingNumber: string, price: number, quantity: number) {
         this.Name = name;
         this.ListingNumber = listingNumber;
@@ -93,5 +97,9 @@ export class Listing extends BaseEntity {
 
     public AddItemToListing(item: Item) {
         this.Items.push(item);
+    }
+
+    public AddPostagePolicyToListing(policy: PostagePolicy) {
+        this.PostagePolicy = policy;
     }
 }

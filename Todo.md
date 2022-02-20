@@ -55,53 +55,26 @@
 - [x] Change Status to Return Completed
 - [x] Change Status to Return Partially Refunded
 
-# Disputes
-- [ ] Create Dispute
-- [ ] Mark Dispute as Resolved
-
 # Notes
-- [ ] Item Notes
-- [ ] Purchase Notes
-- [ ] Supply Notes
-- [ ] Listing Notes
-- [ ] Order Notes
-- [ ] Return Notes
-- [ ] Dispute Notes
-
-# Generators
-- [ ] Custom RMA Generator
-- [ ] Custom SKU Generator
-- [ ] SKU Label Generator
+- [x] Item Notes
+- [x] Purchase Notes
+- [x] Supply Notes
+- [x] Listing Notes
+- [x] Order Notes
+- [x] Return Notes
+- [x] Dispute Notes
 
 # Postage Policy
-- [ ] Create Postage Policy
+- [x] Create Postage Policy
 - [ ] Add listing to postage policy
+- [ ] Add order to postage policy
+- [ ] Archive policy
 
 # Profit
 - [ ] eBay Fees Calculator
 - [ ] Calculate Estimated Profit per Item
 - [ ] Calculate Running Estimated Profit per Purchase
 - [ ] Calculate minimum selling price
-
-# Auctions
-- [ ] Create Auction
-- [ ] Create Bid
-- [ ] End Auction
-- [ ] Complete Auction
-
-# Dashboard Widgets
-- [ ] Listings Requiring Renewal
-- [ ] Listings Ending Today
-- [ ] Unlisted Items
-- [ ] Orders Requiring Dispatch
-- [ ] Open Returns
-- [ ] Open Disputes
-- [ ] Orders Needed to Be Inventoried
-- [ ] Auctions Ending Today
-- [ ] Auctions Requiring Renewal
-- [ ] Listing Goal
-- [ ] Low stock warning
-- [ ] Low supply warning
 
 # Cleanup
 - [ ] Add validation rules

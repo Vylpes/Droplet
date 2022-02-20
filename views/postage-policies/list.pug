@@ -1,0 +1,53 @@
+extends ../../layout
+
+block content
+    .row
+        .col
+            h1 Postage Policies
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-policy-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    table#policies-list-table
+        thead
+            tr
+                th Name
+                th Cost To Buyer
+                th Actual Cost
+                th Listings
+                th
+        tbody
+            each row in policies
+                tr
+                    td= row.Name
+                    td= row.CostToBuyer
+                    td= row.ActualCost
+                    td= row.Listings
+                    td
+                        a(href="/postage-policies/" + row.Id).btn.text-primary
+                            i.fas.fa-eye
+                            span.ms-1 View
+    form(method='POST' action='/postage-policies/new').modal.fade#new-policy-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New Postage Policy
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Name
+                        input(type='text' name='name').form-control
+                    .form-group.mb-3
+                        label Cost To Buyer
+                        input(type='number' step=".01" name='costToBuyer').form-control
+                    .form-group.mb-3
+                        label Actual Cost
+                        input(type='number' step=".01" name='actualCost').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+
+block scripts
+    script(src='/js/postage-policies/list.js')
