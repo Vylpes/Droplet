@@ -66,7 +66,7 @@
 
 # Postage Policy
 - [x] Create Postage Policy
-- [ ] Add listing to postage policy
+- [x] Add listing to postage policy
 - [ ] Add order to postage policy
 - [ ] Archive policy
 

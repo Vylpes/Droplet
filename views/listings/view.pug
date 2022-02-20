@@ -9,6 +9,9 @@ block content
             h1= listing.Name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-postage-policy-modal').btn.text-secondary
+                    i.fas.fa-plus-square
+                    span.ms-1 Add Postage Policy
                 button(data-bs-toggle='modal' data-bs-target='#add-item-modal').btn.text-secondary
                     i.fas.fa-plus-square
                     span.ms-1 Add Item
@@ -23,31 +26,50 @@ block content
                     span.ms-1 Edit
     .row.mt-3
         .col-4
-            .card
-                .card-header Basic Details
-                .card-body
-                    .mb-2
-                        p.mb-0.text-secondary Listing Number
-                        p
-                            a(href="https://ebay.co.uk/itm/" + listing.ListingNumber, target="_blank")= listing.ListingNumber
-                    .mb-2
-                        p.mb-0.text-secondary Price
-                        p= listing.Price
-                    .mb-2
-                        p.mb-0.text-secondary Status
-                        p= listing.Status
-                    .mb-2
-                        p.mb-0.text-secondary Quantity
-                        p= listing.Quantity
-                    .mb-2
-                        p.mb-0.text-secondary End Date
-                        p= listing.EndDate
-                    .mb-2
-                        p.mb-0.text-secondary Relisted Times
-                        p= listing.RelistedTimes
-                    .mb-2
-                        p.mb-0.text-secondary Items
-                        p= listing.Items.length
+            .row
+                .col
+                    .card
+                        .card-header Basic Details
+                        .card-body
+                            .mb-2
+                                p.mb-0.text-secondary Listing Number
+                                p
+                                    a(href="https://ebay.co.uk/itm/" + listing.ListingNumber, target="_blank")= listing.ListingNumber
+                            .mb-2
+                                p.mb-0.text-secondary Price
+                                p= listing.Price
+                            .mb-2
+                                p.mb-0.text-secondary Status
+                                p= listing.Status
+                            .mb-2
+                                p.mb-0.text-secondary Quantity
+                                p= listing.Quantity
+                            .mb-2
+                                p.mb-0.text-secondary End Date
+                                p= listing.EndDate
+                            .mb-2
+                                p.mb-0.text-secondary Relisted Times
+                                p= listing.RelistedTimes
+                            .mb-2
+                                p.mb-0.text-secondary Items
+                                p= listing.Items.length
+            .row
+                .col
+                    .card
+                        .card-header Postage Policy
+                        .card-body
+                            if listing.PostagePolicy
+                                .mb-2
+                                    p.mb-0.text-secondary Name
+                                    p
+                                        a(href="/postage-policies/" + listing.PostagePolicy.Id, target="_blank")= listing.PostagePolicy.Name
+                                .mb-2
+                                    p.mb-0.text-secondary Cost To Buyer
+                                    p= listing.PostagePolicy.CostToBuyer
+                                .mb-2
+                                    p.mb-0.text-secondary Actual Cost
+                                    p= listing.PostagePolicy.ActualCost
+
         .col-8
             .card
                 .card-header Items
@@ -133,6 +155,22 @@ block content
                         select(name='itemId').form-control
                             each row in items
                                 option(value=row.Id)= row.Sku + " " + row.Name
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+    form(method='POST' action='/listings/view/' + listing.Id + '/assign-postage-policy').modal.fade#add-postage-policy-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Postage Policy
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Postage Policy
+                        select(name='policyId').form-control
+                            each row in postagePolicies
+                                option(value=row.Id)= row.Name
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

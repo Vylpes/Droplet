@@ -8,39 +8,33 @@ import { Listing } from "../../entity/Listing";
 import PostagePolicy from "../../entity/PostagePolicy";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import List from "../itemPurchases/list";
 
-export default class view extends Page {
+export default class AssignPostagePolicy extends Page {
     constructor(router: Router) {
         super(router);
     }
 
-    public OnGet(): void {
-        super.router.get('/view/:Id', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+    public OnPost(): void {
+        super.router.post('/view/:Id/assign-postage-policy', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
             if (!Id) {
                 next(createHttpError(404));
             }
+            
+            const policyId = req.body.policyId;
+
+            const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
 
             const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items",
                 "PostagePolicy"
             ]);
 
-            const items = await Item.FetchAll(Item);
+            listing.AddPostagePolicyToListing(policy);
 
-            const postagePolicies = await PostagePolicy.FetchAll(PostagePolicy);
+            await listing.Save(Listing, listing);
 
-            if (!listing) {
-                next(createHttpError(404));
-            }
-
-            res.locals.listing = listing;
-            res.locals.items = items.filter(x => x.Status == ItemStatus.Unlisted);
-            res.locals.postagePolicies = postagePolicies.filter(x => !x.Archived);
-
-            res.render('listings/view', res.locals.viewData);
+            res.redirect(`/listings/view/${Id}`);
         });
     }
 }
