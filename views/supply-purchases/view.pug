@@ -9,6 +9,9 @@ block content
             h1= purchase.Description
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
+                    i.fas.fa-comment
+                    span.ms-1 Add Note
                 button(data-bs-toggle='modal' data-bs-target='#update-status-modal').btn.text-secondary
                     i.fas.fa-edit
                     span.ms-1 Update Status
@@ -60,6 +63,15 @@ block content
                                         a(href="/supplies/" + row.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
+    .row.mt-3
+        .col-8
+            .card
+                .card-header Notes
+                .card-body
+                    each note in notes
+                        p= note.Text
+                        p.text-secondary= '- ' + note.WhenCreated
+                        hr
     form(method='POST' action='/supply-purchases/view/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
@@ -145,5 +157,19 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
+    form(method='POST' action='/supply-purchases/' + purchase.Id + '/add-note').modal.fade#add-note-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Note
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Text
+                        input(type='text' name='text').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
 block scripts
     script(src='/js/supply-purchases/view.js')

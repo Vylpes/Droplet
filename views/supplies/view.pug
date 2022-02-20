@@ -9,6 +9,9 @@ block content
             h1= item.Name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
+                    i.fas.fa-comment
+                    span.ms-1 Add Note
                 button(data-bs-toggle='modal' data-bs-target='#edit-quantity-modal').btn.text-secondary
                     i.fas.fa-edit
                     span.ms-1 Quantity
@@ -36,6 +39,15 @@ block content
                     .mb-2
                         p.mb-0.text-secondary Used
                         p= item.UsedQuantity
+    .row.mt-3
+        .col-8
+            .card
+                .card-header Notes
+                .card-body
+                    each note in notes
+                        p= note.Text
+                        p.text-secondary= '- ' + note.WhenCreated
+                        hr
     form(method='POST' action='/supplies/' + item.Id + '/update').modal.fade#edit-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
@@ -70,3 +82,17 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Update
+    form(method='POST' action='/supplies/' + item.Id + '/add-note').modal.fade#add-note-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Note
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Text
+                        input(type='text' name='text').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
