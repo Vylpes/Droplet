@@ -9,6 +9,9 @@ block content
             h1= policy.Name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#archive-modal').btn.text-secondary
+                    i.fas.fa-archive
+                    span.ms-1 Archive
                 button(data-bs-toggle='modal' data-bs-target='#edit-policy-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit
@@ -65,6 +68,19 @@ block content
                     .form-group.mb-3
                         label Actual Cost
                         input(type='number' step='.01' name='actualCost' value=policy.ActualCost).form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+    form(method='POST' action='/postage-policies/' + policy.Id + '/archive').modal.fade#archive-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Archive Postage Policy
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Are you sure you want to archive this postage policy?
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

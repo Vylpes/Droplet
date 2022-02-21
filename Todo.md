@@ -59,16 +59,15 @@
 - [x] Item Notes
 - [x] Purchase Notes
 - [x] Supply Notes
-- [x] Listing Notes
-- [x] Order Notes
-- [x] Return Notes
-- [x] Dispute Notes
+- [ ] Listing Notes
+- [ ] Order Notes
+- [ ] Return Notes
 
 # Postage Policy
 - [x] Create Postage Policy
 - [x] Add listing to postage policy
 - [x] Add order to postage policy
-- [ ] Archive policy
+- [x] Archive policy
 
 # Profit
 - [ ] eBay Fees Calculator

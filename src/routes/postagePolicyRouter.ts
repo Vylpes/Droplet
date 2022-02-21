@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
+import Archive from "./postagePolicy/archive";
 import List from "./postagePolicy/list";
 import New from "./postagePolicy/new";
 import Update from "./postagePolicy/update";
@@ -10,6 +11,7 @@ export default class PostagePolicyRouter extends Route {
     private _new: New;
     private _update: Update;
     private _view: View;
+    private _archive: Archive;
 
     constructor() {
         super();
@@ -18,6 +20,7 @@ export default class PostagePolicyRouter extends Route {
         this._new = new New(super.router);
         this._update = new Update(super.router);
         this._view = new View(super.router);
+        this._archive = new Archive(super.router);
     }
 
     public Route(): Router {
@@ -25,6 +28,7 @@ export default class PostagePolicyRouter extends Route {
         this._new.Route();
         this._update.Route();
         this._view.Route();
+        this._archive.Route();
 
         return this.router;
     }
