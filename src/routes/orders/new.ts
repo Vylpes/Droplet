@@ -6,6 +6,7 @@ import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
+import PostagePolicy from "../../entity/PostagePolicy";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import List from "../itemPurchases/list";
@@ -22,20 +23,32 @@ export default class New extends Page {
             const buyer = req.body.buyer;
             const amount = req.body.amount;
             const listingId = req.body.listingId;
+            const postagePolicyId = req.body.postagePolicyId;
 
             const listing = await Listing.FetchOneById(Listing, listingId, [
-                "Items"
+                "Items",
+                "PostagePolicy"
             ]);
+
+            let postagePolicy: PostagePolicy;
+
+            if (postagePolicyId == "INHERIT") {
+                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, listing.PostagePolicy.Id);
+            } else {
+                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);                
+            }
             
             let order = new Order(orderNumber, offerAccepted, buyer);
 
             await order.Save(Order, order);
 
             order = await Order.FetchOneById(Order, order.Id, [
-                "Listings"
+                "Listings",
+                "PostagePolicy"
             ]);
 
             order.AddListingToOrder(listing);
+            order.AddPostagePolicyToOrder(postagePolicy);
 
             await order.Save(Order, order);
 

@@ -67,6 +67,12 @@ block content
                             each row in listings
                                 option(value=row.Id)= row.ListingNumber + " " + row.Name
                     .form-group.mb-3
+                        label Postage Policy
+                        select(name='postagePolicyId').form-control
+                            option(value="INHERIT") (INHERIT)
+                            each row in postagePolicies
+                                option(value=row.Id)= row.Name
+                    .form-group.mb-3
                         label Amount
                         input(type='number' step='1' name='amount').form-control
                     .form-group.text-center

@@ -8,6 +8,7 @@ import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
+import PostagePolicy from "../../entity/PostagePolicy";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -25,6 +26,8 @@ export default class List extends Page {
             ]);
 
             const listings = await Listing.FetchAll(Listing);
+
+            const postagePolicies = await PostagePolicy.FetchAll(PostagePolicy);
 
             let visible: Order[];
 
@@ -54,6 +57,7 @@ export default class List extends Page {
 
             res.locals.orders = visible;
             res.locals.listings = listings.filter(x => x.Status == ListingStatus.Active);
+            res.locals.postagePolicies = postagePolicies.filter(x => !x.Archived);
 
             res.render(`orders/list/${status}`, res.locals.viewData);
         });

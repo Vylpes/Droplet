@@ -38,7 +38,7 @@ block content
                                         th End Date
                                         th
                                 tbody
-                                    each row in order.Listings
+                                    each row in policy.Listings
                                         tr
                                             td
                                                 a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
@@ -49,7 +49,7 @@ block content
                                                 a(href="/listings/view/" + row.Id, target="_blank").btn.text-primary
                                                     i.fas.fa-eye
                                                     span.ms-1 View
-    form(method='POST' action='/postage-policies/view/' + policy.Id + '/update').modal.fade#edit-policy-modal
+    form(method='POST' action='/postage-policies/' + policy.Id + '/update').modal.fade#edit-policy-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header

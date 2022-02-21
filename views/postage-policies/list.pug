@@ -1,4 +1,4 @@
-extends ../../layout
+extends ../layout
 
 block content
     .row
@@ -23,7 +23,7 @@ block content
                     td= row.Name
                     td= row.CostToBuyer
                     td= row.ActualCost
-                    td= row.Listings
+                    td= row.Listings.length
                     td
                         a(href="/postage-policies/" + row.Id).btn.text-primary
                             i.fas.fa-eye

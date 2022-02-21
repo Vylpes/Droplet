@@ -8,6 +8,7 @@ import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
+import PostagePolicy from "../../entity/PostagePolicy";
 import { Supply } from "../../entity/Supply";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
@@ -29,11 +30,13 @@ export default class view extends Page {
             const order = await Order.FetchOneById(Order, Id, [
                 "Listings",
                 "Supplies",
-                "TrackingNumbers"
+                "TrackingNumbers",
+                "PostagePolicy"
             ]);
 
             const listings = await Listing.FetchAll(Listing);
             const supplies = await Supply.FetchAll(Supply);
+            const postagePolicies = await PostagePolicy.FetchAll(PostagePolicy);
 
             if (!order) {
                 next(createHttpError(404));
@@ -42,6 +45,7 @@ export default class view extends Page {
             res.locals.order = order;
             res.locals.listings = listings.filter(x => x.Status == ListingStatus.Active);
             res.locals.supplies = supplies.filter(x => x.Status == SupplyStatus.Unused);
+            res.locals.postagePolicies = postagePolicies.filter(x => !x.Archived);
 
             res.render('orders/view', res.locals.viewData);
         });

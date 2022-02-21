@@ -32,32 +32,50 @@ block content
                     span.ms-1 Edit
     .row.mt-3
         .col-4
-            .card
-                .card-header Basic Details
-                .card-body
-                    .mb-2
-                        p.mb-0.text-secondary Order Number
-                        p
-                            a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + order.OrderNumber, target="_blank")= order.OrderNumber
-                    .mb-2
-                        p.mb-0.text-secondary Price
-                        p= order.Price
-                    .mb-2
-                        p.mb-0.text-secondary Offer Accepted
-                        p= order.OfferAccepted
-                    .mb-2
-                        p.mb-0.text-secondary Buyer
-                        p
-                            a(href="https://www.ebay.co.uk/usr/" + order.Buyer, target="_blank")= order.Buyer
-                    .mb-2
-                        p.mb-0.text-secondary Status
-                        p= order.Status
-                    .mb-2
-                        p.mb-0.text-secondary Dispatch By
-                        p= order.DispatchBy
-                    .mb-2
-                        p.mb-0.text-secondary Listings
-                        p= order.Listings.length
+            .row
+                .col
+                    .card
+                        .card-header Basic Details
+                        .card-body
+                            .mb-2
+                                p.mb-0.text-secondary Order Number
+                                p
+                                    a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + order.OrderNumber, target="_blank")= order.OrderNumber
+                            .mb-2
+                                p.mb-0.text-secondary Price
+                                p= order.Price
+                            .mb-2
+                                p.mb-0.text-secondary Offer Accepted
+                                p= order.OfferAccepted
+                            .mb-2
+                                p.mb-0.text-secondary Buyer
+                                p
+                                    a(href="https://www.ebay.co.uk/usr/" + order.Buyer, target="_blank")= order.Buyer
+                            .mb-2
+                                p.mb-0.text-secondary Status
+                                p= order.Status
+                            .mb-2
+                                p.mb-0.text-secondary Dispatch By
+                                p= order.DispatchBy
+                            .mb-2
+                                p.mb-0.text-secondary Listings
+                                p= order.Listings.length
+            .row.mt-3
+                .col
+                    .card
+                        .card-header Postage Policy
+                        .card-body
+                            if order.PostagePolicy
+                                .mb-2
+                                    p.mb-0.text-secondary Name
+                                    p
+                                        a(href="/postage-policies/" + order.PostagePolicy.Id, target="_blank")= order.PostagePolicy.Name
+                                .mb-2
+                                    p.mb-0.text-secondary Cost To Buyer
+                                    p= order.PostagePolicy.CostToBuyer
+                                .mb-2
+                                    p.mb-0.text-secondary Actual Cost
+                                    p= order.PostagePolicy.ActualCost
         .col-8
             .row.mb-3
                 .col
@@ -146,6 +164,12 @@ block content
                             option(value=order.OfferAccepted) No Change
                             option(value="false") No
                             option(value="true") Yes
+                    .form-group.mb-3
+                        label Postage Policy
+                        select(name='postagePolicyId').form-control
+                            option(value="CURRENT") (NO CHANGE)
+                            each row in postagePolicies
+                                option(value=row.Id)= row.Name
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
