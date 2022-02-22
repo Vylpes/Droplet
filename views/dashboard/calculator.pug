@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+    .row.mt-3
+        .col
+            h1 Calculator
+    .row.mt-3
+        .col-4
+            .card
+                .card-header eBay Fees
+                .card-body
+                    form#fees-calculator
+                        .form-group.mb-3
+                            label Item Buy Price
+                            input(type='number' step='.01' data-item-buy-price).form-control
+                        .form-group.mb-3
+                            label Item Sell Price
+                            input(type='number' step='.01' data-item-sell-price).form-control
+                        .form-group.mb-3
+                            label Shipping Cost To Buyer
+                            input(type='number' step='.01' data-shipping-cost-to-buyer).form-control
+                        .form-group.mb-3
+                            label Actual Shipping Cost
+                            input(type='number' step='.01' data-actual-shipping-cost).form-control
+                        .form-group.mb-3
+                            label Fees Rate
+                            input(type='number' step='.1' value='10' data-fees-rate).form-control
+                        .form-group
+                            button(type='submit').btn.btn-primary
+                                i.fas.fa-check-square
+                                span.ms-1 Calculate
+                    hr
+                    #fees-calculator-result
+                        .container
+                            p.mb-0.text-secondary Total Fees
+                            p#total-fees
+                        .container
+                            p.mb-0.text-secondary Profit
+                            p#profit
+
+
+block scripts
+    script(src='/js/dashboard/calculator.js')

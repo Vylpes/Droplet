@@ -70,7 +70,7 @@
 - [x] Archive policy
 
 # Profit
-- [ ] eBay Fees Calculator
+- [x] eBay Fees Calculator
 - [ ] Calculate Estimated Profit per Item
 - [ ] Calculate Running Estimated Profit per Purchase
 - [ ] Calculate minimum selling price
