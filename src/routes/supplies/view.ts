@@ -31,7 +31,7 @@ export default class view extends Page {
             const notes = await Note.FetchAllForId(NoteType.Supply, Id);
 
             res.locals.item = supply;
-            res.locals.notes = notes.sort((a, b) => a.WhenCreated < b.WhenCreated ? -1 : a.WhenCreated > b.WhenCreated ? 1 : 0);
+            res.locals.notes = notes;
 
             res.render('supplies/view', res.locals.viewData);
         });

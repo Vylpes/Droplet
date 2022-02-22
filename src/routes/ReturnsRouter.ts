@@ -11,6 +11,7 @@ import Received from "./returns/received";
 import Refund from "./returns/refund";
 import View from "./returns/view";
 import Started from "./returns/started";
+import AddNote from "./returns/addNote";
 
 export default class ReturnsRouter extends Route {
     private close: Close;
@@ -22,6 +23,7 @@ export default class ReturnsRouter extends Route {
     private update: Update;
     private view: View;
     private started: Started;
+    private addNote: AddNote;
 
     constructor() {
         super();
@@ -35,6 +37,7 @@ export default class ReturnsRouter extends Route {
         this.update = new Update(super.router);
         this.view = new View(super.router);
         this.started = new Started(super.router);
+        this.addNote = new AddNote(super.router);
     }
 
     public Route(): Router {
@@ -47,6 +50,7 @@ export default class ReturnsRouter extends Route {
         this.update.Route();
         this.view.Route();
         this.started.Route();
+        this.addNote.Route();
 
         return this.router;
     }

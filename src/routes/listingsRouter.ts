@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
+import AddNote from "./listings/addNote";
 import AssignItem from "./listings/assignItem";
 import AssignPostagePolicy from "./listings/assignPostagePolicy";
 import End from "./listings/end";
@@ -18,6 +19,7 @@ export default class ListingsRouter extends Route {
     private end: End;
     private renew: Renew;
     private assignPostagePolicy: AssignPostagePolicy;
+    private addNote: AddNote;
 
     constructor() {
         super();
@@ -30,6 +32,7 @@ export default class ListingsRouter extends Route {
         this.end = new End(super.router);
         this.renew = new Renew(super.router);
         this.assignPostagePolicy = new AssignPostagePolicy(super.router);
+        this.addNote = new AddNote(super.router);
     }
 
     public Route(): Router {
@@ -41,6 +44,7 @@ export default class ListingsRouter extends Route {
         this.end.Route();
         this.renew.Route();
         this.assignPostagePolicy.Route();
+        this.addNote.Route();
 
         return this.router;
     }

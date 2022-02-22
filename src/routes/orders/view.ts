@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
+import { NoteType } from "../../constants/NoteType";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { ListingStatus } from "../../constants/Status/ListingStatus";
 import { SupplyStatus } from "../../constants/Status/SupplyStatus";
@@ -7,6 +8,7 @@ import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
+import Note from "../../entity/Note";
 import { Order } from "../../entity/Order";
 import PostagePolicy from "../../entity/PostagePolicy";
 import { Supply } from "../../entity/Supply";
@@ -42,10 +44,13 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
+            const notes = await Note.FetchAllForId(NoteType.Order, Id);
+
             res.locals.order = order;
             res.locals.listings = listings.filter(x => x.Status == ListingStatus.Active);
             res.locals.supplies = supplies.filter(x => x.Status == SupplyStatus.Unused);
             res.locals.postagePolicies = postagePolicies.filter(x => !x.Archived);
+            res.locals.notes = notes;
 
             res.render('orders/view', res.locals.viewData);
         });

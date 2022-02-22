@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
+import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
+import Note from "../../entity/Note";
 import { Return } from "../../entity/Return";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -27,7 +29,10 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
+            const notes = await Note.FetchAllForId(NoteType.Return, Id);
+
             res.locals.viewData.ret = ret;
+            res.locals.viewData.notes = notes;
 
             res.render('returns/view', res.locals.viewData);
         });

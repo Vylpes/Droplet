@@ -9,6 +9,9 @@ block content
             h1 Return
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
+                    i.fas.fa-comment
+                    span.ms-1 Add Note
                 button(data-bs-toggle='modal' data-bs-target='#mark-as-started-modal').btn.text-secondary
                     i.fas.fa-calendar
                     span.ms-1 Mark as Started
@@ -74,6 +77,15 @@ block content
                                                 td
                                                     a(href="https://www.myhermes.co.uk/track#/parcel/" + row.Number, target="_blank")= row.Number
                                                 td Hermes
+    .row.mt-3
+        .col-8
+            .card
+                .card-header Notes
+                .card-body
+                    each note in notes
+                        p= note.Text
+                        p.text-secondary= '- ' + note.WhenCreated
+                        hr
     form(method='POST' action='/returns/view/' + ret.Id + '/update').modal.fade#edit-return-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
@@ -159,5 +171,19 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Yes
+    form(method='POST' action='/returns/' + ret.Id + '/add-note').modal.fade#add-note-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Note
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Text
+                        input(type='text' name='text').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
 block scripts
     script(src='/js/returns/view.js')

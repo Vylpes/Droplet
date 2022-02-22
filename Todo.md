@@ -59,9 +59,9 @@
 - [x] Item Notes
 - [x] Purchase Notes
 - [x] Supply Notes
-- [ ] Listing Notes
-- [ ] Order Notes
-- [ ] Return Notes
+- [x] Listing Notes
+- [x] Order Notes
+- [x] Return Notes
 
 # Postage Policy
 - [x] Create Postage Policy

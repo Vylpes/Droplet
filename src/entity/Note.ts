@@ -34,6 +34,10 @@ export default class Note extends BaseEntity {
 
         const filtered = all.filter(x => x.Type == type && x.ForId == forId);
 
-        return filtered;
+        // Sort by chronological order (asc)
+        const sorted = filtered.sort((a, b) => a.WhenCreated < b.WhenCreated ? -1 :
+            a.WhenCreated > b.WhenCreated ? 1 : 0);
+
+        return sorted;
     }
 }

@@ -9,6 +9,9 @@ block content
             h1= listing.Name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
+                    i.fas.fa-comment
+                    span.ms-1 Add Note
                 button(data-bs-toggle='modal' data-bs-target='#add-postage-policy-modal').btn.text-secondary
                     i.fas.fa-plus-square
                     span.ms-1 Add Postage Policy
@@ -53,22 +56,6 @@ block content
                             .mb-2
                                 p.mb-0.text-secondary Items
                                 p= listing.Items.length
-            .row.mt-3
-                .col
-                    .card
-                        .card-header Postage Policy
-                        .card-body
-                            if listing.PostagePolicy
-                                .mb-2
-                                    p.mb-0.text-secondary Name
-                                    p
-                                        a(href="/postage-policies/" + listing.PostagePolicy.Id, target="_blank")= listing.PostagePolicy.Name
-                                .mb-2
-                                    p.mb-0.text-secondary Cost To Buyer
-                                    p= listing.PostagePolicy.CostToBuyer
-                                .mb-2
-                                    p.mb-0.text-secondary Actual Cost
-                                    p= listing.PostagePolicy.ActualCost
 
         .col-8
             .card
@@ -93,6 +80,30 @@ block content
                                         a(href="/items/" + row.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
+    .row.mt-3
+        .col-4
+            .card
+                .card-header Postage Policy
+                .card-body
+                    if listing.PostagePolicy
+                        .mb-2
+                            p.mb-0.text-secondary Name
+                            p
+                                a(href="/postage-policies/" + listing.PostagePolicy.Id, target="_blank")= listing.PostagePolicy.Name
+                        .mb-2
+                            p.mb-0.text-secondary Cost To Buyer
+                            p= listing.PostagePolicy.CostToBuyer
+                        .mb-2
+                            p.mb-0.text-secondary Actual Cost
+                            p= listing.PostagePolicy.ActualCost
+        .col-8
+            .card
+                .card-header Notes
+                .card-body
+                    each note in notes
+                        p= note.Text
+                        p.text-secondary= '- ' + note.WhenCreated
+                        hr
     form(method='POST' action='/listings/view/' + listing.Id + '/update').modal.fade#edit-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
@@ -175,5 +186,19 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
+    form(method='POST' action='/listings/' + listing.Id + '/add-note').modal.fade#add-note-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Add Note
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Text
+                        input(type='text' name='text').form-control
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Add
 block scripts
     script(src='/js/listings/view.js')
