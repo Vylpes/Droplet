@@ -71,9 +71,11 @@
 
 # Profit
 - [x] eBay Fees Calculator
-- [ ] Calculate Estimated Profit per Item
-- [ ] Calculate Running Estimated Profit per Purchase
-- [ ] Calculate minimum selling price
+
+# User Management
+- [ ] Remove open registration
+- [ ] Create initial user register page
+- [ ] Create CRUD pages for users in settings
 
 # Cleanup
 - [ ] Add validation rules
