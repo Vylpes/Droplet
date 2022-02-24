@@ -1,12 +1,14 @@
 import { compare, hash } from "bcryptjs";
 import {Entity, Column, PrimaryColumn, getConnection} from "typeorm";
 import { v4 as uuid } from "uuid";
+import BaseEntity from "../contracts/BaseEntity";
 import { IBasicResponse, GenerateResponse } from "../contracts/IBasicResponse";
 
 @Entity()
-export class User {
-    constructor(id: string, email: string, username: string, password: string, verified: boolean, admin: boolean, active: boolean) {
-        this.Id = id;
+export class User extends BaseEntity {
+    constructor(email: string, username: string, password: string, verified: boolean, admin: boolean, active: boolean) {
+        super();
+
         this.Email = email;
         this.Username = username;
         this.Password = password;
@@ -14,9 +16,6 @@ export class User {
         this.Admin = admin;
         this.Active = active;
     }
-
-    @PrimaryColumn()
-    Id: string;
 
     @Column()
     Email: string;
@@ -89,7 +88,7 @@ export class User {
 
         const hashedPassword = await hash(password, 10);
 
-        const createdUser = new User(uuid(), email, username, hashedPassword, false, firstUser, true);
+        const createdUser = new User(email, username, hashedPassword, false, firstUser, true);
 
         userRepository.save(createdUser);
         

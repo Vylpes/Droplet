@@ -47,4 +47,14 @@ export default class BaseEntity {
 
         return single;
     }
+
+    public static async Any<T>(target: EntityTarget<T>): Promise<boolean> {
+        const connection = getConnection();
+
+        const repository = connection.getRepository<T>(target);
+
+        const any = await repository.find();
+
+        return any.length > 0;
+    }
 }

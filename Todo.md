@@ -73,11 +73,12 @@
 - [x] eBay Fees Calculator
 
 # User Management
-- [ ] Remove open registration
-- [ ] Create initial user register page
+- [x] Remove open registration
+- [x] Create initial user register page
 - [ ] Create CRUD pages for users in settings
 - [ ] Verify user by email
 - [ ] Forget password email
+- [ ] Deactivate user
 
 # Cleanup
 - [ ] Add validation rules
