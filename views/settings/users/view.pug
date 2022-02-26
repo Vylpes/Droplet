@@ -1,0 +1,67 @@
+extends ../../layout
+
+block content
+    a(href="/settings/users").btn.text-primary
+        i.fas.fa-chevron-circle-left
+        span.ms-1 Back to List
+    .row.mt-3
+        .col
+            h1= user.Username
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#edit-user-modal').btn.text-primary
+                    i.fas.fa-edit
+                    span.ms-1 Edit
+    .row.mt-3
+        .col-4
+            .row
+                .col
+                    .card
+                        .card-header Basic Details
+                        .card-body
+                            .mb-2
+                                p.mb-0.text-secondary Username
+                                p= user.Username
+                            .mb-2
+                                p.mb-0.text-secondary Email
+                                p= user.Email
+                            .mb-2
+                                p.mb-0.text-secondary Verified
+                                p= user.Verified
+                            .mb-2
+                                p.mb-0.text-secondary Admin
+                                p= user.Admin
+                            .mb-2
+                                p.mb-0.text-secondary Active
+                                p= user.Active
+    form(method='POST' action='/settings/users/' + user.Id + '/update').modal.fade#edit-user-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit User
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Username
+                        input(type='text' name='username' value=user.Username).form-control
+                    .form-group.mb-3
+                        label Email
+                        input(type='email' name='email' value=user.Email).form-control
+                    .form-group.mb-3
+                        label Admin
+                        select(name='admin').form-control
+                            option(value=user.Admin) (NO CHANGE)
+                            option(value='false') No
+                            option(value='true') Yes
+                    .form-group.mb-3
+                        label Active
+                        select(name='active').form-control
+                            option(value=user.Active) (NO CHANGE)
+                            option(value='false') No
+                            option(value='true') Yes
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Update
+block scripts
+    script(src='/js/listings/view.js')

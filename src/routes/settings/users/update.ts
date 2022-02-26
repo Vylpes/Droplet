@@ -1,0 +1,44 @@
+import { Request, Response, Router } from "express";
+import { Page } from "../../../contracts/Page";
+import { User } from "../../../entity/User";
+import { UserMiddleware } from "../../../middleware/userMiddleware";
+
+export default class Update extends Page {
+    constructor(router: Router) {
+        super(router);
+    }
+
+    public OnPost(): void {
+        super.router.post('/users/:id/update', UserMiddleware.AdminAuthorise, async (req: Request, res: Response) => {
+            const id = req.params.id;
+
+            if (!id) {
+                req.session.error = "User not found";
+                res.redirect('/settings/users');
+                return;
+            }
+
+            const user = await User.FetchOneById(User, id);
+
+            if (!user) {
+                req.session.error = "User not found";
+                res.redirect('/settings/users');
+                return;
+            }
+
+            const username = req.body.username;
+            const email = req.body.email;
+            const admin = req.body.admin;
+            const active = req.body.active;
+
+            const adminBool = admin == 'true';
+            const activeBool = active == 'true';
+
+            user.UpdateBasicDetails(email, username, adminBool, activeBool);
+
+            await user.Save(User, user);
+
+            res.redirect(`/settings/users/${id}`);
+        });
+    }
+}

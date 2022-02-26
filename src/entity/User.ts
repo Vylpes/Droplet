@@ -35,9 +35,14 @@ export class User extends BaseEntity {
     @Column()
     Active: boolean;
 
-    public EditBasicDetails(email: string, username: string, password: string) {
+    public UpdateBasicDetails(email: string, username: string, admin: boolean, active: boolean) {
         this.Email = email;
         this.Username = username;
+        this.Admin = admin;
+        this.Active = active;
+    }
+
+    public UpdatePassword(password: string) {
         this.Password = password;
     }
 
@@ -57,100 +62,31 @@ export class User extends BaseEntity {
         return same;
     }
 
-    public static async RegisterUser(username: string, email: string, password: string, passwordRepeat: string): Promise<boolean> {
-        if (password !== passwordRepeat) {
-            return false;
-        }
-
-        if (password.length < 7) {
-            return false;
-        }
-
+    public static async FetchOneByUsername(username: string, relations?: string[]): Promise<User | undefined> {
         const connection = getConnection();
 
-        const userRepository = connection.getRepository(User);
+        const repository = connection.getRepository(User);
 
-        let user = await userRepository.findAndCount({ Email: email });
+        const single = await repository.findOne({ Username: username }, { relations: relations || [] });
 
-        if(user[1] > 0) {
-            return false;
+        if (!single) {
+            return undefined;
         }
 
-        user = await userRepository.findAndCount({ Username: username });
-
-        if (user[1] > 0) {
-            return false;
-        }
-
-        const activeUsers = await userRepository.find({ Active: true });
-
-        var firstUser = activeUsers.length == 0;
-
-        const hashedPassword = await hash(password, 10);
-
-        const createdUser = new User(email, username, hashedPassword, false, firstUser, true);
-
-        userRepository.save(createdUser);
-        
-        return true;
+        return single;
     }
 
-    public static async GetUser(userId: string): Promise<User> {
+    public static async FetchOneByEmail(email: string, relations?: string[]): Promise<User | undefined> {
         const connection = getConnection();
 
-        const userRepository = connection.getRepository(User);
+        const repository = connection.getRepository(User);
 
-        return await userRepository.findOne(userId);
-    }
+        const single = await repository.findOne({ Email: email }, { relations: relations || [] });
 
-    public static async GetUserByEmailAddress(email: string): Promise<User> {
-        const connection = getConnection();
-
-        const userRepository = connection.getRepository(User);
-
-        return await userRepository.findOne({ Email: email });
-    }
-
-    public static async GetUserByUsername(username: string): Promise<User> {
-        const connection = getConnection();
-
-        const userRepository = connection.getRepository(User);
-
-        return await userRepository.findOne({ Username: username });
-    }
-
-    public static async UpdateCurrentUserDetails(currentUser: User, email: string, username: string, password: string): Promise<IBasicResponse> {
-        const connection = getConnection();
-
-        const userRepo = connection.getRepository(User);
-
-        const user = await userRepo.findOne(currentUser.Id);
-
-        if (!user) {
-            return GenerateResponse(false, "User not found");
+        if (!single) {
+            return undefined;
         }
 
-        const userByEmail = await User.GetUserByEmailAddress(email);
-        const userByUsername = await User.GetUserByUsername(username);
-
-        if (currentUser.Email != email && userByEmail) {
-            return GenerateResponse(false, "Email already in use");
-        }
-
-        if (currentUser.Username != username && userByUsername) {
-            return GenerateResponse(false, "Username already in use");
-        }
-
-        if (password.length < 7) {
-            return GenerateResponse(false, "Password must be at least 7 characters long");
-        }
-
-        const hashedPassword = await hash(password, 10);
-
-        user.EditBasicDetails(email, username, hashedPassword);
-
-        await userRepo.save(user);
-
-        return GenerateResponse();
+        return single;
     }
 }

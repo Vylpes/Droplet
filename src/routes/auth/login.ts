@@ -31,7 +31,7 @@ export class Login extends Page {
 
             if (await User.IsLoginCorrect(email, password)) {
                 req.session.regenerate(async () => {
-                    const user = await User.GetUserByEmailAddress(email);
+                    const user = await User.FetchOneByEmail(email);
     
                     req.session.User = user;
     

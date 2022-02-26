@@ -75,10 +75,10 @@
 # User Management
 - [x] Remove open registration
 - [x] Create initial user register page
-- [ ] List users
-- [ ] Create user
-- [ ] View user
-- [ ] Update user
+- [x] List users
+- [x] Create user
+- [x] View user
+- [x] Update user
 - [ ] Verify user by email
 - [ ] Forget password email
 - [ ] Deactivate user

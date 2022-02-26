@@ -3,10 +3,13 @@ extends ../layout
 block content
     .row
         .col
-            h1 User Settings
+            h1 Settings
     ul.nav.nav-tabs.mb-3
         li.nav-item
             a.nav-link.active(href="/settings/account") Account
+        if user.Admin
+            li.nav-item
+                a.nav-link(href="/settings/users") Users
     .row
         .col-12
             form(method='POST' action='/settings/account')

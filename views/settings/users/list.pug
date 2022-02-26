@@ -1,0 +1,62 @@
+extends ../../layout
+
+block content
+    .row
+        .col
+            h1 Settings
+        .col
+            .d-grid.gap-2.d-md-flex.justify-content-md-end
+                button(data-bs-toggle='modal' data-bs-target='#new-user-modal').btn.text-primary
+                    i.fas.fa-plus-square
+                    span.ms-1 New
+    ul.nav.nav-tabs.mb-3
+        li.nav-item
+            a.nav-link(href="/settings/account") Account
+        if user.Admin
+            li.nav-item
+                a.nav-link.active(href="/settings/users") Users
+    .row
+        .col-12
+            table#users-list-table
+                thead
+                    tr
+                        th Username
+                        th Verified
+                        th Admin
+                        th Active
+                        th
+                tbody
+                    each row in users
+                        tr
+                            td= row.Username
+                            td= row.Verified
+                            td= row.Admin
+                            td= row.Active
+                            td
+                                a(href="/settings/users/" + row.Id).btn.text-primary
+                                    i.fas.fa-eye
+                                    span.ms-1 View
+    form(method='POST' action='/settings/users/create').modal.fade#new-user-modal
+        .modal-dialog.modal-dialog-scrollable
+            .modal-content
+                .modal-header
+                    h5.modal-title New User
+                    button(type='button' data-bs-dismiss='modal').btn-close
+                .modal-body
+                    .form-group.mb-3
+                        label Username
+                        input(type='text' name='username').form-control
+                    .form-group.mb-3
+                        label Email
+                        input(type='email' name='email').form-control
+                    .form-group.mb-3
+                        label Admin
+                        select(name='admin').form-control
+                            option(value='false') No
+                            option(value='true') Yes
+                    .form-group.text-center
+                        button(type='submit').btn.text-primary
+                            i.fas.fa-check-square
+                            span.ms-1 Create
+block scripts
+    script(src='/js/settings/users/list.js')
