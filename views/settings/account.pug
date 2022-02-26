@@ -1,4 +1,4 @@
-extends ../../layout
+extends ../layout
 
 block content
     .row
@@ -6,10 +6,10 @@ block content
             h1 User Settings
     ul.nav.nav-tabs.mb-3
         li.nav-item
-            a.nav-link.active(href="/user/settings/account") Account
+            a.nav-link.active(href="/settings/account") Account
     .row
         .col-12
-            form(method='POST' action='/user/settings/account')
+            form(method='POST' action='/settings/account')
                 .form-group.mb-3
                     label.required Email
                     input(type='text' name='email' value=user.Email).form-control

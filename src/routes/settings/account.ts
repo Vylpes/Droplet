@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
-import { Page } from "../../../contracts/Page";
-import { User } from "../../../entity/User";
-import { UserMiddleware } from "../../../middleware/userMiddleware";
+import { Page } from "../../contracts/Page";
+import { User } from "../../entity/User";
+import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Account extends Page {
     constructor(router: Router) {
@@ -9,17 +9,17 @@ export default class Account extends Page {
     }
 
     public OnGet(): void {
-        super.router.get('/settings/account', UserMiddleware.Authorise, (req: Request, res: Response) => {
+        super.router.get('/account', UserMiddleware.Authorise, (req: Request, res: Response) => {
             const user = req.session.User;
 
             res.locals.viewData.user = user;
 
-            res.render('user/settings/account', res.locals.viewData);
+            res.render('settings/account', res.locals.viewData);
         });
     }
 
     public OnPost(): void {
-        super.router.post('/settings/account', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        super.router.post('/account', UserMiddleware.Authorise, async (req: Request, res: Response) => {
             const user = req.session.User;
             const email = req.body.email;
             const currentPassword = req.body.currentPassword;
@@ -29,19 +29,19 @@ export default class Account extends Page {
 
             if (!email || !currentPassword || !username) {
                 req.session.error = "Email, Current Password, and Username are required";
-                res.redirect('/user/settings/account');
+                res.redirect('/settings/account');
                 return;
             }
 
             if (!await User.IsLoginCorrect(user.Email, currentPassword)) {
                 req.session.error = "Your password was incorrect";
-                res.redirect('/user/settings/account');
+                res.redirect('/settings/account');
                 return;
             }
 
             if (newPassword && (newPassword != passwordConfirm)) {
                 req.session.error = "Passwords must match";
-                res.redirect('/user/settings/account');
+                res.redirect('/settings/account');
                 return;
             }
 
@@ -56,7 +56,7 @@ export default class Account extends Page {
                 req.session.error = result.Message;
             }
 
-            res.redirect('/user/settings/account');
+            res.redirect('/settings/account');
         });
     }
 }

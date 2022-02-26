@@ -75,7 +75,10 @@
 # User Management
 - [x] Remove open registration
 - [x] Create initial user register page
-- [ ] Create CRUD pages for users in settings
+- [ ] List users
+- [ ] Create user
+- [ ] View user
+- [ ] Update user
 - [ ] Verify user by email
 - [ ] Forget password email
 - [ ] Deactivate user
@@ -84,3 +87,4 @@
 - [ ] Add validation rules
 - [ ] Clean up views
 - [ ] Clean up code
+- [ ] Update Read me

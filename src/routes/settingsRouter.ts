@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
-import Account from "./user/settings/account";
+import Account from "./settings/account";
 
-export default class User extends Route {
+export default class SettingsRouter extends Route {
     private _account: Account;
 
     constructor() {

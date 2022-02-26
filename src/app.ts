@@ -13,7 +13,7 @@ import * as dotenv from "dotenv";
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
 import { IndexRouter } from "./routes";
-import UserRouter from "./routes/user";
+import SettingsRouter from "./routes/settingsRouter";
 import ItemsRouter from "./routes/itemsRouter";
 import ItemPurchasesRouter from "./routes/itemPurchasesRouter";
 import SuppliesRouters from "./routes/suppliesRouter";
@@ -30,7 +30,7 @@ export class App {
     private _authRouter: AuthRouter;
     private _dashboardRouter: DashboardRouter;
     private _indexRouter: IndexRouter;
-    private _userRouter: UserRouter;
+    private _settingsRouter: SettingsRouter;
     private _itemsRouter: ItemsRouter;
     private _itemPurchaseRouter: ItemPurchasesRouter;
     private _suppliesRouter: SuppliesRouters;
@@ -47,7 +47,7 @@ export class App {
         this._authRouter = new AuthRouter();
         this._dashboardRouter = new DashboardRouter();
         this._indexRouter = new IndexRouter();
-        this._userRouter = new UserRouter();
+        this._settingsRouter = new SettingsRouter();
         this._itemsRouter = new ItemsRouter();
         this._itemPurchaseRouter = new ItemPurchasesRouter();
         this._suppliesRouter = new SuppliesRouters();
@@ -101,7 +101,7 @@ export class App {
         this._app.use('/', this._indexRouter.Route());
         this._app.use('/auth', this._authRouter.Route());
         this._app.use('/dashboard', this._dashboardRouter.Route());
-        this._app.use('/user', this._userRouter.Route());
+        this._app.use('/settings', this._settingsRouter.Route());
         this._app.use('/items', this._itemsRouter.Route());
         this._app.use('/item-purchases', this._itemPurchaseRouter.Route());
         this._app.use('/supplies', this._suppliesRouter.Route());
