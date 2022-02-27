@@ -3,6 +3,7 @@ import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
 import { User } from "../../../entity/User";
 import UserToken from "../../../entity/UserToken";
+import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 
@@ -20,6 +21,7 @@ export default class Create extends Page {
             if (!username || !email || !admin) {
                 req.session.error = "All fields are required";
                 res.redirect('/settings/users');
+                return;
             }
 
             const userByUsername = await User.FetchOneByUsername(username);
@@ -28,11 +30,16 @@ export default class Create extends Page {
             if (userByUsername || userByEmail) {
                 req.session.error = "Username and Email must be unique";
                 res.redirect('/settings/users');
+                return;
             }
 
-            const user = new User(email, username, await PasswordHelper.GenerateRandomHashedPassword(), false, admin == "true", true);
+            let user = new User(email, username, await PasswordHelper.GenerateRandomHashedPassword(), false, admin == "true", true);
 
             await user.Save(User, user);
+
+            user = await User.FetchOneById(User, user.Id, [
+                "Tokens"
+            ]);
 
             const now = new Date();
 
@@ -45,6 +52,14 @@ export default class Create extends Page {
             user.AddTokenToUser(token);
 
             await user.Save(User, user);
+
+            await EmailHelper.SendEmail(user.Email, "VerifyUser", [{
+                key: "username",
+                value: user.Username,
+            }, {
+                key: "verify_link",
+                value: `http://localhost:3000/auth/verify?token=${token.Token}`,
+            }]);
 
             req.session.success = "Successfully created user";
             res.redirect('/settings/users');

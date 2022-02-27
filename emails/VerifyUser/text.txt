@@ -1,0 +1,5 @@
+Dear {username},
+
+Please verify your droplet account using this link:
+
+{verify_link}
