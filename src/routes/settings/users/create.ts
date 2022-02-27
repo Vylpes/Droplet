@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
+import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
 import { User } from "../../../entity/User";
+import UserToken from "../../../entity/UserToken";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 
@@ -29,6 +31,18 @@ export default class Create extends Page {
             }
 
             const user = new User(email, username, await PasswordHelper.GenerateRandomHashedPassword(), false, admin == "true", true);
+
+            await user.Save(User, user);
+
+            const now = new Date();
+
+            const tokenExpiryDate = new Date(now.getTime() + (1000 * 60 * 60 * 24 * 2)) // 2 days
+
+            const token = new UserToken(await PasswordHelper.GenerateRandomHashedToken(), tokenExpiryDate, UserTokenType.Verification);
+
+            await token.Save(UserToken, token);
+
+            user.AddTokenToUser(token);
 
             await user.Save(User, user);
 

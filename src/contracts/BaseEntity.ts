@@ -28,6 +28,14 @@ export default class BaseEntity {
         await repository.save(entity);
     }
 
+    public static async Remove<T>(target: EntityTarget<T>, entity: T): Promise<void> {
+        const connection = getConnection();
+
+        const repository = connection.getRepository<T>(target);
+
+        await repository.remove(entity);
+    }
+
     public static async FetchAll<T>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
         const connection = getConnection();
 

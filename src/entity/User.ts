@@ -1,8 +1,9 @@
 import { compare, hash } from "bcryptjs";
-import {Entity, Column, PrimaryColumn, getConnection} from "typeorm";
+import {Entity, Column, PrimaryColumn, getConnection, OneToMany} from "typeorm";
 import { v4 as uuid } from "uuid";
 import BaseEntity from "../contracts/BaseEntity";
 import { IBasicResponse, GenerateResponse } from "../contracts/IBasicResponse";
+import UserToken from "./UserToken";
 
 @Entity()
 export class User extends BaseEntity {
@@ -35,6 +36,9 @@ export class User extends BaseEntity {
     @Column()
     Active: boolean;
 
+    @OneToMany(() => UserToken, userToken => userToken.User)
+    Tokens: UserToken[];
+
     public UpdateBasicDetails(email: string, username: string, admin: boolean, active: boolean) {
         this.Email = email;
         this.Username = username;
@@ -44,6 +48,10 @@ export class User extends BaseEntity {
 
     public UpdatePassword(password: string) {
         this.Password = password;
+    }
+
+    public AddTokenToUser(token: UserToken) {
+        this.Tokens.push(token);
     }
 
     public static async IsLoginCorrect(email: string, password: string): Promise<boolean> {
