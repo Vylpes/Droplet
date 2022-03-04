@@ -29,7 +29,8 @@ export default class EmailHelper {
         let out = doc;
 
         for (let variable of variables) {
-            out = out.replace(`{${variable.key}}`, variable.value);
+            const regex = new RegExp(`{${variable.key}}`, 'g');
+            out = out.replace(regex, variable.value);
         }
 
         return out;
