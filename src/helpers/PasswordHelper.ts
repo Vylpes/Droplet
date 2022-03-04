@@ -9,16 +9,14 @@ export default class PasswordHelper {
         return hashed;
     }
 
-    public static async GenerateRandomHashedToken(): Promise<string> {
+    public static async GenerateRandomToken(): Promise<string> {
         const randomString = this.RandomString(32);
 
-        const hashed = await hash(randomString, 10);
-
-        return hashed;
+        return randomString;
     }
 
     private static RandomString(length: number) {
-        let result: string;
+        let result = "";
 
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;

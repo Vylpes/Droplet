@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, getConnection, ManyToOne, OneToOne } from "typeorm";
 import { UserTokenType } from "../constants/UserTokenType";
 import BaseEntity from "../contracts/BaseEntity";
 import { User } from "./User";
@@ -35,5 +35,15 @@ export default class UserToken extends BaseEntity {
         }
 
         return expired;
+    }
+
+    public static async FetchOneByToken<T>(token: string, relations?: string[]): Promise<UserToken> {
+        const connection = getConnection();
+
+        const repository = connection.getRepository(UserToken);
+
+        const single = await repository.findOne({ Token: token }, { relations: relations || [] });
+
+        return single;
     }
 }

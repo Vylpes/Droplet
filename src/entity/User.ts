@@ -54,6 +54,10 @@ export class User extends BaseEntity {
         this.Tokens.push(token);
     }
 
+    public Verify() {
+        this.Verified = true;
+    }
+
     public static async IsLoginCorrect(email: string, password: string): Promise<boolean> {
         const connection = getConnection();
 

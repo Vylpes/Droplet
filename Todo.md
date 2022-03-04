@@ -79,12 +79,14 @@
 - [x] Create user
 - [x] View user
 - [x] Update user
-- [ ] Verify user by email
+- [x] Verify user by email
 - [ ] Forget password email
 - [ ] Deactivate user
+- [ ] Lost verification token
 
 # Cleanup
 - [ ] Add validation rules
 - [ ] Clean up views
 - [ ] Clean up code
 - [ ] Update Read me
+- [ ] Change all createHttpError to redirect and display a user friendly message

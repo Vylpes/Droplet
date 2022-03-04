@@ -1,3 +1,4 @@
+import { hash } from "bcryptjs";
 import { Request, Response, Router } from "express";
 import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
@@ -45,11 +46,14 @@ export default class Create extends Page {
 
             const tokenExpiryDate = new Date(now.getTime() + (1000 * 60 * 60 * 24 * 2)) // 2 days
 
-            const token = new UserToken(await PasswordHelper.GenerateRandomHashedToken(), tokenExpiryDate, UserTokenType.Verification);
+            const token = await PasswordHelper.GenerateRandomToken();
+            const hashedToken = await hash(token, 10);
 
-            await token.Save(UserToken, token);
+            const userToken = new UserToken(hashedToken, tokenExpiryDate, UserTokenType.Verification);
 
-            user.AddTokenToUser(token);
+            await userToken.Save(UserToken, userToken);
+
+            user.AddTokenToUser(userToken);
 
             await user.Save(User, user);
 
@@ -58,7 +62,7 @@ export default class Create extends Page {
                 value: user.Username,
             }, {
                 key: "verify_link",
-                value: `http://localhost:3000/auth/verify?token=${token.Token}`,
+                value: `http://localhost:3000/auth/verify?token=${token}`,
             }]);
 
             req.session.success = "Successfully created user";

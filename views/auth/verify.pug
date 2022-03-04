@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    .row
+        .col-6.m-auto
+            .card
+                .card-header Verify
+                .card-body
+                    form(method='post' action='/auth/verify?token=' + token)
+                        .form-group.mb-2
+                            label Password
+                            input(type='password' name='password').form-control
+                        .form-group.mb-2
+                            label Repeat Password
+                            input(type='password' name='passwordRepeat').form-control
+                        .form-group
+                            input(type='submit' value='Create Password').btn.btn-primary.w-100
