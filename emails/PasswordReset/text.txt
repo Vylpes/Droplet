@@ -1,0 +1,5 @@
+Dear {username},
+
+Your password reset link is below:
+
+{reset_link}

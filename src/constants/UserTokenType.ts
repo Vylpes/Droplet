@@ -1,3 +1,4 @@
 export enum UserTokenType {
-    Verification
+    Verification,
+    PasswordReset,
 }
