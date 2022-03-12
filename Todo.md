@@ -80,8 +80,8 @@
 - [x] View user
 - [x] Update user
 - [x] Verify user by email
-- [ ] Forget password email
-- [ ] Deactivate user
+- [x] Forget password email
+- [x] Deactivate user
 - [ ] Lost verification token
 
 # Cleanup

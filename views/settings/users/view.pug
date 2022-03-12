@@ -9,6 +9,13 @@ block content
             h1= user.Username
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
+                a(href='/settings/users/' + user.Id + '/toggle-active').btn.text-secondary
+                    if user.Active
+                        i.fas.fa-edit
+                        span.ms-1 Deactivate
+                    else
+                        i.fas.fa-edit
+                        span.ms-1 Activate
                 button(data-bs-toggle='modal' data-bs-target='#edit-user-modal').btn.text-primary
                     i.fas.fa-edit
                     span.ms-1 Edit

@@ -5,6 +5,7 @@ import Create from "./settings/users/create";
 import List from "./settings/users/list";
 import Update from "./settings/users/update";
 import View from "./settings/users/view";
+import ToggleActive from "./settings/users/toggleActive";
 
 export default class SettingsRouter extends Route {
     private _account: Account;
@@ -20,6 +21,7 @@ export default class SettingsRouter extends Route {
             List: new List(this.router),
             View: new View(this.router),
             Update: new Update(this.router),
+	    ToggleActive: new ToggleActive(this.router),
         };
     }
 
@@ -30,6 +32,7 @@ export default class SettingsRouter extends Route {
         this._users.List.Route();
         this._users.View.Route();
         this._users.Update.Route();
+	this._users.ToggleActive.Route();
         
         return super.router;
     }
@@ -40,4 +43,5 @@ interface IUsersCRUD {
     List: List;
     View: View;
     Update: Update;
+    ToggleActive: ToggleActive;
 }

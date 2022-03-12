@@ -29,10 +29,17 @@ export class Login extends Page {
                 return;
             }
 
+	    const user = await User.FetchOneByEmail(email);
+
+	    if (!user || !user.Active) {
+		req.session.error = "Your account has been deactivated.";
+		res.redirect('/auth/login');
+
+		return;
+	    }
+
             if (await User.IsLoginCorrect(email, password)) {
                 req.session.regenerate(async () => {
-                    const user = await User.FetchOneByEmail(email);
-    
                     req.session.User = user;
     
                     res.redirect('/dashboard');

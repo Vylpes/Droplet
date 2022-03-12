@@ -58,6 +58,10 @@ export class User extends BaseEntity {
         this.Verified = true;
     }
 
+    public ToggleActive() {
+	    this.Active = !this.Active;
+    }
+
     public static async IsLoginCorrect(email: string, password: string): Promise<boolean> {
         const connection = getConnection();
 
