@@ -46,4 +46,24 @@ export default class UserToken extends BaseEntity {
 
         return single;
     }
+
+    public static async InvalidateAllTokensForUser(userId: string) {
+        const connection = getConnection();
+
+        const repository = connection.getRepository(User);
+
+        const single = await repository.findOne(userId, { relations: [
+            "Tokens",
+        ]});
+
+        if (!single) return;
+
+        const tokens = single.Tokens;
+
+        for (let i = 0; i < tokens.length; i++) {
+            await UserToken.Remove(UserToken, tokens[i]);
+        }
+
+        await single.Save(User, single);
+    }
 }

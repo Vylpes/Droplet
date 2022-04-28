@@ -1,0 +1,14 @@
+extends ../../layout
+
+block content
+    .row
+        .col-6.m-auto
+            .card
+                .card-header Request a new verification token
+                .card-body
+                    form(method='post' action='/auth/verification-token/request')
+                        .form-group.mb-2
+                            label Email
+                            input(type='email' name='email').form-control
+                        .form-group
+                            input(type='submit' value='Request').btn.btn-primary.w-100

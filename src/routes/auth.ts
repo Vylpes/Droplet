@@ -3,7 +3,8 @@ import { Route } from "../contracts/Route";
 import AdminRegister from "./auth/adminRegister";
 import { Login } from "./auth/login";
 import { Logout } from "./auth/logout";
-import RequestToken from "./auth/passwordReset/requestToken";
+import { default as RequestPasswordToken} from "./auth/passwordReset/requestToken";
+import { default as RequestVerificationToken } from "./auth/verificationToken/requestToken";
 import Reset from "./auth/passwordReset/reset";
 import Verify from "./auth/verify";
 
@@ -13,6 +14,7 @@ export class AuthRouter extends Route {
     private adminRegister: AdminRegister;
     private verify: Verify;
     private passwordReset: IPasswordReset;
+    private verificationToken: IVerificationToken;
 
     constructor() {
         super();
@@ -23,8 +25,12 @@ export class AuthRouter extends Route {
         this.verify = new Verify(super.router);
 
         this.passwordReset = {
-            Request: new RequestToken(super.router),
+            Request: new RequestPasswordToken(super.router),
             Reset: new Reset(super.router),
+        };
+
+        this.verificationToken = {
+            Request: new RequestVerificationToken(super.router),
         };
     }
 
@@ -37,11 +43,17 @@ export class AuthRouter extends Route {
         this.passwordReset.Request.Route();
         this.passwordReset.Reset.Route();
 
+        this.verificationToken.Request.Route();
+
         return super.router;
     }
 }
 
 interface IPasswordReset {
-    Request: RequestToken,
+    Request: RequestPasswordToken,
     Reset: Reset,
+}
+
+interface IVerificationToken {
+    Request: RequestVerificationToken,
 }
