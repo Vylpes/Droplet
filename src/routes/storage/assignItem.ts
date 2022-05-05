@@ -8,6 +8,7 @@ import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
 import { Storage } from "../../entity/Storage";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class AssignItem extends Page {
@@ -16,13 +17,17 @@ export default class AssignItem extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        const bodyValidation = new Body("itemId")
+                .NotEmpty();
+
+        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
-            if (!Id) {
-                next(createHttpError(404));
+            if (req.session.id) {
+                res.redirect(`/storage/view/${Id}`);
+                return;
             }
-            
+
             const itemId = req.body.itemId;
 
             const storage = await Storage.FetchOneById(Storage, Id, [

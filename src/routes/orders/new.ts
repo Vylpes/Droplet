@@ -1,15 +1,12 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
 import PostagePolicy from "../../entity/PostagePolicy";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import List from "../itemPurchases/list";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -17,7 +14,22 @@ export default class New extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("orderNumber", "/orders/awaiting-payment")
+                .NotEmpty()
+            .ChangeField("offerAccepted")
+                .NotEmpty()
+                .Boolean()
+            .ChangeField("buyer")
+                .NotEmpty()
+            .ChangeField("amount")
+                .NotEmpty()
+                .Number()
+            .ChangeField("listingId")
+                .NotEmpty()
+            .ChangeField("postagePolicyId")
+                .NotEmpty();
+
+        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const orderNumber = req.body.orderNumber;
             const offerAccepted = req.body.offerAccepted;
             const buyer = req.body.buyer;

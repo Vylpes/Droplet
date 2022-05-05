@@ -4,6 +4,7 @@ import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class UpdateStatus extends Page {
@@ -12,11 +13,16 @@ export default class UpdateStatus extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/update-status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const bodyValidation = new Body("status")
+                .NotEmpty()
+                .Number();
 
-            if (!Id) {
-                next(createHttpError(404));
+        super.router.post('/view/:Id/update-status', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
+            const Id = req.params.Id;
+            
+            if (req.session.error) {
+                res.redirect(`/supply-purchases/view/${Id}`);
+                return;
             }
             
             const status = req.body.status;

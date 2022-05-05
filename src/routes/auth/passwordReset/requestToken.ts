@@ -7,6 +7,7 @@ import { User } from "../../../entity/User";
 import UserToken from "../../../entity/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
+import Body from "../../../helpers/Validation/Body";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -25,14 +26,12 @@ export default class RequestToken extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/password-reset/request', async (req: Request, res: Response, next: NextFunction) => {
+        const bodyValidation = new Body("email", "/auth/login")
+                .NotEmpty()
+                .EmailAddress();
+                    
+        super.router.post('/password-reset/request', bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const email = req.body.email;
-
-            if (!email) {
-                req.session.error = "Email field is required";
-                res.redirect('/auth/password-reset/request');
-                return;
-            }
 
             const user = await User.FetchOneByEmail(email, [
                 "Tokens"

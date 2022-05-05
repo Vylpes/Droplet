@@ -8,6 +8,7 @@ import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
 import { Return } from "../../entity/Return";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Refund extends Page {
@@ -16,8 +17,18 @@ export default class Refund extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/refund', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("refundAmount")
+                .NotEmpty()
+                .Number();
+
+        super.router.post('/view/:Id/refund', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const Id = req.params.Id;
+
+            if (req.session.error) {
+                res.redirect(`/returns/view/${Id}`);
+                return;
+            }
+
             const refundAmount = req.body.refundAmount;
 
             const ret = await Return.FetchOneById(Return, Id, [

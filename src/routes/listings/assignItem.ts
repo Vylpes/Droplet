@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class AssignItem extends Page {
@@ -14,13 +12,17 @@ export default class AssignItem extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const bodyValidation = new Body("itemId")
+                .NotEmpty();
 
-            if (!Id) {
-                next(createHttpError(404));
-            }
+        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
+            const Id = req.params.Id;
             
+            if (req.session.error) {
+                res.redirect(`/listings/view/${Id}`);
+                return;
+            }
+
             const itemId = req.body.itemId;
 
             const item = await Item.FetchOneById(Item, itemId);

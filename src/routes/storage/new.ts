@@ -10,6 +10,7 @@ import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
 import { Storage } from "../../entity/Storage";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import List from "../itemPurchases/list";
 
@@ -19,7 +20,16 @@ export default class New extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("type", "/storage/list/building/all")
+                .NotEmpty()
+            .ChangeField("name")
+                .NotEmpty()
+            .ChangeField("skuPrefix")
+                .NotEmpty()
+            .ChangeField("parentId")
+                .NotEmpty();
+
+        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const type = req.body.type;
             const name = req.body.name;
             const skuPrefix = req.body.skuPrefix;

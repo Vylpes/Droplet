@@ -1,12 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
-import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
-import { Listing } from "../../entity/Listing";
 import { Order } from "../../entity/Order";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Discount extends Page {
@@ -15,13 +10,18 @@ export default class Discount extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/discount', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        const bodyValidation = new Body("amount")
+                .NotEmpty()
+                .Number();
+
+        super.router.post('/view/:Id/discount', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
-            if (!Id) {
-                next(createHttpError(404));
+            if (req.session.error) {
+                res.redirect(`/orders/view/${Id}`);
+                return;
             }
-            
+
             const amount = req.body.amount;
 
             const order = await Order.FetchOneById(Order, Id);

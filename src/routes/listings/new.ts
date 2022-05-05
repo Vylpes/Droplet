@@ -1,11 +1,9 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Listing } from "../../entity/Listing";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -14,7 +12,22 @@ export default class New extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("name", "/listings/active")
+                .NotEmpty()
+            .ChangeField("listingNumber")
+                .NotEmpty()
+            .ChangeField("price")
+                .NotEmpty()
+                .Number()
+            .ChangeField("endDate")
+                .NotEmpty()
+            .ChangeField("quantity")
+                .NotEmpty()
+                .Number()
+            .ChangeField("itemId")
+                .NotEmpty();
+
+        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const name = req.body.name;
             const listingNumber = req.body.listingNumber;
             const price = req.body.price;

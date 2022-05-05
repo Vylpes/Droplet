@@ -6,6 +6,7 @@ import { User } from "../../../entity/User";
 import UserToken from "../../../entity/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
+import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 
 export default class Create extends Page {
@@ -14,17 +15,20 @@ export default class Create extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/users/create', UserMiddleware.AdminAuthorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("username", "/settings/users")
+                .NotEmpty()
+            .ChangeField("email")
+                .NotEmpty()
+                .EmailAddress()
+            .ChangeField("admin")
+                .NotEmpty()
+                .Boolean();
+
+        super.router.post('/users/create', UserMiddleware.AdminAuthorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const username = req.body.username;
             const email = req.body.email;
             const admin = req.body.admin;
             
-            if (!username || !email || !admin) {
-                req.session.error = "All fields are required";
-                res.redirect('/settings/users');
-                return;
-            }
-
             const userByUsername = await User.FetchOneByUsername(username);
             const userByEmail = await User.FetchOneByEmail(email);
 

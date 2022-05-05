@@ -5,6 +5,7 @@ import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Supply } from "../../entity/Supply";
 import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -13,26 +14,47 @@ export default class New extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const name = req.body.name;
-            const sku = req.body.sku;
-            const quantity = req.body.quantity;
-            const purchaseId = req.body.purchaseId;
-            
-            const supply = new Supply(name, sku, quantity);
+        const bodyValidationWithId = new Body("purchaseId", "/supply-purchases/ordered")
+                .NotEmpty();
 
-            await supply.Save(Supply, supply);
+        const bodyValidation = new Body("name")
+                .NotEmpty()
+            .ChangeField("sku")
+                .NotEmpty()
+            .ChangeField("quantity")
+                .NotEmpty()
+                .Number();
 
-            const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, [
-                "Supplies"
-            ]);
+        super.router.post('/new',
+            UserMiddleware.Authorise,
+            bodyValidationWithId.Validate.bind(bodyValidationWithId),
+            bodyValidation.Validate.bind(bodyValidation),
+            async (req: Request, res: Response) => {
+                const name = req.body.name;
+                const sku = req.body.sku;
+                const quantity = req.body.quantity;
+                const purchaseId = req.body.purchaseId;
 
-            purchase.AddSupplyToOrder(supply);
+                if (req.session.error) {
+                    res.redirect(`/supply-purchases/view/${purchaseId}`);
+                    return;
+                }
+                
+                const supply = new Supply(name, sku, quantity);
 
-            await purchase.Save(SupplyPurchase, purchase);
-            await purchase.CalculateItemPrices();
+                await supply.Save(Supply, supply);
 
-            res.redirect(`/supply-purchases/view/${purchaseId}`);
-        });
+                const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, [
+                    "Supplies"
+                ]);
+
+                purchase.AddSupplyToOrder(supply);
+
+                await purchase.Save(SupplyPurchase, purchase);
+                await purchase.CalculateItemPrices();
+
+                res.redirect(`/supply-purchases/view/${purchaseId}`);
+            }
+        );
     }
 }

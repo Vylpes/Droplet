@@ -4,3 +4,4 @@ coverage/
 
 .env
 ormconfig.json
+yarn-error.log

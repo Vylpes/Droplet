@@ -1,6 +1,8 @@
+import { hash } from "bcryptjs";
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
 import { User } from "../../entity/User";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Account extends Page {
@@ -19,12 +21,22 @@ export default class Account extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/account', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("email", "/settings/account")
+                .NotEmpty()
+            .ChangeField("currentPassword")
+                .NotEmpty()
+                    .WithMessage("Your current password is required to make changes")
+            .ChangeField("newPassword")
+                .EqualToField("passwordConfirm")
+                    .WithMessage("Passwords must match")
+            .ChangeField("username")
+                .NotEmpty();
+
+        super.router.post('/account', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const user = req.session.User;
             const email = req.body.email;
             const currentPassword = req.body.currentPassword;
             const newPassword = req.body.newPassword;
-            const passwordConfirm = req.body.passwordConfirm;
             const username = req.body.username;
 
             if (!email || !currentPassword || !username) {
@@ -39,13 +51,12 @@ export default class Account extends Page {
                 return;
             }
 
-            if (newPassword && (newPassword != passwordConfirm)) {
-                req.session.error = "Passwords must match";
-                res.redirect('/settings/account');
-                return;
-            }
-
             user.UpdateBasicDetails(email, username, user.Admin, user.Active);
+
+            if (newPassword) {
+                const hashedPassword = await hash(newPassword, 10);
+                user.UpdatePassword(hashedPassword);
+            }
 
             await user.Save(User, user);
 

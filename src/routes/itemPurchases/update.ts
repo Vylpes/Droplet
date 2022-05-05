@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
 import { ItemPurchase } from "../../entity/ItemPurchase";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -11,13 +11,20 @@ export default class Update extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/view/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
+        const bodyValidation = new Body("description")
+                .NotEmpty()
+            .ChangeField("price")
+                .NotEmpty()
+                .Number();
+
+        super.router.post('/view/:Id/update', bodyValidation.Validate.bind(bodyValidation), UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
 
-            if (!Id) {
-                next(createHttpError(404));
+            if (req.session.error) {
+                res.redirect(`/item-purchases/view/${Id}`);
+                return;
             }
-            
+
             const description = req.body.description;
             const price = req.body.price;
 

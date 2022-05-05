@@ -7,6 +7,7 @@ import { User } from "../../../entity/User";
 import UserToken from "../../../entity/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
+import Body from "../../../helpers/Validation/Body";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -25,14 +26,12 @@ export default class RequestToken extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/verification-token/request', async (req: Request, res: Response, next: NextFunction) => {
-            const email = req.body.email;
+        const bodyValidation = new Body("email", "/auth/verification-token/request")
+                .NotEmpty()
+                .EmailAddress();
 
-            if (!email) {
-                req.session.error = "Email field is required";
-                res.redirect('/auth/verification-token/request');
-                return;
-            }
+        super.router.post('/verification-token/request', bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
+            const email = req.body.email;
 
             const user = await User.FetchOneByEmail(email, [
                 "Tokens"

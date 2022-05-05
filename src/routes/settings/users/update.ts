@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../../contracts/Page";
 import { User } from "../../../entity/User";
+import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -9,12 +10,23 @@ export default class Update extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/users/:id/update', UserMiddleware.AdminAuthorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("username")
+                .NotEmpty()
+            .ChangeField("email")
+                .NotEmpty()
+                .EmailAddress()
+            .ChangeField("admin")
+                .NotEmpty()
+                .Boolean()
+            .ChangeField("active")
+                .NotEmpty()
+                .Boolean();
+
+        super.router.post('/users/:id/update', UserMiddleware.AdminAuthorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const id = req.params.id;
 
-            if (!id) {
-                req.session.error = "User not found";
-                res.redirect('/settings/users');
+            if (req.session.error) {
+                res.redirect(`/settings/users/${id}`);
                 return;
             }
 

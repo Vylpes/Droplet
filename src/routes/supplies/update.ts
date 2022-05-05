@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { Item } from "../../entity/Item";
 import { Supply } from "../../entity/Supply";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Update extends Page {
@@ -11,11 +12,20 @@ export default class Update extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/:Id/update', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const bodyValidation = new Body("name")
+                .NotEmpty()
+            .ChangeField("sku")
+                .NotEmpty()
+            .ChangeField("quantity")
+                .NotEmpty()
+                .Number();
 
-            if (!Id) {
-                next(createHttpError(404));
+        super.router.post('/:Id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
+            const Id = req.params.Id;
+            
+            if (req.session.error) {
+                res.redirect(`/supplies/${Id}`);
+                return;
             }
 
             const name = req.body.name;

@@ -11,7 +11,7 @@ export default class ToggleActive extends Page {
     public OnGet(): void {
         super.router.get('/users/:id/toggle-active', UserMiddleware.AdminAuthorise, async (req: Request, res: Response) => {
             const id = req.params.id;
-	    const currentUser = req.session.User;
+	        const currentUser = req.session.User;
 
             if (!id) {
                 req.session.error = "User not found";
@@ -27,13 +27,13 @@ export default class ToggleActive extends Page {
                 return;
             }
 
-	    if (user.Id == currentUser.Id) {
-		req.session.error = "You can not deactivate yourself.";
-		res.redirect(`/settings/users/${id}`);
-		return;
-	    }
+    	    if (user.Id == currentUser.Id) {
+           		req.session.error = "You can not deactivate yourself.";
+                res.redirect(`/settings/users/${id}`);
+                return;
+    	    }
 
-	    user.ToggleActive();
+    	    user.ToggleActive();
 
             await user.Save(User, user);
 

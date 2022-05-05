@@ -1,12 +1,10 @@
 import { Request, Response, Router } from "express";
-import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { TrackingNumberType } from "../../constants/TrackingNumberType";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
 import { Order } from "../../entity/Order";
 import { Return } from "../../entity/Return";
 import { TrackingNumber } from "../../entity/TrackingNumber";
+import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New extends Page {
@@ -15,7 +13,17 @@ export default class New extends Page {
     }
 
     public OnPost(): void {
-        super.router.post('/new', UserMiddleware.Authorise, async (req: Request, res: Response) => {
+        const bodyValidation = new Body("returnNumber", "/returns/opened")
+                .NotEmpty()
+            .ChangeField("orderId")
+                .NotEmpty()
+            .ChangeField("trackingNumber")
+                .NotEmpty()
+            .ChangeField("trackingService")
+                .NotEmpty()
+                .Number();
+
+        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const returnNumber = req.body.returnNumber;
             const orderId = req.body.orderId;
             const trackingNum = req.body.trackingNumber;
