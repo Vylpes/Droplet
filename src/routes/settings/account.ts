@@ -51,14 +51,25 @@ export default class Account extends Page {
                 return;
             }
 
-            user.UpdateBasicDetails(email, username, user.Admin, user.Active);
+            const userFromDb = await User.FetchOneById(User, user.Id);
+
+            if (!userFromDb)
+            {
+                req.session.error = "Sorry an error has occurred.";
+                res.redirect('/settings/account');
+                return;
+            }
+
+            userFromDb.UpdateBasicDetails(email, username, user.Admin, user.Active);
 
             if (newPassword) {
                 const hashedPassword = await hash(newPassword, 10);
                 user.UpdatePassword(hashedPassword);
             }
 
-            await user.Save(User, user);
+            await userFromDb.Save(User, userFromDb);
+
+            req.session.User = userFromDb;
 
             res.redirect('/settings/account');
         });
