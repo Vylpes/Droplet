@@ -1,7 +1,7 @@
 #! /bin/bash
 
 export PATH="$HOME/.yarn/bin:$PATH"
-export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/"
+export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/:$PATH"
 
 cd ~/apps/droplet/droplet_prod \
 && git checkout main \
