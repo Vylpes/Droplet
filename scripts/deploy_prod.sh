@@ -1,5 +1,7 @@
 #! /bin/bash
 
+export PATH="$HOME/.yarn/bin:$PATH"
+
 cd ~/apps/droplet/droplet_prod \
 && git checkout main \
 && git fetch \
