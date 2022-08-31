@@ -1,0 +1,2 @@
+ALTER TABLE `return`
+  ADD CONSTRAINT `FK_54ca59e9b7e3103614fee58a2a2` FOREIGN KEY (`orderId`) REFERENCES `order` (`Id`);

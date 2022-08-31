@@ -1,7 +1,7 @@
 version: "3"
 
 volumes:
-  dev_database_data:
+  stage_database_data:
     
 services:
   database:
@@ -10,25 +10,24 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=droplet
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev
+      - MYSQL_USER=stage
+      - MYSQL_PASSWORD=stage
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=0.0.0.0
     ports:
-      - 3001:3306
+      - 3011:3306
     volumes:
-      - dev_database_data:/var/lib/mysql
+      - stage_database_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
-      - 3002:80
+      - 3012:80
     environment:
       - PMA_ARBITRARY=1
 
   mail:
-    image: mailhog/mailhog
+    image: namshi/smtp
     ports:
-      - 3003:1025
-      - 3004:8025
+      - 3013:25

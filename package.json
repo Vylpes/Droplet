@@ -40,7 +40,8 @@
     "init": "node dist/init.js",
     "lint": "eslint",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "db:up": "typeorm migration:run"
   },
   "devDependencies": {
     "@types/eslint": "^7.2.10",

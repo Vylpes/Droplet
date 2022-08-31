@@ -23,6 +23,7 @@ import OrdersRouter from "./routes/ordersRouter";
 import StorageRouter from "./routes/storageRouter";
 import ReturnsRouter from "./routes/ReturnsRouter";
 import PostagePolicyRouter from "./routes/postagePolicyRouter";
+import { readFileSync } from "fs";
 
 export class App {
     private _app: Express;
@@ -59,15 +60,17 @@ export class App {
         this._postagePolicyRouter = new PostagePolicyRouter();
     }
 
-    public Start(port: number) {
+    public Start() {
         this.SetupApp();
         this.SetupRoutes();
         this.SetupErrors();
-        this.SetupListen(port);
+        this.SetupListen();
     }
 
     private SetupApp() {
         dotenv.config();
+
+        const expressSessionSecret = readFileSync(`${process.cwd()}/secret.txt`).toString();
 
         this._app.set('views', path.join(process.cwd(), 'views'));
         this._app.set('view engine', 'pug');
@@ -80,7 +83,7 @@ export class App {
         this._app.use(session({
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
-            secret: process.env.EXPRESS_SESSION_SECRET,
+            secret: expressSessionSecret,
         }));
 
         // Session-persisted message middleware
@@ -131,9 +134,9 @@ export class App {
         });
     }
 
-    private SetupListen(port: number) {
-        this._app.listen(port, () => {
-            console.log(`Droplet listening at http://localhost:${port}`);
+    private SetupListen() {
+        this._app.listen(process.env.EXPRESS_PORT, () => {
+            console.log(`Droplet listening at http://localhost:${process.env.EXPRESS_PORT}`);
         });
     }
 }

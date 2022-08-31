@@ -6,7 +6,7 @@ export class Index {
     constructor() {
         createConnection().then(async _ => {
             this._app = new App();
-            this._app.Start(3000);
+            this._app.Start();
         }).catch(e => console.error(e));
     }
 }

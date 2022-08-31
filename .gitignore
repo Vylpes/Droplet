@@ -6,3 +6,4 @@ coverage/
 ormconfig.json
 yarn-error.log
 .DS_Store
+secret.txt
