@@ -15,7 +15,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=0.0.0.0
     ports:
-      - 3011:3306
+      - "3011:3306"
     volumes:
       - stage_database_data:/var/lib/mysql
 
@@ -23,11 +23,11 @@ services:
     image: phpmyadmin
     restart: always
     ports:
-      - 3012:80
+      - "3012:80"
     environment:
       - PMA_ARBITRARY=1
 
   mail:
     image: namshi/smtp
     ports:
-      - 3013:25
+      - "3013:25"
