@@ -1,6 +1,7 @@
 #! /bin/bash
 
 export PATH="$HOME/.yarn/bin:$PATH"
+export PATH="$HOME/.nvm/versions/node/v16.17.0/bin/"
 
 cd ~/apps/droplet/droplet_stage \
 && git checkout develop \
