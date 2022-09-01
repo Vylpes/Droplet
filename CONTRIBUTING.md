@@ -117,7 +117,7 @@ Enhancement suggestions are tracked as GitHub issues. After you've determined th
 
 #### Prerequisites
 
-In order to download necessary tools, clone the repository, and install dependencies via `npm` you need network access.
+In order to download necessary tools, clone the repository, and install dependencies via `yarn` you need network access.
 
 You'll need the following tools:
 
@@ -129,9 +129,9 @@ Install and build all of the dependencies using `yarn`
 ```bash
 cd Sonar
 yarn install
-cp config.json.template config.json
+cp .dev.env .env
 ```
-And then use your text editor of choice to fill in the `config.json` file.
+And then use your text editor of choice to fill in the `.env` file.
 
 #### Build and Run
 
@@ -140,20 +140,20 @@ If you want to understand how Sonar works or want to debug an issue, you'll want
 First, fork the Sonar repository so that you can make a pull request. Then, clone your fork locally:
 
 ```bash
-git clone https://github.com/<your-github-account>/Sonar.git
+git clone https://github.com/<your-github-account>/droplet.git
 ```
 
 Occasionally, you will want to merge changes in the upstream repository (the official code repo) with your fork.
 
 ```bash
-cd Sonar
-git checkout master
-git pull https://github.com/vylpes/Sonar.git master
+cd droplet
+git checkout main
+git pull https://github.com/vylpes/droplet.git master
 ```
 
 Manage any merge conflicts, commit them, and then push them to your fork.
 
-Go into `Sonar` then build and run:
+Go into `droplet` then build and run:
 
 ```bash
 yarn build
@@ -163,7 +163,6 @@ yarn start
 You can also run the linter and tests using:
 
 ```bash
-yarn run lint
 yarn test
 ```
 
@@ -171,9 +170,9 @@ yarn test
 
 The process described here has several goals:
 
-* Maintain Sonar's quality
+* Maintain Droplet's quality
 * Fix problems that are important to users
-* Engage the community in working toward the best possible Sonar
+* Engage the community in working toward the best possible Droplet
 * Enable a sustainable system for Sonar's maintainers to review contributions
 
 Please follow these steps to have your contribution considered by maintainers:

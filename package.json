@@ -1,11 +1,20 @@
 {
-  "name": "sonar",
-  "version": "1.0.0",
-  "description": "Project Management Web Application",
+  "name": "droplet",
+  "version": "0.1.0",
+  "description": "eBay Stock Inventory System",
   "main": "dist/index.js",
-  "repository": "https://github.com/vylpes/sonar.git",
+  "repository": "https://github.com/vylpes/droplet.git",
   "author": "Ethan Lane <ethan@vylpes.com>",
   "license": "MIT",
+  "funding": "https://ko-fi.com/vylpes",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "init": "node dist/init.js",
+    "lint": "eslint",
+    "test": "echo true",
+    "db:up": "typeorm migration:run"
+  },
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
@@ -33,14 +42,6 @@
     "typeorm": "^0.2.37",
     "typescript": "^4.2.4",
     "uuid": "^8.3.2"
-  },
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "init": "node dist/init.js",
-    "lint": "eslint",
-    "test": "echo true",
-    "db:up": "typeorm migration:run"
   },
   "devDependencies": {
     "@types/eslint": "^7.2.10",
