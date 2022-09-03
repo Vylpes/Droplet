@@ -5017,6 +5017,11 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
+typeorm-store@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/typeorm-store/-/typeorm-store-2.0.1.tgz#c7ae126c9f055f9b4f3e25749e07b97347a9ab52"
+  integrity sha512-GAWfICUOIS9QGNiHrf9z6snnorr4gAY0uqK31EE1DmGxLMHZTh6m48FpoY4Bs0n+0ti769E1vmtgnlNUVqlVdQ==
+
 typeorm@^0.2.37:
   version "0.2.37"
   resolved "https://registry.npmjs.org/typeorm/-/typeorm-0.2.37.tgz"

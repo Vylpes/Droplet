@@ -19,4 +19,4 @@ cd ~/apps/droplet/droplet_stage \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
 && yarn run db:up \
-&& pm2 start --name droplet_stage dist/index.js
+&& NODE_ENV=production pm2 start --name droplet_stage dist/index.js

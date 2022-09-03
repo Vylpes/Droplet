@@ -9,6 +9,10 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import session from "express-session";
 import * as dotenv from "dotenv";
+import { readFileSync } from "fs";
+import { getConnection } from "typeorm";
+import Session from "./entity/Session";
+import { TypeormStore } from "typeorm-store";
 
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
@@ -23,7 +27,6 @@ import OrdersRouter from "./routes/ordersRouter";
 import StorageRouter from "./routes/storageRouter";
 import ReturnsRouter from "./routes/ReturnsRouter";
 import PostagePolicyRouter from "./routes/postagePolicyRouter";
-import { readFileSync } from "fs";
 
 export class App {
     private _app: Express;
@@ -80,10 +83,15 @@ export class App {
         this._app.use(express.urlencoded({ extended: false }));
         this._app.use(cookieParser());
         this._app.use(express.static(path.join(process.cwd(), 'public')));
+
+        // Session
+        const sessionRepository = getConnection().getRepository(Session);
+
         this._app.use(session({
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
+            store: new TypeormStore({ repository: sessionRepository }),
         }));
 
         // Session-persisted message middleware
