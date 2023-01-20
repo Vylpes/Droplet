@@ -42,8 +42,10 @@ export class Login extends Page {
             if (await User.IsLoginCorrect(email, password)) {
                 req.session.regenerate(async () => {
                     req.session.User = user;
-    
-                    res.redirect('/dashboard');
+
+                    req.session.save(() => {
+                        res.redirect('/dashboard');
+                    });
                 });
             } else {
                 req.session.error = "Password is incorrect";
