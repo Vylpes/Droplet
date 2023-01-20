@@ -45,11 +45,13 @@ export default class New extends Page {
             let postagePolicy: PostagePolicy;
 
             if (postagePolicyId == "INHERIT") {
-                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, listing.PostagePolicy.Id);
+                if (listing.PostagePolicy != null) {
+                    postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, listing.PostagePolicy.Id);
+                };
             } else {
-                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);                
+                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
             }
-            
+
             let order = new Order(orderNumber, offerAccepted, buyer);
 
             await order.Save(Order, order);
@@ -60,7 +62,10 @@ export default class New extends Page {
             ]);
 
             order.AddListingToOrder(listing);
-            order.AddPostagePolicyToOrder(postagePolicy);
+
+            if (postagePolicy != null) {
+                order.AddPostagePolicyToOrder(postagePolicy);
+            }
 
             await order.Save(Order, order);
 
