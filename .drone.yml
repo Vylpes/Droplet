@@ -1,6 +1,5 @@
 ---
 
-
 kind: pipeline
 type: ssh
 name: deployment
