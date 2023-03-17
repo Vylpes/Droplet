@@ -12,7 +12,11 @@ We will not merge pull requests unless all checks pass and at least one of the r
 See CONTRIBUTING.md for more details.
 
 ## Feedback
-Feedback is also welcome. Any improvements/bug reports please [create an issue](https://github.com/vylpes/droplet/issues/new), or [email me](mailto:ethan@vylpes.com).
+Feedback is also welcome. Any improvements/bug reports please either:
+
+- [create an issue](https://gitea.vylpes.xyz/rabbitlabs/droplet/issues/new)
+- [email me](mailto:helpdesk@vylpes.com)
+- [join our discord server](https://go.vylpes.xyz/A6HcA)
 
 ## Code of Conduct
-This project has adopted the **Contributor Covenant Code of Conduct**. For more information see `CODE_OF_CONDUCT.md`, or email me at [ethan@vylpes.com](mailto:ethan@vylpes.com) for any further enquiries or comments.
+This project has adopted the **Contributor Covenant Code of Conduct**. For more information see `CODE_OF_CONDUCT.md`, or email me at [ethan@vylpes.com](mailto:helpdesk@vylpes.com) for any further enquiries or comments.

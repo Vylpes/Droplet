@@ -12,7 +12,7 @@ This project and everyone participating in it is governed by the Droplet of Cond
 
 > **Note:** Please don't file an issue to ask a question. You'll get faster results by using the resources below.
 
-You can ask a question about the project in the `#development` channel in the [Discord Server](https://discord.gg/UyAhAVp).
+You can ask a question about the project in the `#development` channel in the [Discord Server](https://go.vylpes.xyz/A6HcA).
 
 ## What you should know
 
@@ -140,7 +140,7 @@ If you want to understand how Droplet works or want to debug an issue, you'll wa
 First, fork the Droplet repository so that you can make a pull request. Then, clone your fork locally:
 
 ```bash
-git clone https://github.com/<your-github-account>/droplet.git
+git clone https://gitea.vylpes.xyz/<your-gitea-account>/droplet.git
 ```
 
 Occasionally, you will want to merge changes in the upstream repository (the official code repo) with your fork.
@@ -148,7 +148,7 @@ Occasionally, you will want to merge changes in the upstream repository (the off
 ```bash
 cd droplet
 git checkout main
-git pull https://github.com/vylpes/droplet.git master
+git pull https://gitea.vylpes.xyz/rabbitlabs/droplet.git master
 ```
 
 Manage any merge conflicts, commit them, and then push them to your fork.
