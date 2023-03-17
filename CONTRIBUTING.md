@@ -1,14 +1,14 @@
-# Contributing to Sonar
+# Contributing to Droplet
 
 First off, thanks for taking the time to contribute!
 
-The following is a set of guidelines for contributing to Sonar. These are mostly guidelines, not rules. Use your best judgement, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Droplet. These are mostly guidelines, not rules. Use your best judgement, and feel free to propose changes to this document in a pull request.
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the Sonar Code of Conduct. By participating, you are expected to uphold this code.
+This project and everyone participating in it is governed by the Droplet of Conduct. By participating, you are expected to uphold this code.
 
-## Questions about Sonar
+## Questions about Droplet
 
 > **Note:** Please don't file an issue to ask a question. You'll get faster results by using the resources below.
 
@@ -18,15 +18,15 @@ You can ask a question about the project in the `#development` channel in the [D
 
 ### TypeScript and Node
 
-Sonar uses [NodeJS](https://nodejs.org/) and TypeScript. You should know how to use this.
+Droplet uses [NodeJS](https://nodejs.org/) and TypeScript. You should know how to use this.
 
 ### Express
 
-Sonar uses [ExpressJS](http://expressjs.com) as its framework. Although you could contribute without much knowledge of this if you know NodeJS well, however it is recommended to know this.
+Droplet uses [ExpressJS](http://expressjs.com) as its framework. Although you could contribute without much knowledge of this if you know NodeJS well, however it is recommended to know this.
 
 ### Pug
 
-Sonar uses [PugJS](https://pugjs.org/api/getting-started.html) as its View Engine. This would also be useful to know but if you know HTML it should be easy to pickup
+Droplet uses [PugJS](https://pugjs.org/api/getting-started.html) as its View Engine. This would also be useful to know but if you know HTML it should be easy to pickup
 
 ## Conventions
 
@@ -46,7 +46,7 @@ We won't accept pull requests unless these checks pass. If yours fail, simply fi
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for Sonar. Following these guidelines helps maintainers and the community understand your report. reproduce the behaviour, and find related reports.
+This section guides you through submitting a bug report for Droplet. Following these guidelines helps maintainers and the community understand your report. reproduce the behaviour, and find related reports.
 
 When you are creating a bug report, please include as many details as possible.
 
@@ -61,7 +61,7 @@ When you are creating a bug report, please include as many details as possible.
 Bugs are tracked as GitLab issues. After you've determined the bug you're reporting hasn't got a pre-existing **open** issue already, create an issue and provide information from below.
 
 * **Use a clear and descriptive title** for the issue to indentify the problem.
-* **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how you started Sonar (if you're using your own instance), which command exactly you used, and the output which the bot replied with. If its your own instance, provide information on what the terminal output said, if any.
+* **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how you started Droplet (if you're using your own instance), which command exactly you used, and the output which the bot replied with. If its your own instance, provide information on what the terminal output said, if any.
 * **Provide specific examples to demonstrate the steps**. Include links to files or GitLab projects, or copy/pastable snippets, which you use in those examples. If you're providing snippets in the issue, use Markdown code blocks.
 * **Describe the behaviour you observed after following the steps** and point out what exactly is the problem with that behaviour.
 * **Explain which behaviour you expected to see instead and why.**
@@ -70,19 +70,19 @@ Bugs are tracked as GitLab issues. After you've determined the bug you're report
 
 Provide more context by answering these questions:
 
-* **Did the problem start happening recently** (e.g. after updating to a new version of Sonar) or was this always a problem?
-* If the problem started happening recently, **can you reproduce the problem in an older version of Sonar?** What's the most recently version in which the problem doesn't happen? You can download older versions of Sonar from the releases page.
+* **Did the problem start happening recently** (e.g. after updating to a new version of Droplet) or was this always a problem?
+* If the problem started happening recently, **can you reproduce the problem in an older version of Droplet?** What's the most recently version in which the problem doesn't happen? You can download older versions of Droplet from the releases page.
 * **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
 
 Include details about your configuration and environment:
 
-* **Which version of Sonar are you using?** You can get the exact version by running the `about` command.
+* **Which version of Droplet are you using?** You can get the exact version by running the `about` command.
 * **Do you have any custom commands added to the commands folder?** If you do, provide information on what the command does, and a link to the command file if it exists.
 
 > **Note:** We do not provide any support on issues caused by custom commands. You are welcome to create an issue if you believe the issue is to do with the base code, but if the error is to do with that custom command we are unable to fix that, you will need to contact the author of that command.
 
 * **What's the name and version of the OS you're using?**
-* **Are you running Sonar in a virtual machine?** If so, which VM software are you using and which operating systems and versions are used for the host and the guest?
+* **Are you running Droplet in a virtual machine?** If so, which VM software are you using and which operating systems and versions are used for the host and the guest?
 * **What version of node do you have installed?** You can get this version by running the `node -v` command in your terminal.
 * **What does your `config.json` file look like?**
 
@@ -92,7 +92,7 @@ Include details about your configuration and environment:
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for Sonar, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for Droplet, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
 When you are creating an enhancement suggestion, please include as many details as possible. Fill out the suggestion with the steps that you imagine you would take if the feature you're requesting existed.
 
@@ -109,10 +109,10 @@ Enhancement suggestions are tracked as GitHub issues. After you've determined th
 * **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
 * **Provide specific examples to demonstrate the steps.** Include copy/pastable snippets which you use in those examples, as Markdown code blocks.
 * **Describe the current behaviour** and **explain which behaviour you expected to see instead** and why.
-* **Include screnshots and animated GIFs** which help you demonstrate the steps or point out the part of Sonar which the suggestion is related to.
-* **Explain why this enhancement would be useful** to most Sonar users and isn't something that can or should be implemented as a custom command.
+* **Include screnshots and animated GIFs** which help you demonstrate the steps or point out the part of Droplet which the suggestion is related to.
+* **Explain why this enhancement would be useful** to most Droplet users and isn't something that can or should be implemented as a custom command.
 * **List some other bots where this enhancement exists.**
-* **Specify which version of Sonar you're using.** You can get the exact version by running the `about` command.
+* **Specify which version of Droplet you're using.** You can get the exact version by running the `about` command.
 * **Specify the name and version of the OS you're using.**
 
 #### Prerequisites
@@ -127,7 +127,7 @@ You'll need the following tools:
 Install and build all of the dependencies using `yarn`
 
 ```bash
-cd Sonar
+cd Droplet
 yarn install
 cp .dev.env .env
 ```
@@ -135,9 +135,9 @@ And then use your text editor of choice to fill in the `.env` file.
 
 #### Build and Run
 
-If you want to understand how Sonar works or want to debug an issue, you'll want to get the source, build it, and run the tool locally.
+If you want to understand how Droplet works or want to debug an issue, you'll want to get the source, build it, and run the tool locally.
 
-First, fork the Sonar repository so that you can make a pull request. Then, clone your fork locally:
+First, fork the Droplet repository so that you can make a pull request. Then, clone your fork locally:
 
 ```bash
 git clone https://github.com/<your-github-account>/droplet.git
@@ -173,7 +173,7 @@ The process described here has several goals:
 * Maintain Droplet's quality
 * Fix problems that are important to users
 * Engage the community in working toward the best possible Droplet
-* Enable a sustainable system for Sonar's maintainers to review contributions
+* Enable a sustainable system for Droplet's maintainers to review contributions
 
 Please follow these steps to have your contribution considered by maintainers:
 
