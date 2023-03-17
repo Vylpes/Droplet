@@ -7,7 +7,7 @@ cd ~/apps/droplet/droplet_stage \
 && git checkout develop \
 && git fetch \
 && git pull \
-&& docker-compose --file docker-compose.stage.yml down \
+&& docker compose --file docker-compose.stage.yml down \
 && (pm2 stop droplet_stage || true) \
 && (pm2 delete droplet_stage || true) \
 && node ./scripts/generate_secret > secret.txt \
@@ -15,7 +15,7 @@ cd ~/apps/droplet/droplet_stage \
 && cp ormconfig.stage.json ormconfig.json \
 && yarn install --frozen-lockfile \
 && yarn build \
-&& docker-compose --file docker-compose.stage.yml up -d \
+&& docker compose --file docker-compose.stage.yml up -d \
 && echo "Sleeping for 10 seconds to let database load..." \
 && sleep 10 \
 && yarn run db:up \
