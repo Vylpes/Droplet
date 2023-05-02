@@ -16,10 +16,8 @@ steps:
       - sh /home/vylpes/scripts/droplet/deploy_prod.sh
 
 trigger:
-  branch:
-  - main
   event:
-  - promote
+  - tag
 
 ---
 
@@ -71,4 +69,3 @@ trigger:
   - renovate/*
   event:
   - push
-  - pull_request
