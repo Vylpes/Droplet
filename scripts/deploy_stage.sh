@@ -13,6 +13,7 @@ cd ~/apps/droplet/droplet_stage \
 && node ./scripts/generate_secret > secret.txt \
 && cp .stage.env .env \
 && cp ormconfig.stage.json ormconfig.json \
+&& yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \
 && docker compose --file docker-compose.stage.yml up -d \

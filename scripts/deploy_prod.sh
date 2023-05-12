@@ -13,6 +13,7 @@ cd ~/apps/droplet/droplet_prod \
 && node ./scripts/generate_secret > secret.txt \
 && cp .prod.env .env \
 && cp ormconfig.prod.json ormconfig.json \
+&& yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \
 && docker compose --file docker-compose.prod.yml up -d \
