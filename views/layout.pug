@@ -56,10 +56,10 @@ html
                             li.nav-item
                                 a.nav-link(href="/auth/login") Login
         .container.mt-3
-            if (error)
-                .alert.alert-danger= error
-            if (message)
-                .alert.alert-info= message
+            each err in error
+                .alert.alert-danger= err
+            each msg in info
+                .alert.alert-info= msg
             block content
         script(src='/lib/jquery/js/jquery.min.js')
         script(src='/lib/bootstrap/js/bootstrap.min.js')

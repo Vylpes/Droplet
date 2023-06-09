@@ -8,6 +8,7 @@ import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
+import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class Create extends Page {
     constructor(router: Router) {
@@ -28,12 +29,14 @@ export default class Create extends Page {
             const username = req.body.username;
             const email = req.body.email;
             const admin = req.body.admin;
-            
+
             const userByUsername = await User.FetchOneByUsername(username);
             const userByEmail = await User.FetchOneByEmail(email);
 
             if (userByUsername || userByEmail) {
-                req.session.error = "Username and Email must be unique";
+                const message = new MessageHelper(req);
+                await message.Error('Username and Email must be unique');
+
                 res.redirect('/settings/users');
                 return;
             }
@@ -69,7 +72,9 @@ export default class Create extends Page {
                 value: `http://localhost:3000/auth/verify?token=${token}`,
             }]);
 
-            req.session.success = "Successfully created user";
+            const message = new MessageHelper(req);
+            await message.Info('Successfully created user');
+
             res.redirect('/settings/users');
         });
     }

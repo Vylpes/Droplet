@@ -7,6 +7,7 @@ import { User } from "../../entity/User";
 import UserToken from "../../entity/UserToken";
 import BodyValidation from "../../helpers/Validation/Body";
 import QueryValidation from "../../helpers/Validation/Query";
+import MessageHelper from "../../helpers/MessageHelper";
 
 export default class Verify extends Page {
     constructor(router: Router) {
@@ -115,7 +116,9 @@ export default class Verify extends Page {
                 await userToken.User.Save(User, userToken.User);
                 await UserToken.Remove(UserToken, userToken);
 
-                req.session.success = "You are now verified, please now login";
+                const message = new MessageHelper(req);
+                await message.Info('You are now verified, please now login');
+
                 res.redirect('/auth/login');
             }
         );

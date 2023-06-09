@@ -8,6 +8,7 @@ import UserToken from "../../../entity/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
+import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -29,7 +30,7 @@ export default class RequestToken extends Page {
         const bodyValidation = new Body("email", "/auth/login")
                 .NotEmpty()
                 .EmailAddress();
-                    
+
         super.router.post('/password-reset/request', bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const email = req.body.email;
 
@@ -38,7 +39,9 @@ export default class RequestToken extends Page {
             ]);
 
             if (!user) {
-                req.session.success = "If this email is correct you should receive an email to reset your password.";
+                const message = new MessageHelper(req);
+                await message.Info('If this email is correct you should receive an email to reset your password.');
+
                 res.redirect('/auth/login');
                 return;
             }
@@ -66,7 +69,9 @@ export default class RequestToken extends Page {
                 value: `http://localhost:3000/auth/password-reset/reset?token=${token}`,
             }]);
 
-            req.session.success = "If this email is correct you should receive an email to reset your password.";
+            const message = new MessageHelper(req);
+            await message.Info('If this email is correct you should receive an email to reset your password.');
+
             res.redirect('/auth/login');
         });
     }

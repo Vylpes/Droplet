@@ -7,6 +7,7 @@ import { User } from "../../../entity/User";
 import UserToken from "../../../entity/UserToken";
 import Body from "../../../helpers/Validation/Body";
 import Query from "../../../helpers/Validation/Query";
+import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class Reset extends Page {
     constructor(router: Router) {
@@ -58,12 +59,12 @@ export default class Reset extends Page {
     public OnPost(): void {
         const queryValidation = new Query("token", "/")
                 .NotEmpty();
-        
+
         const bodyValidation = new Body("password")
                 .NotEmpty()
                 .MinLength(8)
                 .EqualToField("passwordRepeat");
-            
+
         super.router.post('/password-reset/reset',
             queryValidation.Validate.bind(queryValidation),
             bodyValidation.Validate.bind(bodyValidation),
@@ -107,7 +108,9 @@ export default class Reset extends Page {
                 await userToken.User.Save(User, userToken.User);
                 await UserToken.Remove(UserToken, userToken);
 
-                req.session.success = "Your password has been reset, please now login";
+                const message = new MessageHelper(req);
+                await message.Info('Your password has been reset, please now login');
+
                 res.redirect('/auth/login');
             }
         );

@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import { User } from "../../entity/User";
 import BodyValidation from "../../helpers/Validation/Body";
+import MessageHelper from "../../helpers/MessageHelper";
 
 export default class AdminRegister extends Page {
     constructor(router: Router) {
@@ -40,7 +41,9 @@ export default class AdminRegister extends Page {
 
             await user.Save(User, user);
 
-            req.session.success = "Successfully registered admin user";
+            const message = new MessageHelper(req);
+            await message.Info('Successfully registered admin user');
+
             res.redirect('/');
         });
     }

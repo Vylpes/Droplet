@@ -2,6 +2,9 @@ import { Router, Request, Response } from "express";
 import { Page } from "../../contracts/Page";
 import { User } from "../../entity/User";
 import BodyValidation from "../../helpers/Validation/Body";
+import { sys } from "typescript";
+import { threadId } from "worker_threads";
+import MessageHelper from "../../helpers/MessageHelper";
 
 export class Login extends Page {
     constructor(router: Router) {
@@ -33,9 +36,10 @@ export class Login extends Page {
     	    const user = await User.FetchOneByEmail(email);
 
     	    if (!user || !user.Active) {
-         		req.session.error = "Your account has been deactivated.";
-         		res.redirect('/auth/login');
+                const message = new MessageHelper(req);
+                await message.Error('Your account has been deactivated.');
 
+         		res.redirect('/auth/login');
          		return;
     	    }
 
@@ -48,7 +52,9 @@ export class Login extends Page {
                     });
                 });
             } else {
-                req.session.error = "Password is incorrect";
+                const message = new MessageHelper(req);
+                await message.Error('Password is incorrect')
+
                 res.redirect('/auth/login');
             }
         });

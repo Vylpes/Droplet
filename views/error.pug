@@ -4,6 +4,9 @@ html
         title Error
         link(rel='stylesheet', href='/css/style.css')
     body
-        h1= message
-        h2= error.status
-        pre #{error.stack}
+        if showDetails
+            h1= status
+            h2= info
+            pre #{error.stack}
+        else
+            h1 Error #{status}

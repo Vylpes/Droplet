@@ -13,6 +13,7 @@ import { readFileSync } from "fs";
 import { getConnection } from "typeorm";
 import Session from "./entity/Session";
 import { TypeormStore } from "typeorm-store";
+import connectFlash from "connect-flash";
 
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
@@ -94,16 +95,7 @@ export class App {
             store: new TypeormStore({ repository: sessionRepository }),
         }));
 
-        // Session-persisted message middleware
-        this._app.use(function(req, res, next){
-            var err = req.session.error;
-            var msg = req.session.success;
-            delete req.session.error;
-            delete req.session.success;
-            if (err) res.locals.error = err;
-            if (msg) res.locals.message = msg;
-            next();
-        });
+        this._app.use(connectFlash());
 
         this._app.use(PugMiddleware.GetBaseString);
     }
@@ -125,20 +117,21 @@ export class App {
     }
 
     private SetupErrors() {
-        // 404
-        this._app.use(function(req: Request, res: Response, next: NextFunction) {
-            next(createError(404));
-        });
-
         // Error Handler
-        this._app.use(function(err: any, req: Request, res: Response) {
+        this._app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
             // Set locals, only providing error in development
-            res.locals.message = err.message;
-            res.locals.error = req.app.get('env') === 'development' ? err : {};
+            const info = err.message;
+            const error = req.app.get('env') === 'development' ? err : {};
+            const showDetails = req.app.get('env') === 'development';
 
             // Render the error page
             res.status(err.status || 500);
-            res.render('error');
+            res.render('error', {
+                info: info,
+                error: error,
+                status: err.status || 500,
+                showDetails: showDetails,
+            });
         });
     }
 

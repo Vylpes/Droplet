@@ -3,6 +3,7 @@ import { Page } from "../../../contracts/Page";
 import { User } from "../../../entity/User";
 import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
+import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -33,7 +34,9 @@ export default class Update extends Page {
             const user = await User.FetchOneById(User, id);
 
             if (!user) {
-                req.session.error = "User not found";
+                const message = new MessageHelper(req);
+                await message.Error('User not found');
+
                 res.redirect('/settings/users');
                 return;
             }

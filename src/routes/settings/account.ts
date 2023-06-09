@@ -4,6 +4,7 @@ import { Page } from "../../contracts/Page";
 import { User } from "../../entity/User";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import MessageHelper from "../../helpers/MessageHelper";
 
 export default class Account extends Page {
     constructor(router: Router) {
@@ -40,13 +41,17 @@ export default class Account extends Page {
             const username = req.body.username;
 
             if (!email || !currentPassword || !username) {
-                req.session.error = "Email, Current Password, and Username are required";
+                const message = new MessageHelper(req);
+                await message.Error('Email, Current Password, and Username are required');
+
                 res.redirect('/settings/account');
                 return;
             }
 
             if (!await User.IsLoginCorrect(user.Email, currentPassword)) {
-                req.session.error = "Your password was incorrect";
+                const message = new MessageHelper(req);
+                await message.Error('Your password is incorrect');
+
                 res.redirect('/settings/account');
                 return;
             }
