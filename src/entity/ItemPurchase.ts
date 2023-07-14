@@ -1,7 +1,6 @@
-import { Column, Entity, getConnection, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
-import { ItemPurchaseStatus } from "../constants/Status/ItemPurchaseStatus";
+import { ItemPurchaseStatus, ItemPurchaseStatusNames } from "../constants/Status/ItemPurchaseStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
 
@@ -24,6 +23,8 @@ export class ItemPurchase extends BaseEntity {
 
     @Column()
     Status: ItemPurchaseStatus;
+
+    StatusName = () => ItemPurchaseStatusNames.get(this.Status);
 
     @Column("decimal", { precision: 20, scale: 2 })
     Price: number

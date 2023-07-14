@@ -1,12 +1,7 @@
-import { Column, Entity, getConnection, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
-import { ListingStatus } from "../constants/Status/ListingStatus";
-import { OrderStatus } from "../constants/Status/OrderStatus";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { OrderStatus, OrderStatusNames } from "../constants/Status/OrderStatus";
 import { TrackingNumberType } from "../constants/TrackingNumberType";
 import BaseEntity from "../contracts/BaseEntity";
-import { Item } from "./Item";
-import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
 import PostagePolicy from "./PostagePolicy";
 import { Return } from "./Return";
@@ -38,6 +33,8 @@ export class Order extends BaseEntity {
 
     @Column()
     Status: OrderStatus;
+
+    StatusName = () => OrderStatusNames.get(this.Status);
 
     @Column()
     DispatchBy: Date;

@@ -1,15 +1,9 @@
-import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
-import { ReturnStatus } from "../constants/Status/ReturnStatus";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { ReturnStatus, ReturnStatusNames } from "../constants/Status/ReturnStatus";
 import { TrackingNumberType } from "../constants/TrackingNumberType";
 import BaseEntity from "../contracts/BaseEntity";
 import SettingsHelper from "../helpers/SettingsHelper";
-import { Item } from "./Item";
-import { ItemPurchase } from "./ItemPurchase";
-import { Listing } from "./Listing";
 import { Order } from "./Order";
-import { Storage } from "./Storage";
 import { TrackingNumber } from "./TrackingNumber";
 
 @Entity()
@@ -36,6 +30,8 @@ export class Return extends BaseEntity {
 
     @Column()
     Status: ReturnStatus;
+
+    StatusName = () => ReturnStatusNames.get(this.Status);
 
     @Column("decimal", { precision: 20, scale: 2 })
     RefundAmount: number;

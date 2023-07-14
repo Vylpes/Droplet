@@ -31,7 +31,7 @@ block content
                         p= purchase.Description
                     .mb-2
                         p.mb-0.text-secondary Status
-                        p= purchase.Status
+                        p= purchase.StatusName()
                     .mb-2
                         p.mb-0.text-secondary Price
                         p= purchase.Price
@@ -57,7 +57,7 @@ block content
                                     td= row.Name
                                     td= row.Sku
                                     td= row.UnlistedQuantity + row.ListedQuantity + row.SoldQuantity + row.RejectedQuantity
-                                    td= row.Status
+                                    td= row.StatusName()
                                     td= row.BuyPrice
                                     td
                                         a(href="/items/" + row.Id).btn.text-primary

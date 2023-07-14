@@ -1,10 +1,7 @@
-import { Column, Entity, getConnection, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
-import { ListingStatus } from "../constants/Status/ListingStatus";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
+import { ListingStatus, ListingStatusNames } from "../constants/Status/ListingStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
-import { ItemPurchase } from "./ItemPurchase";
 import { Order } from "./Order";
 import PostagePolicy from "./PostagePolicy";
 
@@ -35,6 +32,8 @@ export class Listing extends BaseEntity {
 
     @Column()
     Status: ListingStatus;
+
+    StatusName = () => ListingStatusNames.get(this.Status);
 
     @Column()
     EndDate: Date;

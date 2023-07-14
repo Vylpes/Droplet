@@ -1,11 +1,7 @@
-import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { PostalService } from "../constants/PostalService";
-import { ItemStatus } from "../constants/Status/ItemStatus";
+import { Column, Entity, ManyToOne } from "typeorm";
+import { PostalService, PostalServiceNames } from "../constants/PostalService";
 import { TrackingNumberType } from "../constants/TrackingNumberType";
 import BaseEntity from "../contracts/BaseEntity";
-import { ItemPurchase } from "./ItemPurchase";
-import { Listing } from "./Listing";
 import { Order } from "./Order";
 import { Return } from "./Return";
 
@@ -24,6 +20,8 @@ export class TrackingNumber extends BaseEntity {
 
     @Column()
     Service: PostalService;
+
+    ServiceName = () => PostalServiceNames.get(this.Service);
 
     @Column()
     Type: TrackingNumberType;

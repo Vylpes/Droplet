@@ -1,11 +1,7 @@
-import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
-import { StorageType } from "../constants/StorageType";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { StorageType, StorageTypeNames } from "../constants/StorageType";
 import BaseEntity from "../contracts/BaseEntity";
 import { Item } from "./Item";
-import { ItemPurchase } from "./ItemPurchase";
-import { Listing } from "./Listing";
 
 @Entity()
 export class Storage extends BaseEntity {
@@ -27,6 +23,8 @@ export class Storage extends BaseEntity {
 
     @Column()
     StorageType: StorageType;
+
+    StorageTypeName = () => StorageTypeNames.get(this.StorageType);
 
     @Column()
     ItemCounter: number;

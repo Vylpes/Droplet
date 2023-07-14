@@ -1,10 +1,9 @@
-import { Column, Entity, getConnection, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItemStatus } from "../constants/Status/ItemStatus";
+import { ItemStatus, ItemStatusNames } from "../constants/Status/ItemStatus";
 import BaseEntity from "../contracts/BaseEntity";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
-import { Return } from "./Return";
 import { Storage } from "./Storage";
 
 @Entity()
@@ -44,9 +43,11 @@ export class Item extends BaseEntity {
 
     @Column()
     RejectedQuantity: number;
-    
+
     @Column()
     Status: ItemStatus;
+
+    StatusName = () => ItemStatusNames.get(this.Status);
 
     @Column("decimal", { precision: 20, scale: 2 })
     BuyPrice: number;
