@@ -120,36 +120,11 @@ block content
                     .form-group.mb-3
                         label Status
                         select(name='status').form-control
-                            if purchase.Status == 0
-                                option(value="0") Ordered
-                                option(value="1" selected) Received
-                                option(value="2") Inventoried
-                                option(value="3") Complete
-                                option(value="4") Rejected
-                            if purchase.Status == 1
-                                option(value="0") Ordered
-                                option(value="1") Received
-                                option(value="2" selected) Inventoried
-                                option(value="3") Complete
-                                option(value="4") Rejected
-                            if purchase.Status == 2
-                                option(value="0") Ordered
-                                option(value="1") Received
-                                option(value="2") Inventoried
-                                option(value="3" selected) Complete
-                                option(value="4") Rejected
-                            if purchase.Status == 3
-                                option(value="0") Ordered
-                                option(value="1") Received
-                                option(value="2") Inventoried
-                                option(value="3" selected) Complete
-                                option(value="4") Rejected
-                            if purchase.Status == 4
-                                option(value="0") Ordered
-                                option(value="1") Received
-                                option(value="2") Inventoried
-                                option(value="3") Complete
-                                option(value="4" selected) Rejected
+                            option(value="0") Ordered
+                            option(value="1" selected= purchase.Status == 0) Received
+                            option(value="2" selected= purchase.Status == 1) Inventoried
+                            option(value="3" selected= purchase.Status == 2 || purchase.Status == 3) Complete
+                            option(value="4" selected= purchase.Status == 4) Rejected
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

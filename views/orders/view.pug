@@ -173,15 +173,14 @@ block content
                     .form-group.mb-3
                         label Offer Accepted
                         select(name='offerAccepted').form-control
-                            option(value=order.OfferAccepted) No Change
-                            option(value="false") No
-                            option(value="true") Yes
+                            option(value="false" selected= order.OfferAccepted == false) No
+                            option(value="true" selected= order.OfferAccepted == true) Yes
                     .form-group.mb-3
                         label Postage Policy
                         select(name='postagePolicyId').form-control
-                            option(value="CURRENT") (NO CHANGE)
+                            option(value="") - None -
                             each row in postagePolicies
-                                option(value=row.Id)= row.Name
+                                option(value=row.Id selected= order.PostagePolicy != null && row.Id == order.PostagePolicy.Id)= row.Name
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square

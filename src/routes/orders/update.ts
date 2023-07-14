@@ -17,8 +17,6 @@ export default class Update extends Page {
                 .NotEmpty()
                 .Boolean()
             .ChangeField("buyer")
-                .NotEmpty()
-            .ChangeField("postagePolicyId")
                 .NotEmpty();
 
         super.router.post('/view/:Id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
@@ -30,7 +28,7 @@ export default class Update extends Page {
             }
 
             const orderNumber = req.body.orderNumber;
-            const offerAccepted = req.body.offerAccepted;
+            const offerAccepted = req.body.offerAccepted == "true";
             const buyer = req.body.buyer;
             const postagePolicyId = req.body.postagePolicyId;
 
@@ -40,10 +38,14 @@ export default class Update extends Page {
 
             await order.Save(Order, order);
 
-            if (postagePolicyId != "CURRENT") {
+            if (postagePolicyId) {
                 const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
 
                 order.AddPostagePolicyToOrder(postagePolicy);
+
+                await order.Save(Order, order);
+            } else {
+                order.RemovePostagePolicy();
 
                 await order.Save(Order, order);
             }

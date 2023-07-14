@@ -119,6 +119,10 @@ export class Order extends BaseEntity {
         this.PostagePolicy = policy;
     }
 
+    public RemovePostagePolicy() {
+        this.PostagePolicy = null;
+    }
+
     public ApplyDiscount(amount: number) {
         if (amount > Number(this.Price)) return;
 
