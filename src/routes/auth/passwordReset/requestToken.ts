@@ -53,6 +53,18 @@ export default class RequestToken extends Page {
             const token = await PasswordHelper.GenerateRandomToken();
             const hashedToken = await hash(token, 10);
 
+            let resetLink = process.env.EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK;
+
+            if (!resetLink) {
+                const message = new MessageHelper(req);
+                await message.Error('Invalid config: EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK');
+
+                res.redirect('/auth/login');
+                return;
+            }
+
+            resetLink = resetLink.replace('{token}', token);
+
             const userToken = new UserToken(hashedToken, tokenExpiryDate, UserTokenType.PasswordReset);
 
             await userToken.Save(UserToken, userToken);
@@ -66,7 +78,7 @@ export default class RequestToken extends Page {
                 value: user.Username,
             }, {
                 key: "reset_link",
-                value: `http://localhost:3000/auth/password-reset/reset?token=${token}`,
+                value: resetLink,
             }]);
 
             const message = new MessageHelper(req);
