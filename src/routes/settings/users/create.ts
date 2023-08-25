@@ -56,6 +56,18 @@ export default class Create extends Page {
             const token = await PasswordHelper.GenerateRandomToken();
             const hashedToken = await hash(token, 10);
 
+            let verifyLink = process.env.EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK;
+
+            if (!verifyLink) {
+                const message = new MessageHelper(req);
+                await message.Error('Invalid config: EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK');
+
+                res.redirect('/settings/users');
+                return;
+            }
+
+            verifyLink = verifyLink.replace('{token}', token);
+
             const userToken = new UserToken(hashedToken, tokenExpiryDate, UserTokenType.Verification);
 
             await userToken.Save(UserToken, userToken);
@@ -69,7 +81,7 @@ export default class Create extends Page {
                 value: user.Username,
             }, {
                 key: "verify_link",
-                value: `http://localhost:3000/auth/verify?token=${token}`,
+                value: verifyLink,
             }]);
 
             const message = new MessageHelper(req);
