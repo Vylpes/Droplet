@@ -3,10 +3,10 @@ import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
-import Note from "../../entity/Note";
-import PostagePolicy from "../../entity/PostagePolicy";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
+import Note from "../../database/entities/Note";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {

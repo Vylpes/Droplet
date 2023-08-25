@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { SupplyPurchaseStatus } from "../../constants/Status/SupplyPurchaseStatus";
 import { Page } from "../../contracts/Page"
-import { ItemPurchase } from "../../entity/ItemPurchase";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class List extends Page {

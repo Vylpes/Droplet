@@ -1,19 +1,18 @@
 import "reflect-metadata";
 import { Express, Request, Response, NextFunction } from "express";
-import { PugMiddleware } from "./middleware/pugMiddleware";
 
 import express from "express";
-import createError from "http-errors";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import session from "express-session";
 import * as dotenv from "dotenv";
 import { readFileSync } from "fs";
-import { getConnection } from "typeorm";
-import Session from "./entity/Session";
+import Session from "./database/entities/Session";
 import { TypeormStore } from "typeorm-store";
 import connectFlash from "connect-flash";
+import { PugMiddleware } from "./middleware/pugMiddleware";
+import AppDataSource from "./database/dataSources/appDataSource";
 
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
@@ -64,14 +63,14 @@ export class App {
         this._postagePolicyRouter = new PostagePolicyRouter();
     }
 
-    public Start() {
-        this.SetupApp();
+    public async Start() {
+        await this.SetupApp();
         this.SetupRoutes();
         this.SetupErrors();
         this.SetupListen();
     }
 
-    private SetupApp() {
+    private async SetupApp() {
         dotenv.config();
 
         const expressSessionSecret = readFileSync(`${process.cwd()}/secret.txt`).toString();
@@ -85,8 +84,12 @@ export class App {
         this._app.use(cookieParser());
         this._app.use(express.static(path.join(process.cwd(), 'public')));
 
+        await AppDataSource.initialize()
+            .then(() => console.log("Data Source Initialized"))
+            .catch((err) => console.error("Error Initialising Data Source", err));
+
         // Session
-        const sessionRepository = getConnection().getRepository(Session);
+        const sessionRepository = AppDataSource.getRepository(Session);
 
         this._app.use(session({
             resave: false, // don't save session if unmodified

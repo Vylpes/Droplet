@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { SupplyPurchaseStatus, SupplyPurchaseStatusNames } from "../constants/Status/SupplyPurchaseStatus";
-import BaseEntity from "../contracts/BaseEntity";
+import { SupplyPurchaseStatus, SupplyPurchaseStatusNames } from "../../constants/Status/SupplyPurchaseStatus";
+import BaseEntity from "../../contracts/BaseEntity";
 import { Supply } from "./Supply";
 
 @Entity()

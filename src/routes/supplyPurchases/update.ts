@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -26,7 +23,7 @@ export default class Update extends Page {
                 res.redirect(`/supply-purchases/view/${Id}`);
                 return;
             }
-            
+
             const description = req.body.description;
             const price = req.body.price;
 

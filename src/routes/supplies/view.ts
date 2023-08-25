@@ -2,9 +2,8 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import Note from "../../entity/Note";
-import { Supply } from "../../entity/Supply";
+import Note from "../../database/entities/Note";
+import { Supply } from "../../database/entities/Supply";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class view extends Page {

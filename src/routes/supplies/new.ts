@@ -1,10 +1,7 @@
 import { Request, Response, Router } from "express";
-import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
-import { Supply } from "../../entity/Supply";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import { Supply } from "../../database/entities/Supply";
+import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -39,7 +36,7 @@ export default class New extends Page {
                     res.redirect(`/supply-purchases/view/${purchaseId}`);
                     return;
                 }
-                
+
                 const supply = new Supply(name, sku, quantity);
 
                 await supply.Save(Supply, supply);

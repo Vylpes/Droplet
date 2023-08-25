@@ -2,7 +2,7 @@ import { hash } from "bcryptjs";
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { User } from "../../entity/User";
+import { User } from "../../database/entities/User";
 import BodyValidation from "../../helpers/Validation/Body";
 import MessageHelper from "../../helpers/MessageHelper";
 

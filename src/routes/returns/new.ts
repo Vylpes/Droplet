@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
 import { TrackingNumberType } from "../../constants/TrackingNumberType";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
-import { Return } from "../../entity/Return";
-import { TrackingNumber } from "../../entity/TrackingNumber";
+import { Order } from "../../database/entities/Order";
+import { Return } from "../../database/entities/Return";
+import { TrackingNumber } from "../../database/entities/TrackingNumber";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -29,7 +29,7 @@ export default class New extends Page {
             const trackingNum = req.body.trackingNumber;
             const trackingService = req.body.trackingService;
             const rma = await Return.GenerateRMA();
-            
+
             let ret = new Return(returnNumber, rma);
 
             await ret.Save(Return, ret);

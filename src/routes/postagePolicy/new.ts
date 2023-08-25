@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import PostagePolicy from "../../entity/PostagePolicy";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Listing } from "../../entity/Listing";
-import PostagePolicy from "../../entity/PostagePolicy";
+import { Listing } from "../../database/entities/Listing";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -21,7 +21,7 @@ export default class AssignPostagePolicy extends Page {
                 res.redirect(`/listings/view/${Id}`);
                 return;
             }
-            
+
             const policyId = req.body.policyId;
 
             const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);

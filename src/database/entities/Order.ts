@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { OrderStatus, OrderStatusNames } from "../constants/Status/OrderStatus";
-import { TrackingNumberType } from "../constants/TrackingNumberType";
-import BaseEntity from "../contracts/BaseEntity";
+import { OrderStatus, OrderStatusNames } from "../../constants/Status/OrderStatus";
+import { TrackingNumberType } from "../../constants/TrackingNumberType";
+import BaseEntity from "../../contracts/BaseEntity";
 import { Listing } from "./Listing";
 import PostagePolicy from "./PostagePolicy";
 import { Return } from "./Return";

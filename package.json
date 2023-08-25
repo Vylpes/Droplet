@@ -42,7 +42,7 @@
     "reflect-metadata": "^0.1.13",
     "reflection": "^0.0.1",
     "tsyringe": "^4.5.0",
-    "typeorm": "^0.2.37",
+    "typeorm": "^0.3.17",
     "typeorm-store": "^2.0.1",
     "typescript": "^4.2.4",
     "uuid": "^9.0.0"

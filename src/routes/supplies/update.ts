@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Supply } from "../../entity/Supply";
+import { Supply } from "../../database/entities/Supply";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -22,7 +20,7 @@ export default class Update extends Page {
 
         super.router.post('/:Id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
-            
+
             if (req.session.error) {
                 res.redirect(`/supplies/${Id}`);
                 return;
@@ -33,7 +31,7 @@ export default class Update extends Page {
             const quantity = req.body.quantity;
 
             const supply = await Supply.FetchOneById<Supply>(Supply, Id);
-            
+
             supply.EditBasicDetails(name, sku);
 
             await supply.Save(Supply, supply);

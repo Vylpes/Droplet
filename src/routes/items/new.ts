@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { Item } from "../../database/entities/Item";
+import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -23,7 +23,7 @@ export default class New extends Page {
             const name = req.body.name;
             const quantity = req.body.quantity;
             const purchaseId = req.body.purchaseId;
-            
+
             const item = new Item(name, quantity);
 
             await item.Save(Item, item);

@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class End extends Page {

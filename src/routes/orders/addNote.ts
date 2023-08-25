@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
-import Note from "../../entity/Note";
+import Note from "../../database/entities/Note";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 

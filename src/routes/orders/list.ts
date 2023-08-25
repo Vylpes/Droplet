@@ -3,9 +3,9 @@ import createHttpError from "http-errors";
 import { ListingStatus } from "../../constants/Status/ListingStatus";
 import { OrderStatus } from "../../constants/Status/OrderStatus";
 import { Page } from "../../contracts/Page"
-import { Listing } from "../../entity/Listing";
-import { Order } from "../../entity/Order";
-import PostagePolicy from "../../entity/PostagePolicy";
+import { Listing } from "../../database/entities/Listing";
+import { Order } from "../../database/entities/Order";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class List extends Page {

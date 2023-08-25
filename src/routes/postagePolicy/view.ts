@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import PostagePolicy from "../../entity/PostagePolicy";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class View extends Page {

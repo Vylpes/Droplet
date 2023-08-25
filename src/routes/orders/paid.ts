@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
+import { Order } from "../../database/entities/Order";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Paid extends Page {
@@ -15,7 +15,7 @@ export default class Paid extends Page {
             const order = await Order.FetchOneById(Order, Id, [
                 "Listings"
             ]);
-            
+
             order.MarkAsPaid();
 
             await order.Save(Order, order);

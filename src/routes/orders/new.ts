@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
-import { Order } from "../../entity/Order";
-import PostagePolicy from "../../entity/PostagePolicy";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
+import { Order } from "../../database/entities/Order";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 

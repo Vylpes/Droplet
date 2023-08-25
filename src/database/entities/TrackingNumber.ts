@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from "typeorm";
-import { PostalService, PostalServiceNames } from "../constants/PostalService";
-import { TrackingNumberType } from "../constants/TrackingNumberType";
-import BaseEntity from "../contracts/BaseEntity";
+import { PostalService, PostalServiceNames } from "../../constants/PostalService";
+import { TrackingNumberType } from "../../constants/TrackingNumberType";
+import BaseEntity from "../../contracts/BaseEntity";
 import { Order } from "./Order";
 import { Return } from "./Return";
 

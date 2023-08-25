@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
-import { Supply } from "../../entity/Supply";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Supply } from "../../database/entities/Supply";
+import { Order } from "../../database/entities/Order";
 
 export default class AssignSupply extends Page {
     constructor(router: Router) {

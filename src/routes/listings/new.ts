@@ -1,8 +1,8 @@
 import { Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -36,7 +36,7 @@ export default class New extends Page {
             const itemId = req.body.itemId;
 
             const item = await Item.FetchOneById(Item, itemId);
-            
+
             let listing = new Listing(name, listingNumber, price, endDate, quantity);
 
             await listing.Save(Listing, listing);

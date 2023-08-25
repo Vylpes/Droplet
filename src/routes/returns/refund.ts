@@ -1,13 +1,7 @@
 import { Request, Response, Router } from "express";
-import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
-import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { ItemPurchase } from "../../entity/ItemPurchase";
-import { Listing } from "../../entity/Listing";
-import { Order } from "../../entity/Order";
-import { Return } from "../../entity/Return";
-import { SupplyPurchase } from "../../entity/SupplyPurchase";
+import { Order } from "../../database/entities/Order";
+import { Return } from "../../database/entities/Return";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -34,7 +28,7 @@ export default class Refund extends Page {
             const ret = await Return.FetchOneById(Return, Id, [
                 "Order"
             ]);
-            
+
             ret.MarkAsRefunded(refundAmount);
 
             await ret.Save(Return, ret);

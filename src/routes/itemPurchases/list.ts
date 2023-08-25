@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page"
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class List extends Page {

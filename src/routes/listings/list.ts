@@ -3,8 +3,8 @@ import createHttpError from "http-errors";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { ListingStatus } from "../../constants/Status/ListingStatus";
 import { Page } from "../../contracts/Page"
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class List extends Page {

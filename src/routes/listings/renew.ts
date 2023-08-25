@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Listing } from "../../entity/Listing";
+import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 

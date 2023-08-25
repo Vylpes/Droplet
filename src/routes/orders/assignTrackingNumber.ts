@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { TrackingNumberType } from "../../constants/TrackingNumberType";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
-import { TrackingNumber } from "../../entity/TrackingNumber";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { TrackingNumber } from "../../database/entities/TrackingNumber";
+import { Order } from "../../database/entities/Order";
 
 export default class AssignTrackingNumber extends Page {
     constructor(router: Router) {

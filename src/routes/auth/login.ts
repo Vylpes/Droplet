@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { Page } from "../../contracts/Page";
-import { User } from "../../entity/User";
+import { User } from "../../database/entities/User";
 import BodyValidation from "../../helpers/Validation/Body";
 import { sys } from "typescript";
 import { threadId } from "worker_threads";

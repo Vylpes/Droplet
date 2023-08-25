@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -17,12 +16,12 @@ export default class UpdateStatus extends Page {
 
         super.router.post('/view/:Id/update-status', bodyValidation.Validate.bind(bodyValidation), UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
-            
+
             if (req.session.error) {
                 res.redirect(`/item-purchases/view/${Id}`);
                 return;
             }
-            
+
             const status = req.body.status;
 
             const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id);

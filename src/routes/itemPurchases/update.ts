@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../entity/ItemPurchase";
+import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 

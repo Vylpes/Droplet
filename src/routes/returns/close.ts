@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Return } from "../../entity/Return";
+import { Return } from "../../database/entities/Return";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Close extends Page {
@@ -13,7 +13,7 @@ export default class Close extends Page {
             const Id = req.params.Id;
 
             const ret = await Return.FetchOneById(Return, Id);
-            
+
             ret.MarkAsClosed();
 
             await ret.Save(Return, ret);

@@ -12,7 +12,6 @@ cd ~/apps/droplet/droplet_prod \
 && (pm2 delete droplet_prod || true) \
 && node ./scripts/generate_secret > secret.txt \
 && cp .prod.env .env \
-&& cp ormconfig.prod.json ormconfig.json \
 && yarn clean \
 && yarn install --frozen-lockfile \
 && yarn build \

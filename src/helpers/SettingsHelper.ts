@@ -1,5 +1,5 @@
 import { DefaultSettings } from "../constants/DefaultSettings";
-import { Settings } from "../entity/Settings";
+import { Settings } from "../database/entities/Settings";
 
 export default class SettingsHelper {
     public static async SetSetting(key: string, value: string) {

@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm"
-import MigrationHelper from "../../helpers/MigrationHelper"
+import MigrationHelper from "../../../helpers/MigrationHelper"
 
 export class CreateSession1662137215916 implements MigrationInterface {
 

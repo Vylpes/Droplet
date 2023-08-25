@@ -1,6 +1,6 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
-import { ListingStatus, ListingStatusNames } from "../constants/Status/ListingStatus";
-import BaseEntity from "../contracts/BaseEntity";
+import { ListingStatus, ListingStatusNames } from "../../constants/Status/ListingStatus";
+import BaseEntity from "../../contracts/BaseEntity";
 import { Item } from "./Item";
 import { Order } from "./Order";
 import PostagePolicy from "./PostagePolicy";

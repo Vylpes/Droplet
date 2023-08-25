@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { StorageType, StorageTypeNames } from "../constants/StorageType";
-import BaseEntity from "../contracts/BaseEntity";
+import { StorageType, StorageTypeNames } from "../../constants/StorageType";
+import BaseEntity from "../../contracts/BaseEntity";
 import { Item } from "./Item";
 
 @Entity()

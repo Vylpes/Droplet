@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
-import { Order } from "../../entity/Order";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Listing } from "../../database/entities/Listing";
+import { Order } from "../../database/entities/Order";
+import { Item } from "../../database/entities/Item";
 
 export default class AssignListing extends Page {
     constructor(router: Router) {
@@ -43,7 +43,7 @@ export default class AssignListing extends Page {
             await order.Save(Order, order);
 
             listing.MarkAsSold(amount);
-            
+
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {

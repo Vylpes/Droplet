@@ -1,9 +1,8 @@
-import { compare, hash } from "bcryptjs";
-import {Entity, Column, PrimaryColumn, getConnection, OneToMany} from "typeorm";
-import { v4 as uuid } from "uuid";
-import BaseEntity from "../contracts/BaseEntity";
-import { IBasicResponse, GenerateResponse } from "../contracts/IBasicResponse";
+import { compare } from "bcryptjs";
+import {Entity, Column, OneToMany} from "typeorm";
+import BaseEntity from "../../contracts/BaseEntity";
 import UserToken from "./UserToken";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export class User extends BaseEntity {
@@ -63,27 +62,23 @@ export class User extends BaseEntity {
     }
 
     public static async IsLoginCorrect(email: string, password: string): Promise<boolean> {
-        const connection = getConnection();
+        const userRepository = AppDataSource.getRepository(User);
 
-        const userRepository = connection.getRepository(User);
-
-        const user = await userRepository.findOne({ Email: email });
+        const user = await userRepository.findOne({ where: { Email: email } });
 
         if (!user) {
             return false;
         }
 
         const same = await compare(password, user.Password);
-        
+
         return same;
     }
 
     public static async FetchOneByUsername(username: string, relations?: string[]): Promise<User | undefined> {
-        const connection = getConnection();
+        const repository = AppDataSource.getRepository(User);
 
-        const repository = connection.getRepository(User);
-
-        const single = await repository.findOne({ Username: username }, { relations: relations || [] });
+        const single = await repository.findOne({ where: { Username: username }, relations: relations || [] });
 
         if (!single) {
             return undefined;
@@ -93,11 +88,9 @@ export class User extends BaseEntity {
     }
 
     public static async FetchOneByEmail(email: string, relations?: string[]): Promise<User | undefined> {
-        const connection = getConnection();
+        const repository = AppDataSource.getRepository(User);
 
-        const repository = connection.getRepository(User);
-
-        const single = await repository.findOne({ Email: email }, { relations: relations || [] });
+        const single = await repository.findOne({ where: { Email: email }, relations: relations || [] });
 
         if (!single) {
             return undefined;

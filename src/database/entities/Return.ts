@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { ReturnStatus, ReturnStatusNames } from "../constants/Status/ReturnStatus";
-import { TrackingNumberType } from "../constants/TrackingNumberType";
-import BaseEntity from "../contracts/BaseEntity";
-import SettingsHelper from "../helpers/SettingsHelper";
+import { ReturnStatus, ReturnStatusNames } from "../../constants/Status/ReturnStatus";
+import { TrackingNumberType } from "../../constants/TrackingNumberType";
+import BaseEntity from "../../contracts/BaseEntity";
+import SettingsHelper from "../../helpers/SettingsHelper";
 import { Order } from "./Order";
 import { TrackingNumber } from "./TrackingNumber";
 

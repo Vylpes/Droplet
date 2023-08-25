@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import { Page } from "../../../contracts/Page";
-import { User } from "../../../entity/User";
+import { User } from "../../../database/entities/User";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 
 export default class List extends Page {

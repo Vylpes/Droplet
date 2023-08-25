@@ -1,7 +1,8 @@
-import { Column, Entity, getConnection, ManyToOne, OneToOne } from "typeorm";
-import { UserTokenType } from "../constants/UserTokenType";
-import BaseEntity from "../contracts/BaseEntity";
+import { Column, Entity, ManyToOne } from "typeorm";
+import { UserTokenType } from "../../constants/UserTokenType";
+import BaseEntity from "../../contracts/BaseEntity";
 import { User } from "./User";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class UserToken extends BaseEntity {
@@ -38,21 +39,17 @@ export default class UserToken extends BaseEntity {
     }
 
     public static async FetchOneByToken<T>(token: string, relations?: string[]): Promise<UserToken> {
-        const connection = getConnection();
+        const repository = AppDataSource.getRepository(UserToken);
 
-        const repository = connection.getRepository(UserToken);
-
-        const single = await repository.findOne({ Token: token }, { relations: relations || [] });
+        const single = await repository.findOne({ where: { Token: token }, relations: relations || [] });
 
         return single;
     }
 
     public static async InvalidateAllTokensForUser(userId: string) {
-        const connection = getConnection();
+        const repository = AppDataSource.getRepository(User);
 
-        const repository = connection.getRepository(User);
-
-        const single = await repository.findOne(userId, { relations: [
+        const single = await repository.findOne({ where: { Id: userId }, relations: [
             "Tokens",
         ]});
 

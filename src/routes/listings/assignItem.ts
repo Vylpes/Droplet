@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
-import { Listing } from "../../entity/Listing";
+import { Item } from "../../database/entities/Item";
+import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -17,7 +17,7 @@ export default class AssignItem extends Page {
 
         super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const Id = req.params.Id;
-            
+
             if (req.session.error) {
                 res.redirect(`/listings/view/${Id}`);
                 return;

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Order } from "../../database/entities/Order";
 
 export default class Discount extends Page {
     constructor(router: Router) {

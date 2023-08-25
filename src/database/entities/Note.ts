@@ -1,6 +1,7 @@
-import { Column, Entity, getConnection } from "typeorm";
-import { NoteType } from "../constants/NoteType";
-import BaseEntity from "../contracts/BaseEntity";
+import { Column, Entity } from "typeorm";
+import { NoteType } from "../../constants/NoteType";
+import BaseEntity from "../../contracts/BaseEntity";
+import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class Note extends BaseEntity {
@@ -26,9 +27,7 @@ export default class Note extends BaseEntity {
     }
 
     public static async FetchAllForId(type: NoteType, forId: String): Promise<Note[]> {
-        const connection = getConnection();
-
-        const repository = connection.getRepository(Note);
+        const repository = AppDataSource.getRepository(Note);
 
         const all = await repository.find();
 

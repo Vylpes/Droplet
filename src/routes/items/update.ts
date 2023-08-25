@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../entity/Item";
+import { Item } from "../../database/entities/Item";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
@@ -25,7 +24,7 @@ export default class Update extends Page {
             const name = req.body.name;
 
             const item = await Item.FetchOneById<Item>(Item, itemId);
-            
+
             item.EditBasicDetails(name);
 
             await item.Save(Item, item);

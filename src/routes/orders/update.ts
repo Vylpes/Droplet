@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Order } from "../../entity/Order";
-import PostagePolicy from "../../entity/PostagePolicy";
+import { Order } from "../../database/entities/Order";
+import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
