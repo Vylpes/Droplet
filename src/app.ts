@@ -13,6 +13,8 @@ import { TypeormStore } from "typeorm-store";
 import connectFlash from "connect-flash";
 import { PugMiddleware } from "./middleware/pugMiddleware";
 import AppDataSource from "./database/dataSources/appDataSource";
+import http from "http";
+import https from "https";
 
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
@@ -27,6 +29,7 @@ import OrdersRouter from "./routes/ordersRouter";
 import StorageRouter from "./routes/storageRouter";
 import ReturnsRouter from "./routes/ReturnsRouter";
 import PostagePolicyRouter from "./routes/postagePolicyRouter";
+import IHttpsCredentials from "./contracts/IHttpsCredentials";
 
 export class App {
     private _app: Express;
@@ -139,8 +142,34 @@ export class App {
     }
 
     private SetupListen() {
-        this._app.listen(process.env.EXPRESS_PORT, () => {
-            console.log(`Droplet listening at http://localhost:${process.env.EXPRESS_PORT}`);
-        });
+        const protocol = process.env.EXPRESS_PROTOCOL;
+
+        switch (protocol) {
+            case 'http':
+                const httpServer = http.createServer(this._app);
+
+                httpServer.listen(process.env.EXPRESS_PORT)
+                    .on('listening', () => console.log(`Droplet listening at http://localhost:${process.env.EXPRESS_PORT}`));
+                break;
+            case 'https':
+                const credentials = this.ConfigureHttps();
+                const httpsServer = https.createServer(credentials, this._app)
+                    .on('listening', () => console.log(`Droplet listening at https://localhost:${process.env.EXPRESS_PORT}`));
+
+                httpsServer.listen(process.env.EXPRESS_PORT);
+                break;
+            default:
+                throw `Unknown protocol, ${protocol}`;
+        }
+    }
+
+    private ConfigureHttps(): IHttpsCredentials {
+        const privateKey = readFileSync('ssl/server.key', 'utf-8');
+        const certificate = readFileSync('ssl/server.crt', 'utf-8');
+
+        return {
+            key: privateKey,
+            cert: certificate,
+        };
     }
 }
