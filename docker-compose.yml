@@ -1,8 +1,5 @@
 version: "3"
 
-volumes:
-  dev_database_data:
-
 services:
   database:
     image: mysql/mysql-server
@@ -17,18 +14,4 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - dev_database_data:/var/lib/mysql
-
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - "3002:80"
-    environment:
-      - PMA_ARBITRARY=1
-
-  mail:
-    image: mailhog/mailhog
-    ports:
-      - "3003:1025"
-      - "3004:8025"
+      - $DB_DATA_LOCATION:/var/lib/mysql

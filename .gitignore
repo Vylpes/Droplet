@@ -3,6 +3,12 @@ dist/
 coverage/
 ssl/
 
+# Terraform
+.terraform
+*.tfvars
+*.tfstate
+*.tfstate.backup
+
 .env
 ormconfig.json
 yarn-error.log
