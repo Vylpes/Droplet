@@ -67,7 +67,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         envs: DB_NAME,DB_AUTH,USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,EXPRESS_PORT,EXPRESS_PROTOCOL,EMAIL_HOST,EMAIL_PORT,EMAIL_SECURE,EMAIL_FROM_NAME,EMAIL_FROM_ADDRESS,EMAIL_AUTH_ENABLE,EMAIL_AUTH_USER,EMAIL_AUTH_PASS,EMAIL_TLS_REJECT_UNAUTHORISED,EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK,EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK
         script: |
-          cd ~/apps/droplet/ \
+          cd ~/app \
           && docker compose down \
           && (pm2 stop droplet || true) \
           && (pm2 delete droplet || true) \
