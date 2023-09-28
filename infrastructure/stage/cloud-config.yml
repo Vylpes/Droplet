@@ -21,7 +21,7 @@ apt:
 
 write_files:
   - path: /etc/nginx/sites-enabled/app
-    owner: "root:root"
+    owner: root:root
     content: |
       server {
         server_name droplet-stage.vylpes.xyz;
@@ -31,8 +31,9 @@ write_files:
           proxy_pass http://127.0.0.1:3000;
         }
       }
-  - path: /home/vylpes/certbot.sh
-    owner: "vylpes:vylpes"
+  - path: /opt/droplet/certbot.sh
+    owner: root:root
+    permissions: '0775'
     content: sudo certbot --nginx -d droplet-stage.vylpes.xyz --non-interactive --agree-tos -m ethan@vylpes.com
 
 packages:
