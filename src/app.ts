@@ -76,7 +76,7 @@ export class App {
     private async SetupApp() {
         dotenv.config();
 
-        const expressSessionSecret = readFileSync(`${process.cwd()}/secret.txt`).toString();
+        const expressSessionSecret = process.env.EXPRESS_SECRET || readFileSync(`${process.cwd()}/secret.txt`).toString();
 
         this._app.set('views', path.join(process.cwd(), 'views'));
         this._app.set('view engine', 'pug');
