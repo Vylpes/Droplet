@@ -22,6 +22,7 @@ apt:
 write_files:
   - path: /etc/nginx/sites-enabled/app
     owner: root:root
+    permissions: '0775'
     content: |
       server {
         server_name droplet-stage.vylpes.xyz;
@@ -34,7 +35,8 @@ write_files:
   - path: /opt/droplet/certbot.sh
     owner: root:root
     permissions: '0775'
-    content: sudo certbot --nginx -d droplet-stage.vylpes.xyz --non-interactive --agree-tos -m ethan@vylpes.com
+    content: |
+      sudo certbot --nginx -d droplet-stage.vylpes.xyz --non-interactive --agree-tos -m ethan@vylpes.com
 
 packages:
   - git
@@ -50,9 +52,9 @@ packages:
 
 runcmd:
   - snap install core
-  - npm install -g yarn pm2
   - snap install --classic certbot
   - ln -sf /snap/bin/cerbot /usr/bin/cerbot
+  - npm install -g yarn pm2
   - ufw limit ssh
   - ufw allow 80
   - ufw allow 443
