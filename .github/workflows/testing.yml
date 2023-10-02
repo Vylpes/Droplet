@@ -5,6 +5,7 @@ on:
     branches:
       - feature/*
       - hotfix/*
+      - renovate/*
 
 jobs:
   build:
