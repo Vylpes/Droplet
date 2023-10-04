@@ -9,6 +9,7 @@ ssl/
 *.tfstate
 *.tfstate.backup
 
+.docker/
 .env
 ormconfig.json
 yarn-error.log

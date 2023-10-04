@@ -15,3 +15,8 @@ services:
       - "3306:3306"
     volumes:
       - $DB_DATA_LOCATION:/var/lib/mysql
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
