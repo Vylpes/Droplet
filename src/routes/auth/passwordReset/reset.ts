@@ -77,6 +77,31 @@ export default class Reset extends Page {
                 }
 
                 const password = req.body.password;
+                const passwordRepeat = req.body.passwordRepeat;
+
+                if (!password) {
+                    const message = new MessageHelper(req);
+                    await message.Error("Password is required");
+
+                    res.redirect(`/auth/password-reset/reset?token=${token}`);
+                    return;
+                }
+
+                if (password.length < 8) {
+                    const message = new MessageHelper(req);
+                    await message.Error("Password must be no less than 8 characters long");
+
+                    res.redirect(`/auth/password-reset/reset?token=${token}`);
+                    return;
+                }
+
+                if (password != passwordRepeat) {
+                    const message = new MessageHelper(req);
+                    await message.Error("Passwords must be the same");
+
+                    res.redirect(`/auth/password-reset/reset?token=${token}`);
+                    return;
+                }
 
                 const tokens = await UserToken.FetchAll(UserToken, [
                     "User"
