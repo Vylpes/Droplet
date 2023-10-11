@@ -15,7 +15,8 @@ export default class End extends Page {
             const Id = req.params.Id;
 
             const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items"
+                "Items",
+                "Items.Item",
             ]);
 
             listing.MarkAsUnsold();
@@ -23,7 +24,7 @@ export default class End extends Page {
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {
-                item.MarkAsUnlisted(listing.Quantity, ItemStatus.Listed);
+                item.Item.MarkAsUnlisted(listing.Quantity, ItemStatus.Listed);
 
                 await item.Save(Item, item);
             }

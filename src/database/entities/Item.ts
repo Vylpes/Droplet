@@ -1,10 +1,11 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { ItemStatus, ItemStatusNames } from "../../constants/Status/ItemStatus";
 import BaseEntity from "../../contracts/BaseEntity";
 import { ItemPurchase } from "./ItemPurchase";
 import { Listing } from "./Listing";
 import { Storage } from "./Storage";
+import { ListingItem } from "./ListingItem";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -55,8 +56,8 @@ export class Item extends BaseEntity {
     @ManyToOne(_ => ItemPurchase, purchase => purchase.Items)
     Purchase: ItemPurchase;
 
-    @ManyToMany(() => Listing)
-    Listings: Listing[];
+    @OneToMany(() => ListingItem, x => x.Item)
+    Listings: ListingItem[];
 
     @ManyToOne(() => Storage, storage => storage.Items)
     Storage?: Storage;

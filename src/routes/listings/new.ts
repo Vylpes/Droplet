@@ -5,6 +5,7 @@ import { Item } from "../../database/entities/Item";
 import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { ListingItem } from "../../database/entities/ListingItem";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -42,16 +43,21 @@ export default class New extends Page {
             await listing.Save(Listing, listing);
 
             listing = await Listing.FetchOneById(Listing, listing.Id, [
-                "Items"
-            ]);;
-
-            listing.AddItemToListing(item);
+                "Items",
+                "Items.Item"
+            ]);
 
             await listing.Save(Listing, listing);
 
             item.MarkAsListed(quantity, ItemStatus.Unlisted);
 
             await item.Save(Item, item);
+
+            const listingItem = new ListingItem(quantity);
+            listingItem.AssignItem(item);
+            listingItem.AssignListing(listing);
+
+            await listingItem.Save(ListingItem, listingItem);
 
             res.redirect('/listings/active');
         });

@@ -1,9 +1,10 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { ListingStatus, ListingStatusNames } from "../../constants/Status/ListingStatus";
 import BaseEntity from "../../contracts/BaseEntity";
 import { Item } from "./Item";
 import { Order } from "./Order";
 import PostagePolicy from "./PostagePolicy";
+import { ListingItem } from "./ListingItem";
 
 @Entity()
 export class Listing extends BaseEntity {
@@ -47,9 +48,8 @@ export class Listing extends BaseEntity {
     @Column()
     OriginalQuantity: number;
 
-    @ManyToMany(() => Item)
-    @JoinTable()
-    Items: Item[];
+    @OneToMany(() => ListingItem, x => x.Listing)
+    Items: ListingItem[];
 
     @ManyToMany(() => Order)
     @JoinTable()
@@ -94,8 +94,8 @@ export class Listing extends BaseEntity {
         this.WhenUpdated = new Date();
     }
 
-    public AddItemToListing(item: Item) {
-        this.Items.push(item);
+    public AddItemToListing(listingItem: ListingItem) {
+        this.Items.push(listingItem);
     }
 
     public AddPostagePolicyToListing(policy: PostagePolicy) {

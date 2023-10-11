@@ -39,6 +39,7 @@ export default class New extends Page {
 
             const listing = await Listing.FetchOneById(Listing, listingId, [
                 "Items",
+                "Items.Item",
                 "PostagePolicy"
             ]);
 
@@ -74,7 +75,7 @@ export default class New extends Page {
             await listing.Save(Listing, listing);
 
             for (const item of listing.Items) {
-                item.MarkAsSold(amount, ItemStatus.Listed);
+                item.Item.MarkAsSold(amount, ItemStatus.Listed);
 
                 item.Save(Item, item);
             }

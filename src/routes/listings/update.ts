@@ -34,7 +34,11 @@ export default class Update extends Page {
             const price = req.body.price;
             const quantity = req.body.quantity;
 
-            const listing = await Listing.FetchOneById(Listing, Id);
+            const listing = await Listing.FetchOneById(Listing, Id, [ "Items" ]);
+
+            if (quantity != listing.Quantity) {
+                const quanittyDifference = quantity - listing.Quantity;
+            }
 
             listing.UpdateBasicDetails(name, listingNumber, price, quantity);
 

@@ -66,18 +66,20 @@ block content
                             tr
                                 th Name
                                 th SKU
+                                th Quantity
                                 th Status
                                 th Buy Price
                                 th
                         tbody
                             each row in listing.Items
                                 tr
-                                    td= row.Name
-                                    td= row.Sku
-                                    td= row.StatusName()
-                                    td= row.BuyPrice
+                                    td= row.Item.Name
+                                    td= row.Item.Sku
+                                    td= row.Quantity
+                                    td= row.Item.StatusName()
+                                    td= row.Item.BuyPrice
                                     td
-                                        a(href="/items/" + row.Id).btn.text-primary
+                                        a(href="/items/" + row.Item.Id).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
     .row.mt-3
@@ -165,7 +167,10 @@ block content
                         label Item
                         select(name='itemId').form-control
                             each row in items
-                                option(value=row.Id)= row.Sku + " " + row.Name
+                                option(value=row.Id)= row.Sku + " " + row.Name + " (" + row.UnlistedQuantity + " Unlisted)"
+                    .form-group.mb-3
+                        label Quantity
+                        input(type='number' name='quantity').form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
