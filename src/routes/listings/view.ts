@@ -25,6 +25,7 @@ export default class view extends Page {
             const listing = await Listing.FetchOneById(Listing, Id, [
                 "Items",
                 "Items.Item",
+                "Items.Listing",
                 "PostagePolicy"
             ]);
 

@@ -14,6 +14,8 @@ export class ListingItem extends BaseEntity {
     @Column()
     Quantity: number;
 
+    QuantityPerSale = () => Math.floor(this.Quantity / this.Listing.Quantity);
+
     @ManyToOne(() => Item, x => x.Listings)
     Item: Item;
 
