@@ -18,7 +18,8 @@ export default class New extends Page {
             .ChangeField("skuPrefix")
                 .NotEmpty()
             .ChangeField("parentId")
-                .NotEmpty();
+                .NotEmpty()
+                .When((req: Request) => req.body.type != 'building');
 
         super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const type = req.body.type;

@@ -6,4 +6,5 @@ export default interface IValidationRule {
     to?: string,
     length?: number,
     errorMessage?: string,
+    whenCallback?: Function,
 }

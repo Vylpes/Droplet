@@ -22,6 +22,15 @@ export default class Query {
         for (let i = 0; i < this.rules.length; i++) {
             const rule = this.rules[i];
 
+            if (rule.whenCallback) {
+                const shouldRun = rule.whenCallback(req);
+
+                if (!shouldRun) {
+                    next();
+                    return;
+                }
+            }
+
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
                     if (!req.query[rule.field] || req.query[rule.field].length == 0) {
@@ -241,6 +250,14 @@ export default class Query {
         if (rulesLength == 0) return this;
 
         this.rules[rulesLength - 1].errorMessage = message;
+
+        return this;
+    }
+
+    public When(whenCallback: Function): Query {
+        if (this.rules.length == 0) return this;
+
+        this.rules[this.rules.length - 1].whenCallback = whenCallback;
 
         return this;
     }
