@@ -39,7 +39,7 @@ export default class AssignListing extends Page {
                 "Listings"
             ]);
 
-            order.AddListingToOrder(listing);
+            order.AddListingToOrder(listing, amount);
 
             await order.Save(Order, order);
 

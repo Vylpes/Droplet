@@ -7,6 +7,7 @@ import { Order } from "../../database/entities/Order";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { ListingItem } from "../../database/entities/ListingItem";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -62,7 +63,7 @@ export default class New extends Page {
                 "PostagePolicy"
             ]);
 
-            order.AddListingToOrder(listing);
+            order.AddListingToOrder(listing, amount);
 
             if (postagePolicy != null) {
                 order.AddPostagePolicyToOrder(postagePolicy);
@@ -77,7 +78,7 @@ export default class New extends Page {
             for (const item of listing.Items) {
                 item.Item.MarkAsSold(amount, ItemStatus.Listed);
 
-                item.Save(Item, item);
+                await item.Save(ListingItem, item);
             }
 
             res.redirect('/orders/awaiting-payment');

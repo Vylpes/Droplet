@@ -97,10 +97,10 @@ block content
                                     each row in order.Listings
                                         tr
                                             td
-                                                a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
-                                            td= row.Name
-                                            td= row.Price
-                                            td= row.EndDate
+                                                a(href="https://ebay.co.uk/itm/" + row.Listing.ListingNumber, target="_blank")= row.Listing.ListingNumber
+                                            td= row.Listing.Name
+                                            td= row.Listing.Price
+                                            td= row.Listing.EndDate
                                             td
                                                 a(href="/listings/view/" + row.Id).btn.text-primary
                                                     i.fas.fa-eye

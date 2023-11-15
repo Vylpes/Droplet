@@ -5,6 +5,7 @@ import { Item } from "./Item";
 import { Order } from "./Order";
 import PostagePolicy from "./PostagePolicy";
 import { ListingItem } from "./ListingItem";
+import { OrderListing } from "./OrderListing";
 
 @Entity()
 export class Listing extends BaseEntity {
@@ -51,9 +52,8 @@ export class Listing extends BaseEntity {
     @OneToMany(() => ListingItem, x => x.Listing)
     Items: ListingItem[];
 
-    @ManyToMany(() => Order)
-    @JoinTable()
-    Orders: Order[];
+    @OneToMany(() => OrderListing, x => x.Listing)
+    Orders: OrderListing[];
 
     @ManyToOne(() => PostagePolicy, policy => policy.Listings)
     PostagePolicy: PostagePolicy;

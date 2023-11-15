@@ -7,6 +7,7 @@ import PostagePolicy from "./PostagePolicy";
 import { Return } from "./Return";
 import { Supply } from "./Supply";
 import { TrackingNumber } from "./TrackingNumber";
+import { OrderListing } from "./OrderListing";
 
 @Entity()
 export class Order extends BaseEntity {
@@ -42,9 +43,8 @@ export class Order extends BaseEntity {
     @Column()
     Buyer: string;
 
-    @ManyToMany(() => Listing)
-    @JoinTable()
-    Listings: Listing[];
+    @OneToMany(() => OrderListing, x => x.Order)
+    Listings: OrderListing[];
 
     @ManyToMany(() => Supply)
     @JoinTable()
@@ -91,8 +91,11 @@ export class Order extends BaseEntity {
         this.Status = OrderStatus.Returned;
     }
 
-    public AddListingToOrder(listing: Listing) {
-        this.Listings.push(listing);
+    public AddListingToOrder(listing: Listing, quantity: number) {
+        const orderListing = new OrderListing(quantity);
+        orderListing.AssignListing(listing);
+
+        this.Listings.push(orderListing);
         this.Price = Number(this.Price) + Number(listing.Price);
 
         this.WhenUpdated = new Date();
