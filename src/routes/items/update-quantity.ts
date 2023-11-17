@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { ItemPurchase } from "../../database/entities/ItemPurchase";
 
 export default class UpdateQuantity extends Page {
     constructor(router: Router) {
@@ -36,11 +37,15 @@ export default class UpdateQuantity extends Page {
             const sold = req.body.sold;
             const rejected = req.body.rejected;
 
-            const item = await Item.FetchOneById<Item>(Item, itemId);
+            const item = await Item.FetchOneById<Item>(Item, itemId, [
+                "Purchase",
+                "Purchase.Items",
+            ]);
 
             item.EditQuantities(unlisted, listed, sold, rejected);
 
             await item.Save(Item, item);
+            await item.Purchase.Save(ItemPurchase, item.Purchase);
 
             res.redirect(`/items/${itemId}`);
         });

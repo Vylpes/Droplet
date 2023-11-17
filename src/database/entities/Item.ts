@@ -75,6 +75,7 @@ export class Item extends BaseEntity {
         this.RejectedQuantity = rejected;
 
         this.CalculateStatus();
+        this.Purchase.CalculateItemPrices();
 
         this.WhenUpdated = new Date();
     }
