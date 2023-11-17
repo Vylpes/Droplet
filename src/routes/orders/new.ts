@@ -8,6 +8,7 @@ import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { ListingItem } from "../../database/entities/ListingItem";
+import { OrderListing } from "../../database/entities/OrderListing";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -60,16 +61,26 @@ export default class New extends Page {
 
             order = await Order.FetchOneById(Order, order.Id, [
                 "Listings",
-                "PostagePolicy"
+                "Listings.Listing",
+                "PostagePolicy",
             ]);
 
-            order.AddListingToOrder(listing, amount);
+            const orderListing = new OrderListing(amount);
+            await orderListing.Save(OrderListing, orderListing);
+
+            orderListing.AssignListing(listing);
+            orderListing.AssignOrder(order);
+
+            await orderListing.Save(OrderListing, orderListing);
+
+            order.CalculatePrice();
+            await order.Save(Order, order);
 
             if (postagePolicy != null) {
                 order.AddPostagePolicyToOrder(postagePolicy);
-            }
 
-            await order.Save(Order, order);
+                await order.Save(Order, order);
+            }
 
             listing.MarkAsSold(amount);
 

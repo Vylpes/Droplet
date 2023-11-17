@@ -91,16 +91,6 @@ export class Order extends BaseEntity {
         this.Status = OrderStatus.Returned;
     }
 
-    public AddListingToOrder(listing: Listing, quantity: number) {
-        const orderListing = new OrderListing(quantity);
-        orderListing.AssignListing(listing);
-
-        this.Listings.push(orderListing);
-        this.Price = Number(this.Price) + Number(listing.Price);
-
-        this.WhenUpdated = new Date();
-    }
-
     public AddSupplyToOrder(supply: Supply) {
         this.Supplies.push(supply);
 
@@ -129,6 +119,10 @@ export class Order extends BaseEntity {
         this.Price = Number(this.Price) - Number(amount);
 
         this.WhenUpdated = new Date();
+    }
+
+    public CalculatePrice() {
+        this.Price = this.Listings.map(x => x.Listing.Price).reduce((a: number, b: number) => Number(a) + Number(b), 0);
     }
 
     private CalculateNextWeekday(additionalDays: number): Date {

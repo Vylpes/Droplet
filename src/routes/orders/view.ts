@@ -26,6 +26,7 @@ export default class view extends Page {
 
             const order = await Order.FetchOneById(Order, Id, [
                 "Listings",
+                "Listings.Listing",
                 "Supplies",
                 "TrackingNumbers",
                 "PostagePolicy"
@@ -40,6 +41,8 @@ export default class view extends Page {
             }
 
             const notes = await Note.FetchAllForId(NoteType.Order, Id);
+
+            console.log(order.Listings.length);
 
             res.locals.order = order;
             res.locals.listings = listings.filter(x => x.Status == ListingStatus.Active);

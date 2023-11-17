@@ -6,6 +6,8 @@ import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Listing } from "../../database/entities/Listing";
 import { Order } from "../../database/entities/Order";
 import { Item } from "../../database/entities/Item";
+import { OrderListing } from "../../database/entities/OrderListing";
+import { ListingItem } from "../../database/entities/ListingItem";
 
 export default class AssignListing extends Page {
     constructor(router: Router) {
@@ -36,11 +38,19 @@ export default class AssignListing extends Page {
             ]);
 
             const order = await Order.FetchOneById(Order, Id, [
-                "Listings"
+                "Listings",
+                "Listings.Listing",
             ]);
 
-            order.AddListingToOrder(listing, amount);
+            const orderListing = new OrderListing(amount);
+            await orderListing.Save(OrderListing, orderListing);
 
+            orderListing.AssignListing(listing);
+            orderListing.AssignOrder(order);
+
+            await orderListing.Save(OrderListing, orderListing);
+
+            order.CalculatePrice();
             await order.Save(Order, order);
 
             listing.MarkAsSold(amount);
@@ -50,7 +60,7 @@ export default class AssignListing extends Page {
             for (const item of listing.Items) {
                 item.Item.MarkAsSold(amount, ItemStatus.Listed);
 
-                await item.Save(Item, item);
+                await item.Save(ListingItem, item);
             }
 
             res.redirect(`/orders/view/${Id}`);
