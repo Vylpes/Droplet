@@ -10,7 +10,7 @@ SELECT
     UUID(),
     NOW(),
     NOW(),
-    0,
+    1,
     listingId,
     orderId
 FROM order_listings_listing

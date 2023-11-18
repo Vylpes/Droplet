@@ -10,7 +10,7 @@ SELECT
     UUID(),
     NOW(),
     NOW(),
-    0,
+    1,
     itemId,
     listingId
 FROM listing_items_item;
