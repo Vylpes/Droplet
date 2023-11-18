@@ -14,7 +14,8 @@
     "init": "node dist/init.js",
     "lint": "eslint",
     "test": "echo true",
-    "db:up": "typeorm migration:run -d ./dist/database/dataSources/appDataSource.js"
+    "db:up": "typeorm migration:run -d ./dist/database/dataSources/appDataSource.js",
+    "db:create": "typeorm migration:create ./src/database/migrations/new"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",
