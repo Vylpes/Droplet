@@ -1,4 +1,4 @@
-INSERT INTO item_listing (
+INSERT INTO listing_item (
     Id,
     WhenCreated,
     WhenUpdated,
