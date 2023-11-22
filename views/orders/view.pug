@@ -117,16 +117,18 @@ block content
                                     tr
                                         th SKU
                                         th Name
+                                        th Quantity
                                         th Price
                                         th
                                 tbody
                                     each row in order.Supplies
                                         tr
-                                            td= row.Sku
-                                            td= row.Name
-                                            td= row.BuyPrice
+                                            td= row.Supply.Sku
+                                            td= row.Supply.Name
+                                            td= row.Quantity
+                                            td= row.Supply.BuyPrice
                                             td
-                                                a(href="/supplies/" + row.Id).btn.text-primary
+                                                a(href="/supplies/" + row.Supply.Id).btn.text-primary
                                                     i.fas.fa-eye
                                                     span.ms-1 View
             .row.mb-3

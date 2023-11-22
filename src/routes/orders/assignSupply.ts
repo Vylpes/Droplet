@@ -4,6 +4,7 @@ import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Supply } from "../../database/entities/Supply";
 import { Order } from "../../database/entities/Order";
+import { OrderSupply } from "../../database/entities/OrderSupply";
 
 export default class AssignSupply extends Page {
     constructor(router: Router) {
@@ -31,12 +32,18 @@ export default class AssignSupply extends Page {
             const supply = await Supply.FetchOneById(Supply, supplyId);
 
             const order = await Order.FetchOneById(Order, Id, [
-                "Supplies"
+                "Supplies",
             ]);
 
-            order.AddSupplyToOrder(supply);
-
             await order.Save(Order, order);
+
+            const orderSupply = new OrderSupply(amount);
+            await orderSupply.Save(OrderSupply, orderSupply);
+
+            orderSupply.AssignOrder(order);
+            orderSupply.AssignSupply(supply);
+
+            await orderSupply.Save(OrderSupply, orderSupply);
 
             supply.RemoveStock(amount);
 

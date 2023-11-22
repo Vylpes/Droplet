@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { SupplyStatus, SupplyStatusNames } from "../../constants/Status/SupplyStatus";
 import BaseEntity from "../../contracts/BaseEntity";
 import { Order } from "./Order";
 import { SupplyPurchase } from "./SupplyPurchase";
+import { OrderSupply } from "./OrderSupply";
 
 @Entity()
 export class Supply extends BaseEntity {
@@ -46,8 +47,8 @@ export class Supply extends BaseEntity {
     @ManyToOne(_ => SupplyPurchase, purchase => purchase.Supplies)
     Purchase: SupplyPurchase;
 
-    @ManyToMany(_ => Order)
-    Orders: Order[];
+    @OneToMany(() => OrderSupply, x => x.Supply)
+    Orders: OrderSupply[];
 
     public EditBasicDetails(name: string, sku: string) {
         this.Name = name;

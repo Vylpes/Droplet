@@ -28,6 +28,7 @@ export default class view extends Page {
                 "Listings",
                 "Listings.Listing",
                 "Supplies",
+                "Supplies.Supply",
                 "TrackingNumbers",
                 "PostagePolicy"
             ]);

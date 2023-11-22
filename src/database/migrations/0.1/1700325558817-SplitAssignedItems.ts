@@ -7,13 +7,16 @@ export class SplitAssignedItems1700325558817 implements MigrationInterface {
         MigrationHelper.Up('1700325558817-SplitAssignedItems', '0.1', [
             "01-create/01-ListingItem",
             "01-create/02-OrderListing",
+            "01-create/03-OrderSupply",
 
             "02-insert/01-ListingItem",
             "02-insert/02-OrderListing",
+            "02-insert/03-OrderSupply",
 
             "03-drop/01-ListingItemsItem",
             "03-drop/02-ListingOrdersOrder",
             "03-drop/03-OrderListingsListing",
+            "03-drop/04-OrderSuppliesSupply",
         ], queryRunner);
     }
 

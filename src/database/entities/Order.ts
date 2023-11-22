@@ -8,6 +8,7 @@ import { Return } from "./Return";
 import { Supply } from "./Supply";
 import { TrackingNumber } from "./TrackingNumber";
 import { OrderListing } from "./OrderListing";
+import { OrderSupply } from "./OrderSupply";
 
 @Entity()
 export class Order extends BaseEntity {
@@ -46,9 +47,8 @@ export class Order extends BaseEntity {
     @OneToMany(() => OrderListing, x => x.Order)
     Listings: OrderListing[];
 
-    @ManyToMany(() => Supply)
-    @JoinTable()
-    Supplies: Supply[];
+    @OneToMany(() => OrderSupply, x => x.Order)
+    Supplies: OrderSupply[];
 
     @OneToMany(() => TrackingNumber, order => order.Order)
     TrackingNumbers: TrackingNumber[];
@@ -89,12 +89,6 @@ export class Order extends BaseEntity {
 
     public MarkAsReturned() {
         this.Status = OrderStatus.Returned;
-    }
-
-    public AddSupplyToOrder(supply: Supply) {
-        this.Supplies.push(supply);
-
-        this.WhenUpdated = new Date();
     }
 
     public AddTrackingNumberToOrder(trackingNumber: TrackingNumber) {
