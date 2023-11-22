@@ -91,6 +91,7 @@ block content
                                         th Listing Number
                                         th Name
                                         th Price
+                                        th Quantity
                                         th End Date
                                         th
                                 tbody
@@ -100,6 +101,7 @@ block content
                                                 a(href="https://ebay.co.uk/itm/" + row.Listing.ListingNumber, target="_blank")= row.Listing.ListingNumber
                                             td= row.Listing.Name
                                             td= row.Listing.Price
+                                            td= row.Quantity
                                             td= row.Listing.EndDate
                                             td
                                                 a(href="/listings/view/" + row.Listing.Id).btn.text-primary
