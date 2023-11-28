@@ -27,6 +27,8 @@ import OrdersRouter from "./routes/ordersRouter";
 import StorageRouter from "./routes/storageRouter";
 import ReturnsRouter from "./routes/ReturnsRouter";
 import PostagePolicyRouter from "./routes/postagePolicyRouter";
+import MongoStore from "connect-mongo";
+import ConnectionHelper from "./helpers/ConnectionHelper";
 
 export class App {
     private _app: Express;
@@ -84,18 +86,19 @@ export class App {
         this._app.use(cookieParser());
         this._app.use(express.static(path.join(process.cwd(), 'public')));
 
-        await AppDataSource.initialize()
-            .then(() => console.log("Data Source Initialized"))
-            .catch((err) => console.error("Error Initialising Data Source", err));
+        await ConnectionHelper.OpenConnection(process.env.DB_URL, process.env.DB_NAME);
 
         // Session
-        const sessionRepository = AppDataSource.getRepository(Session);
-
         this._app.use(session({
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
-            store: new TypeormStore({ repository: sessionRepository }),
+            store: MongoStore.create({
+                mongoUrl: process.env.DB_URL,
+                dbName: process.env.DB_NAME,
+                autoRemove: 'interval',
+                collectionName: 'session'
+            })
         }));
 
         this._app.use(connectFlash());
