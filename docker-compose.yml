@@ -2,30 +2,28 @@ version: "3"
 
 volumes:
   dev_database_data:
-    
-services:
-  database:
-    image: mysql/mysql-server
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      - MYSQL_DATABASE=droplet
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_HOST=0.0.0.0
-    ports:
-      - "3001:3306"
-    volumes:
-      - dev_database_data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: droplet
+    ports:
+     - "3001:27017"
+
+  mongo-express:
+    image: mongo-express
     restart: always
     ports:
-      - "3002:80"
+      - "3002:8081"
     environment:
-      - PMA_ARBITRARY=1
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: droplet
+      ME_CONFIG_MONGODB_URL: mongodb://root:droplet@mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: mongo
+      ME_CONFIG_BASICAUTH_PASSWORD: mongo
 
   mail:
     image: mailhog/mailhog

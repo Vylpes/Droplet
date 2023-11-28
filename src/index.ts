@@ -1,4 +1,5 @@
 import { App } from "./app";
+import IBaseEntity from "./contracts/IBaseEntity";
 import ConnectionHelper from "./helpers/ConnectionHelper";
 
 export class Index {

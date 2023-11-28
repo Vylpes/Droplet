@@ -15,6 +15,8 @@ export class Result<T> {
                 Message: errorMessage,
                 Code:  errorCode,
             };
+
+            return;
         }
 
         this.IsSuccess = true;

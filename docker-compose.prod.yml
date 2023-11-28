@@ -2,30 +2,16 @@ version: "3"
 
 volumes:
   prod_database_data:
-    
-services:
-  database:
-    image: mysql/mysql-server
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      - MYSQL_DATABASE=droplet
-      - MYSQL_USER=prod
-      - MYSQL_PASSWORD=prod
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_HOST=0.0.0.0
-    ports:
-      - "3021:3306"
-    volumes:
-      - stage_database_data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin
+services:
+  mongo:
+    image: mongo
     restart: always
-    ports:
-      - "3022:80"
     environment:
-      - PMA_ARBITRARY=1
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: droplet
+    ports:
+     - "3021:27017"
 
   mail:
     image: namshi/smtp
