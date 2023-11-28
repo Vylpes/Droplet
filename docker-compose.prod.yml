@@ -10,6 +10,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: droplet
+    volumes:
+     - /home/vylpes/databases/droplet/prod:/data/db
     ports:
      - "3021:27017"
 
