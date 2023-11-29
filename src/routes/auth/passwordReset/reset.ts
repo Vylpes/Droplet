@@ -3,11 +3,12 @@ import { NextFunction, query, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
-import { User } from "../../../database/entities/User";
 import UserToken from "../../../database/entities/UserToken";
 import Body from "../../../helpers/Validation/Body";
 import Query from "../../../helpers/Validation/Query";
 import MessageHelper from "../../../helpers/MessageHelper";
+import ConnectionHelper from "../../../helpers/ConnectionHelper";
+import User from "../../../contracts/entities/User/User";
 
 export default class Reset extends Page {
     constructor(router: Router) {
@@ -24,32 +25,38 @@ export default class Reset extends Page {
                 return;
             }
 
+            const username = req.query.username.toString();
             const token = req.query.token.toString();
 
-            const tokens = await UserToken.FetchAll(UserToken, [
-                "User"
-            ]);
+            const userMaybe = await ConnectionHelper.FindOne<User>("user", { username: username });
 
-            const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
+            if (!userMaybe.IsSuccess) {
+                next(createHttpError(401));
+                return;
+            }
+
+            const user = userMaybe.Value;
+
+            const userToken = user.tokens.filter(x => compareSync(token, x.token))[0];
 
             if (!userToken) {
                 next(createHttpError(401));
                 return;
             }
 
-            const expired = await userToken.CheckIfExpired();
+            const expired = new Date() > userToken.expires;
 
             if (expired) {
                 next(createHttpError(401));
                 return;
             }
 
-            if (userToken.Type != UserTokenType.PasswordReset) {
+            if (userToken.type != UserTokenType.PasswordReset) {
                 next(createHttpError(401));
                 return;
             }
 
-            res.locals.user = userToken.User;
+            res.locals.user = user;
             res.locals.token = token;
 
             res.render('auth/password-reset/reset');
@@ -69,6 +76,7 @@ export default class Reset extends Page {
             queryValidation.Validate.bind(queryValidation),
             bodyValidation.Validate.bind(bodyValidation),
             async (req: Request, res: Response, next: NextFunction) => {
+                const username = req.query.username.toString();
                 const token = req.query.token.toString();
 
                 if (req.session.error) {
@@ -103,35 +111,38 @@ export default class Reset extends Page {
                     return;
                 }
 
-                const tokens = await UserToken.FetchAll(UserToken, [
-                    "User"
-                ]);
+                const userMaybe = await ConnectionHelper.FindOne<User>("user", { username: username });
 
-                const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
+                if (!userMaybe.IsSuccess) {
+                    next(createHttpError(401));
+                    return;
+                }
+
+                const user = userMaybe.Value;
+
+                const userToken = user.tokens.filter(x => compareSync(token, x.token))[0];
 
                 if (!userToken) {
                     next(createHttpError(401));
                     return;
                 }
 
-                const expired = await userToken.CheckIfExpired();
+                const expired = new Date() > userToken.expires;
 
                 if (expired) {
                     next(createHttpError(401));
                     return;
                 }
 
-                if (userToken.Type != UserTokenType.PasswordReset) {
+                if (userToken.type != UserTokenType.PasswordReset) {
                     next(createHttpError(401));
                     return;
                 }
 
                 const hashed = await hash(password, 10);
+                const updatedTokens = user.tokens.filter(x => x.token != token);
 
-                userToken.User.UpdatePassword(hashed);
-
-                await userToken.User.Save(User, userToken.User);
-                await UserToken.Remove(UserToken, userToken);
+                await ConnectionHelper.UpdateOne<User>("user", { uuid: user.uuid }, { $set: { password: hashed, tokens: updatedTokens } } );
 
                 const message = new MessageHelper(req);
                 await message.Info('Your password has been reset, please now login');

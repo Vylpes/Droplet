@@ -4,5 +4,5 @@ export default interface IUserToken {
     uuid: string,
     token: string;
     expires: Date;
-    Type: UserTokenType;
+    type: UserTokenType;
 }

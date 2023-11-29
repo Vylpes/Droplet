@@ -6,7 +6,7 @@ block content
             .card
                 .card-header Verify
                 .card-body
-                    form(method='post' action='/auth/verify?token=' + token)
+                    form(method='post' action='/auth/verify?token=' + token + '&username=' + user.username)
                         .form-group.mb-2
                             label Password
                             input(type='password' name='password').form-control

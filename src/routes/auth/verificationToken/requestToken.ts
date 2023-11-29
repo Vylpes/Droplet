@@ -3,12 +3,15 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
-import { User } from "../../../database/entities/User";
 import UserToken from "../../../database/entities/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import MessageHelper from "../../../helpers/MessageHelper";
+import ConnectionHelper from "../../../helpers/ConnectionHelper";
+import User from "../../../contracts/entities/User/User";
+import IUserToken from "../../../contracts/entities/User/IUserToken";
+import { v4 } from "uuid";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -34,11 +37,9 @@ export default class RequestToken extends Page {
         super.router.post('/verification-token/request', bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const email = req.body.email;
 
-            const user = await User.FetchOneByEmail(email, [
-                "Tokens"
-            ]);
+            const userMaybe = await ConnectionHelper.FindOne<User>("user", { email: email });
 
-            if (!user) {
+            if (!userMaybe.IsSuccess) {
                 const message = new MessageHelper(req);
                 await message.Info('If this email is correct you should receive an email to reset your password.');
 
@@ -46,13 +47,15 @@ export default class RequestToken extends Page {
                 return;
             }
 
-            if (user.Verified || !user.Active) {
+            const user = userMaybe.Value!;
+
+            if (user.verified || !user.active) {
                 req.session.error = "User is either inactive or already verified";
                 res.redirect('/auth/login');
                 return;
             }
 
-            await UserToken.InvalidateAllTokensForUser(user.Id);
+            const userTokens: IUserToken[] = [];
 
             const now = new Date();
 
@@ -71,19 +74,24 @@ export default class RequestToken extends Page {
                 return;
             }
 
-            verifyLink = verifyLink.replace('{token}', token);
+            verifyLink = verifyLink
+                .replace('{token}', token)
+                .replace('{username}', user.username);
 
-            const userToken = new UserToken(hashedToken, tokenExpiryDate, UserTokenType.Verification);
+            const userToken: IUserToken = {
+                uuid: v4(),
+                token: hashedToken,
+                expires: tokenExpiryDate,
+                type: UserTokenType.Verification,
+            }
 
-            await userToken.Save(UserToken, userToken);
+            userTokens.push(userToken);
 
-            user.AddTokenToUser(userToken);
+            await ConnectionHelper.UpdateOne<User>("user", { uuid: user.uuid }, { $set: { tokens: userTokens }});
 
-            await user.Save(User, user);
-
-            await EmailHelper.SendEmail(user.Email, "VerifyUser", [{
+            await EmailHelper.SendEmail(user.email, "VerifyUser", [{
                 key: "username",
-                value: user.Username,
+                value: user.username,
             }, {
                 key: "verify_link",
                 value: verifyLink,

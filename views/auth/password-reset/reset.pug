@@ -6,7 +6,7 @@ block content
             .card
                 .card-header Reset
                 .card-body
-                    form(method='post' action='/auth/password-reset/reset?token=' + token)
+                    form(method='post' action='/auth/password-reset/reset?token=' + token + '&username=' + user.username)
                         .form-group.mb-2
                             label Password
                             input(type='password' name='password').form-control

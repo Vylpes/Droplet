@@ -48,18 +48,28 @@ export default class ConnectionHelper {
         }
     }
 
-    public static async FindOne<T>(collectionName: string, filter?: Filter<T>): Promise<WithId<T>> {
-        const collection = this.GetCollection<T>(collectionName);
-        const item = await collection.Value.findOne(filter);
+    public static async FindOne<T>(collectionName: string, filter?: Filter<T>): Promise<Result<WithId<T>>> {
+        try {
+            const collection = this.GetCollection<T>(collectionName);
+            const item = await collection.Value.findOne(filter);
 
-        return item;
+            return Result.Ok(item);
+        } catch (error) {
+            console.error(error);
+            return Result.Fail(error);
+        }
     }
 
-    public static async FindMultiple<T>(collectionName: string, filter: Filter<T>): Promise<WithId<T>[]> {
-        const collection = this.GetCollection<T>(collectionName);
-        const items = collection.Value.find(filter);
+    public static async FindMultiple<T>(collectionName: string, filter: Filter<T>): Promise<Result<WithId<T>[]>> {
+        try {
+            const collection = this.GetCollection<T>(collectionName);
+            const items = collection.Value.find(filter);
 
-        return await items.toArray();
+            return Result.Ok(await items.toArray());
+        } catch (error) {
+            console.error(error);
+            return Result.Fail(error);
+        }
     }
 
     public static async UpdateOne<T>(collectionName: string, filter: Filter<T>, update: UpdateFilter<T> | Partial<T>): Promise<Result<void>> {
@@ -82,6 +92,19 @@ export default class ConnectionHelper {
             await collection.Value.deleteOne(filter);
 
             return Result.Ok<void>(undefined);
+        } catch (error) {
+            console.error(error);
+            return Result.Fail(error);
+        }
+    }
+
+    public static async Any<T>(collectionName: string): Promise<Result<boolean>> {
+        try {
+            const collection = this.GetCollection<T>(collectionName);
+
+            const count = await collection.Value.countDocuments();
+
+            return Result.Ok<boolean>(count > 0);
         } catch (error) {
             console.error(error);
             return Result.Fail(error);

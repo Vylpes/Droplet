@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
 import { Page } from "../../contracts/Page";
-import { User } from "../../database/entities/User";
 import BodyValidation from "../../helpers/Validation/Body";
-import { sys } from "typescript";
-import { threadId } from "worker_threads";
 import MessageHelper from "../../helpers/MessageHelper";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import User from "../../contracts/entities/User/User";
+import { compare } from "bcryptjs";
 
 export class Login extends Page {
     constructor(router: Router) {
@@ -33,9 +33,19 @@ export class Login extends Page {
             const email = req.body.email;
             const password = req.body.password;
 
-    	    const user = await User.FetchOneByEmail(email);
+            const userMaybe = await ConnectionHelper.FindOne<User>("user", { email: email });
 
-    	    if (!user || !user.Active) {
+            if (!userMaybe.IsSuccess) {
+                const message = new MessageHelper(req);
+                await message.Error('Your account has been deactivated.');
+
+                res.redirect('/auth/login');
+                return;
+            }
+
+            const user = userMaybe.Value;
+
+    	    if (!user || !user.active) {
                 const message = new MessageHelper(req);
                 await message.Error('Your account has been deactivated.');
 
@@ -43,7 +53,9 @@ export class Login extends Page {
          		return;
     	    }
 
-            if (await User.IsLoginCorrect(email, password)) {
+            const samePassword = await compare(password, user.password);
+
+            if (samePassword) {
                 req.session.regenerate(async () => {
                     req.session.User = user;
 

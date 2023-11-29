@@ -2,9 +2,11 @@ import { hash } from "bcryptjs";
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
-import { User } from "../../database/entities/User";
 import BodyValidation from "../../helpers/Validation/Body";
 import MessageHelper from "../../helpers/MessageHelper";
+import User from "../../contracts/entities/User/User";
+import { v4 } from "uuid";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
 
 export default class AdminRegister extends Page {
     constructor(router: Router) {
@@ -37,9 +39,19 @@ export default class AdminRegister extends Page {
 
             const hashedPassword = await hash(password, 10);
 
-            const user = new User(email, username, hashedPassword, true, true, true);
+            const user: User = {
+                uuid: v4(),
+                email: email,
+                username: username,
+                password: hashedPassword,
+                active: true,
+                verified: true,
+                admin: true,
+                whenCreated: new Date(),
+                tokens: [],
+            };
 
-            await user.Save(User, user);
+            await ConnectionHelper.InsertOne<User>("user", user);
 
             const message = new MessageHelper(req);
             await message.Info('Successfully registered admin user');
@@ -53,7 +65,7 @@ export default class AdminRegister extends Page {
             next(createHttpError(403));
         }
 
-        if (await User.Any(User)) {
+        if (await ConnectionHelper.Any<User>("user")) {
             next(createHttpError(403));
         }
 
