@@ -1,5 +1,5 @@
 import { SupplyStatus } from "../../../constants/Status/SupplyStatus";
-import { INote } from "./INote";
+import { Note } from "./Note";
 
 export default interface ISupply {
     uuid: string,
@@ -10,7 +10,7 @@ export default interface ISupply {
         used: number,
     },
     status: SupplyStatus,
-    notes: INote[],
+    notes: Note[],
 }
 
 export function CalculateStatus(supply: ISupply): SupplyStatus {

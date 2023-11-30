@@ -1,7 +1,7 @@
 import { OrderStatus } from "../../../constants/Status/OrderStatus";
-import { INote } from "./INote";
-import { IPostagePolicy } from "./IPostagePolicy";
-import { ITrackingNumber } from "./ITrackingNumber";
+import { Note } from "./Note";
+import { PostagePolicy } from "./PostagePolicy";
+import { TrackingNumber } from "./TrackingNumber";
 
 export default interface Order {
     uuid: string,
@@ -11,9 +11,9 @@ export default interface Order {
     status: OrderStatus,
     dispatchBy: Date,
     Buyer: string,
-    trackingNumbers: ITrackingNumber[],
-    postagePolicy: IPostagePolicy,
-    notes: INote,
+    trackingNumbers: TrackingNumber[],
+    postagePolicy: PostagePolicy,
+    notes: Note,
     r_listings: string[],
     r_supplies: string[],
 }

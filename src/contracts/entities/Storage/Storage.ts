@@ -1,10 +1,10 @@
 import { StorageType } from "../../../constants/StorageType";
-import IUnit from "./IUnit";
+import Unit from "./Unit";
 
 export default interface Storage {
     uuid: string,
     name: string,
     skuPrefix: string,
     storageType: StorageType,
-    units: IUnit[],
+    units: Unit[],
 }

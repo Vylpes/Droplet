@@ -3,7 +3,6 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../constants/UserTokenType";
 import { Page } from "../../contracts/Page";
-import UserToken from "../../database/entities/UserToken";
 import BodyValidation from "../../helpers/Validation/Body";
 import QueryValidation from "../../helpers/Validation/Query";
 import MessageHelper from "../../helpers/MessageHelper";

@@ -1,4 +1,4 @@
-export interface INote {
+export interface Note {
     uuid: string,
     comment: string,
     whenCreated: Date,

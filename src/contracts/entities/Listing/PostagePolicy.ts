@@ -1,4 +1,4 @@
-export interface IPostagePolicy {
+export interface PostagePolicy {
     uuid: string,
     name: string,
     costToBuyer: string,

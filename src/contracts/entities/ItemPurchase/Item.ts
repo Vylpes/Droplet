@@ -1,7 +1,7 @@
 import { ItemStatus } from "../../../constants/Status/ItemStatus";
 import { INote } from "./INote";
 
-export default interface IItem {
+export default interface Item {
     uuid: string,
     sku: string;
     name: string;
@@ -20,7 +20,7 @@ export default interface IItem {
     }
 }
 
-export function CalculateStatus(item: IItem): ItemStatus {
+export function CalculateStatus(item: Item): ItemStatus {
     if (item.quantities.unlisted > 0) {
         return ItemStatus.Unlisted;
     } else if (item.quantities.listed > 0) {

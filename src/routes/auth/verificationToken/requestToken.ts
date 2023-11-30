@@ -3,14 +3,13 @@ import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
-import UserToken from "../../../database/entities/UserToken";
 import EmailHelper from "../../../helpers/EmailHelper";
 import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import MessageHelper from "../../../helpers/MessageHelper";
 import ConnectionHelper from "../../../helpers/ConnectionHelper";
 import User from "../../../contracts/entities/User/User";
-import IUserToken from "../../../contracts/entities/User/IUserToken";
+import UserToken from "../../../contracts/entities/User/IUserToken";
 import { v4 } from "uuid";
 
 export default class RequestToken extends Page {
@@ -55,7 +54,7 @@ export default class RequestToken extends Page {
                 return;
             }
 
-            const userTokens: IUserToken[] = [];
+            const userTokens: UserToken[] = [];
 
             const now = new Date();
 
@@ -78,7 +77,7 @@ export default class RequestToken extends Page {
                 .replace('{token}', token)
                 .replace('{username}', user.username);
 
-            const userToken: IUserToken = {
+            const userToken: UserToken = {
                 uuid: v4(),
                 token: hashedToken,
                 expires: tokenExpiryDate,

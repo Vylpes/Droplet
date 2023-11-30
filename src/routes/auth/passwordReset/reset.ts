@@ -1,9 +1,8 @@
 import { compareSync, hash } from "bcryptjs";
-import { NextFunction, query, Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../../constants/UserTokenType";
 import { Page } from "../../../contracts/Page";
-import UserToken from "../../../database/entities/UserToken";
 import Body from "../../../helpers/Validation/Body";
 import Query from "../../../helpers/Validation/Query";
 import MessageHelper from "../../../helpers/MessageHelper";

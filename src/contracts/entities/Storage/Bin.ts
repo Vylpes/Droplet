@@ -1,4 +1,4 @@
-export default interface IBin {
+export default interface Bin {
     uuid: string,
     name: string,
     skuPrefix: string,

@@ -1,12 +1,12 @@
 import { SupplyPurchaseStatus } from "../../../constants/Status/SupplyPurchaseStatus";
-import { INote } from "./INote";
-import ISupply from "./ISupply";
+import { Note } from "./Note";
+import Supply from "./Supply";
 
 export default interface SupplyPurchase {
     uuid: string,
     description: string;
     status: SupplyPurchaseStatus
     price: number,
-    supplies: ISupply[],
-    notes: INote[],
+    supplies: Supply[],
+    notes: Note[],
 }

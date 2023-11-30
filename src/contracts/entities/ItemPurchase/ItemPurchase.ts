@@ -1,12 +1,12 @@
 import { ItemPurchaseStatus } from "../../../constants/Status/ItemPurchaseStatus";
-import IItem from "./IItem";
-import { INote } from "./INote";
+import Item from "./Item";
+import { Note } from "./Note";
 
 export default interface ItemPurchase {
     uuid: string,
     description: string;
     status: ItemPurchaseStatus
     price: number,
-    items: IItem[],
-    notes: INote[],
+    items: Item[],
+    notes: Note[],
 }

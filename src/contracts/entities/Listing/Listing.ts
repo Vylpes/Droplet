@@ -1,6 +1,6 @@
 import { ListingStatus } from "../../../constants/Status/ListingStatus";
-import { INote } from "./INote";
-import { IPostagePolicy } from "./IPostagePolicy";
+import { Note } from "./Note";
+import { PostagePolicy } from "./PostagePolicy";
 
 export default interface Listing {
     uuid: string,
@@ -14,7 +14,7 @@ export default interface Listing {
         left: number,
         sold: number,
     },
-    postagePolicy: IPostagePolicy,
-    notes: INote[],
+    postagePolicy: PostagePolicy,
+    notes: Note[],
     r_items: number[],
 }

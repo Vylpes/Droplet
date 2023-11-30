@@ -1,4 +1,4 @@
-import { INote } from "./INote";
+import { Note } from "./Note";
 
 export default interface PostagePolicy {
     uuid: string,
@@ -6,5 +6,5 @@ export default interface PostagePolicy {
     costToBuyer: number,
     actualCost: number,
     archived: boolean,
-    notes: INote[],
+    notes: Note[],
 }

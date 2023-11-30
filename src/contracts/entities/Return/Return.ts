@@ -1,6 +1,6 @@
 import { ReturnStatus } from "../../../constants/Status/ReturnStatus";
-import { INote } from "./INote";
-import { ITrackingNumber } from "./ITrackingNumber";
+import { Note } from "./Note";
+import { TrackingNumber } from "./TrackingNumber";
 
 export default interface Return {
     uuid: string,
@@ -9,7 +9,7 @@ export default interface Return {
     returnBy: Date,
     status: ReturnStatus,
     refundAmount: number,
-    trackingNumbers: ITrackingNumber[],
-    notes: INote[],
+    trackingNumbers: TrackingNumber[],
+    notes: Note[],
     r_order: string,
 }
