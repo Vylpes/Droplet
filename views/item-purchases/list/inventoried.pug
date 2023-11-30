@@ -30,9 +30,9 @@ block content
         tbody
             each row in purchases
                 tr
-                    td= row.Description
-                    td= row.Price
-                    td= row.Items.length
+                    td= row.description
+                    td= row.price
+                    td= row.items.length
                     td
                         a(href="/item-purchases/view/" + row.Id).btn.text-primary
                             i.fas.fa-eye

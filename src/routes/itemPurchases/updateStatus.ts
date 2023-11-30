@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 
 export default class UpdateStatus extends Page {
     constructor(router: Router) {
@@ -24,11 +25,7 @@ export default class UpdateStatus extends Page {
 
             const status = req.body.status;
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id);
-
-            purchase.UpdateStatus(status);
-
-            await purchase.Save(ItemPurchase, purchase);
+            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: Id }, { status: status });
 
             res.redirect(`/item-purchases/view/${Id}`);
         });

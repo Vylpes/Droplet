@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../database/entities/ItemPurchase";
-import Note from "../../database/entities/Note";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import { ItemPurchaseStatusNames } from "../../constants/Status/ItemPurchaseStatus";
+import { ItemStatusNames } from "../../constants/Status/ItemStatus";
+import { RoundTo } from "../../helpers/NumberHelper";
+import Item from "../../contracts/entities/ItemPurchase/Item";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -19,18 +22,22 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
-            ]);
+            const purchaseMaybe = await ConnectionHelper.FindOne<ItemPurchase>("item-purchase", { uuid: Id });
 
-            if (!purchase) {
+            if (!purchaseMaybe.IsSuccess) {
                 next(createHttpError(404));
+                return;
             }
 
-            const notes = await Note.FetchAllForId(NoteType.ItemPurchase, Id);
+            const purchase = purchaseMaybe.Value!;
+            const notes = purchase.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
             res.locals.purchase = purchase;
-            res.locals.notes = notes.sort((a, b) => a.WhenCreated < b.WhenCreated ? -1 : a.WhenCreated > b.WhenCreated ? 1 : 0);
+            res.locals.notes = notes;
+            res.locals.purchaseStatusName = ItemPurchaseStatusNames.get(purchase.status);
+            res.locals.itemStatusName = (item: Item) => ItemStatusNames.get(item.status);
+            res.locals.calculateTotalQuantity = (item: Item) => item.quantities.unlisted + item.quantities.listed + item.quantities.sold + item.quantities.rejected;
+            res.locals.calculateItemPrice = (item: Item) => RoundTo(RoundTo(purchase.price / purchase.items.length,2) / (item.quantities.listed + item.quantities.unlisted + item.quantities.sold + item.quantities.rejected), 2);
 
             res.render('item-purchases/view', res.locals.viewData);
         });

@@ -28,16 +28,16 @@ block content
                 .card-body
                     .mb-2
                         p.mb-0.text-secondary Description
-                        p= purchase.Description
+                        p= purchase.description
                     .mb-2
-                        p.mb-0.text-secondary Status
-                        p= purchase.StatusName()
+                        p.mb-0.text-secondary status
+                        p= purchaseStatusName
                     .mb-2
                         p.mb-0.text-secondary Price
-                        p= purchase.Price
+                        p= purchase.price
                     .mb-2
                         p.mb-0.text-secondary Items
-                        p= purchase.Items.length
+                        p= purchase.items.length
         .col-8
             .card
                 .card-header Items
@@ -54,11 +54,11 @@ block content
                         tbody
                             each row in purchase.Items
                                 tr
-                                    td= row.Name
-                                    td= row.Sku
-                                    td= row.UnlistedQuantity + row.ListedQuantity + row.SoldQuantity + row.RejectedQuantity
-                                    td= row.StatusName()
-                                    td= row.BuyPrice
+                                    td= row.name
+                                    td= row.sku
+                                    td= calculateTotalQuantity(row)
+                                    td= itemStatusName(row)
+                                    td= calculateItemPrice(row)
                                     td
                                         a(href="/items/" + row.Id).btn.text-primary
                                             i.fas.fa-eye

@@ -1,8 +1,11 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import { v4 } from "uuid";
+import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -20,9 +23,16 @@ export default class New extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = new ItemPurchase(description, price);
+            const purchase: ItemPurchase = {
+                uuid: v4(),
+                description: description,
+                price: price,
+                status: ItemPurchaseStatus.Ordered,
+                items: [],
+                notes: [],
+            }
 
-            await purchase.Save(ItemPurchase, purchase);
+            await ConnectionHelper.InsertOne<ItemPurchase>("item-purchase", purchase);
 
             res.redirect('/item-purchases/ordered');
         });

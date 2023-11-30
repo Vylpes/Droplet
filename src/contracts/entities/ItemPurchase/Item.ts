@@ -1,5 +1,5 @@
 import { ItemStatus } from "../../../constants/Status/ItemStatus";
-import { INote } from "./INote";
+import { Note } from "./Note";
 
 export default interface Item {
     uuid: string,
@@ -12,7 +12,7 @@ export default interface Item {
         rejected: number;
     },
     status: ItemStatus,
-    notes: INote[],
+    notes: Note[],
     storage: {
         r_building: string,
         r_unit: string,

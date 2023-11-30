@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import MessageHelper from "../../helpers/MessageHelper";
+import Item from "../../contracts/entities/ItemPurchase/Item";
+import { RoundTo } from "../../helpers/NumberHelper";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -27,14 +31,7 @@ export default class Update extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-                "Items"
-            ]);
-
-            purchase.UpdateBasicDetails(description, price);
-
-            await purchase.Save(ItemPurchase, purchase);
-            await purchase.CalculateItemPrices();
+            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: Id }, { description: description, price: price });
 
             res.redirect(`/item-purchases/view/${Id}`);
         });
