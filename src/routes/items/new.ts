@@ -1,9 +1,12 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../database/entities/Item";
-import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import Item from "../../contracts/entities/ItemPurchase/Item";
+import { v4 } from "uuid";
+import { ItemStatus } from "../../constants/Status/ItemStatus";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -24,23 +27,22 @@ export default class New extends Page {
             const quantity = req.body.quantity;
             const purchaseId = req.body.purchaseId;
 
-            const item = new Item(name, quantity);
+            const item: Item = {
+                uuid: v4(),
+                name: name,
+                quantities: {
+                    unlisted: quantity,
+                    listed: 0,
+                    sold: 0,
+                    rejected: 0,
+                },
+                status: ItemStatus.Unlisted,
+                sku: null,
+                notes: [],
+                r_storageBin: null,
+            };
 
-            await item.Save(Item, item);
-
-            let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-                "Items"
-            ]);
-
-            purchase.AddItemToOrder(item);
-
-            await purchase.Save(ItemPurchase, purchase);
-
-            purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-                "Items"
-            ]);
-
-            await purchase.CalculateItemPrices();
+            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: purchaseId }, { $push: { items: item } });
 
             res.redirect(`/item-purchases/view/${purchaseId}`);
         });

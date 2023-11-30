@@ -3,6 +3,8 @@ import { Page } from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -23,11 +25,7 @@ export default class Update extends Page {
 
             const name = req.body.name;
 
-            const item = await Item.FetchOneById<Item>(Item, itemId);
-
-            item.EditBasicDetails(name);
-
-            await item.Save(Item, item);
+            await ConnectionHelper.UpdateOne<ItemPurchase>('item-purchase', { items: { uuid: itemId } }, { $set: { 'items.$.name': name } });
 
             res.redirect(`/items/${itemId}`);
         });

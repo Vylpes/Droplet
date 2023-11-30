@@ -13,11 +13,7 @@ export default interface Item {
     },
     status: ItemStatus,
     notes: Note[],
-    storage: {
-        r_building: string,
-        r_unit: string,
-        r_bin: string,
-    }
+    r_storageBin: string,
 }
 
 export function CalculateStatus(item: Item): ItemStatus {

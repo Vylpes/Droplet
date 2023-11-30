@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../database/entities/Item";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 
 export default class UpdateQuantity extends Page {
     constructor(router: Router) {
@@ -36,11 +37,7 @@ export default class UpdateQuantity extends Page {
             const sold = req.body.sold;
             const rejected = req.body.rejected;
 
-            const item = await Item.FetchOneById<Item>(Item, itemId);
-
-            item.EditQuantities(unlisted, listed, sold, rejected);
-
-            await item.Save(Item, item);
+            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { items: { uuid: itemId } }, { $set: { 'items.$.quantities.unlisted': unlisted, 'items.$.quantities.listed': listed, 'items.$.quantities.sold': sold, 'items.$.quantities.rejected': rejected } });
 
             res.redirect(`/items/${itemId}`);
         });
