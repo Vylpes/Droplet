@@ -53,7 +53,7 @@ export default class view extends Page {
             res.locals.assignedItems = assignedItems;
             res.locals.postagePolicies = postagePolicies;
             res.locals.statusName = ListingStatusNames.get(listing.status);
-            res.locals.itemStatusName = (item: Item) => ItemStatusNames.get(item.status);
+            res.locals.getItemStatusName = (item: Item) => ItemStatusNames.get(item.status);
 
             res.render('listings/view', res.locals.viewData);
         });
