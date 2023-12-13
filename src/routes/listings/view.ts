@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
-import { ItemStatus } from "../../constants/Status/ItemStatus";
+import { ItemStatus, ItemStatusNames } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../database/entities/Item";
-import { Listing } from "../../database/entities/Listing";
 import Note from "../../database/entities/Note";
-import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Listing from "../../contracts/entities/Listing/Listing";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
+import { ListingStatusNames } from "../../constants/Status/ListingStatus";
+import Item from "../../contracts/entities/ItemPurchase/Item";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -22,25 +25,35 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items",
-                "PostagePolicy"
-            ]);
+            const listingMaybe = await ConnectionHelper.FindOne<Listing>("listing", { uuid: Id });
 
-            const items = await Item.FetchAll(Item);
-
-            const postagePolicies = await PostagePolicy.FetchAll(PostagePolicy);
-
-            if (!listing) {
+            if (!listingMaybe.IsSuccess) {
                 next(createHttpError(404));
+                return;
             }
 
-            const notes = await Note.FetchAllForId(NoteType.Listing, Id);
+            const listing = listingMaybe.Value;
+
+            const itemPurchasesMaybe = await ConnectionHelper.FindMultiple<ItemPurchase>("item-purchase", {});
+            const allItemPurchases = itemPurchasesMaybe.Value!;
+
+            const assignedItems = allItemPurchases
+                .flatMap(x => x.items)
+                .filter(x => listing.r_items.includes(x.uuid));
+
+            const items = allItemPurchases
+                .flatMap(x => x.items)
+                .filter(x => x.status == ItemStatus.Unlisted);
+
+            const postagePoliciesMaybe = await ConnectionHelper.FindMultiple<PostagePolicy>("postage-policy", { archived: false });
+            const postagePolicies = postagePoliciesMaybe.Value!;
 
             res.locals.listing = listing;
-            res.locals.items = items.filter(x => x.Status == ItemStatus.Unlisted);
-            res.locals.postagePolicies = postagePolicies.filter(x => !x.Archived);
-            res.locals.notes = notes;
+            res.locals.items = items;
+            res.locals.assignedItems = assignedItems;
+            res.locals.postagePolicies = postagePolicies;
+            res.locals.statusName = ListingStatusNames.get(listing.status);
+            res.locals.itemStatusName = (item: Item) => ItemStatusNames.get(item.status);
 
             res.render('listings/view', res.locals.viewData);
         });

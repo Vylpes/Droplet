@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Listing } from "../../database/entities/Listing";
-import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Listing from "../../contracts/entities/Listing/Listing";
+import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
+import MessageHelper from "../../helpers/MessageHelper";
 
 export default class AssignPostagePolicy extends Page {
     constructor(router: Router) {
@@ -24,15 +26,19 @@ export default class AssignPostagePolicy extends Page {
 
             const policyId = req.body.policyId;
 
-            const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
+            const policyMaybe = await ConnectionHelper.FindOne<PostagePolicy>("postage-policy", { uuid: policyId, archived: false });
 
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "PostagePolicy"
-            ]);
+            if (!policyMaybe.IsSuccess) {
+                const message = new MessageHelper(req);
+                await message.Error("Unable to find policy");
 
-            listing.AddPostagePolicyToListing(policy);
+                res.redirect(`/listings/view/${Id}`);
+                return;
+            }
 
-            await listing.Save(Listing, listing);
+            const policy = policyMaybe.Value!;
+
+            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $set: { postagePolicy: { uuid: policy.uuid, name: policy.name, costToBuyer: policy.costToBuyer, actualCost: policy.actualCost } }});
 
             res.redirect(`/listings/view/${Id}`);
         });

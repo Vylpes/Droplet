@@ -1,8 +1,9 @@
 import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Listing from "../../contracts/entities/Listing/Listing";
 
 export default class Renew extends Page {
     constructor(router: Router) {
@@ -21,15 +22,9 @@ export default class Renew extends Page {
                 return;
             }
 
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items"
-            ]);
-
             const endDate = req.body.endDate;
 
-            listing.RenewListing(endDate);
-
-            await listing.Save(Listing, listing);
+            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $inc: { timesRelisted: 1 }, endDate: endDate });
 
             res.redirect(`/listings/view/${Id}`);
         });

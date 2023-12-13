@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
-import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Listing from "../../contracts/entities/Listing/Listing";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -34,11 +35,7 @@ export default class Update extends Page {
             const price = req.body.price;
             const quantity = req.body.quantity;
 
-            const listing = await Listing.FetchOneById(Listing, Id);
-
-            listing.UpdateBasicDetails(name, listingNumber, price, quantity);
-
-            await listing.Save(Listing, listing);
+            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { name, listingNumber, price, quantities: { left: quantity } });
 
             res.redirect(`/listings/view/${Id}`);
         });

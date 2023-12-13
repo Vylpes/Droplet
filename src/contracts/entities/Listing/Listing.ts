@@ -16,5 +16,5 @@ export default interface Listing {
     },
     postagePolicy: PostagePolicy,
     notes: Note[],
-    r_items: number[],
+    r_items: string[],
 }

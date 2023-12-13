@@ -37,25 +37,25 @@ block content
                             .mb-2
                                 p.mb-0.text-secondary Listing Number
                                 p
-                                    a(href="https://ebay.co.uk/itm/" + listing.ListingNumber, target="_blank")= listing.ListingNumber
+                                    a(href="https://ebay.co.uk/itm/" + listing.listingNumber, target="_blank")= listing.listingNumber
                             .mb-2
                                 p.mb-0.text-secondary Price
-                                p= listing.Price
+                                p= listing.price
                             .mb-2
                                 p.mb-0.text-secondary Status
-                                p= listing.StatusName()
+                                p= statusName
                             .mb-2
                                 p.mb-0.text-secondary Quantity
-                                p= listing.Quantity
+                                p= listing.quantities.left
                             .mb-2
                                 p.mb-0.text-secondary End Date
-                                p= listing.EndDate
+                                p= listing.endDate
                             .mb-2
                                 p.mb-0.text-secondary Relisted Times
-                                p= listing.RelistedTimes
+                                p= listing.relistedTimes
                             .mb-2
                                 p.mb-0.text-secondary Items
-                                p= listing.Items.length
+                                p= assignedItems.length
 
         .col-8
             .card
@@ -70,14 +70,14 @@ block content
                                 th Buy Price
                                 th
                         tbody
-                            each row in listing.Items
+                            each row in assignedItems
                                 tr
-                                    td= row.Name
-                                    td= row.Sku
-                                    td= row.StatusName()
-                                    td= row.BuyPrice
+                                    td= row.name
+                                    td= row.sku
+                                    td= getItemStatusName(row)
+                                    td= row.buyPrice
                                     td
-                                        a(href="/items/" + row.Id).btn.text-primary
+                                        a(href="/items/" + row.uuid).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
     .row.mt-3
@@ -88,23 +88,22 @@ block content
                     if listing.PostagePolicy
                         .mb-2
                             p.mb-0.text-secondary Name
-                            p
-                                a(href="/postage-policies/" + listing.PostagePolicy.Id, target="_blank")= listing.PostagePolicy.Name
+                            p= listing.postagePolicy.name
                         .mb-2
                             p.mb-0.text-secondary Cost To Buyer
-                            p= listing.PostagePolicy.CostToBuyer
+                            p= listing.postagePolicy.costToBuyer
                         .mb-2
                             p.mb-0.text-secondary Actual Cost
-                            p= listing.PostagePolicy.ActualCost
+                            p= listing.postagePolicy.actualCost
         .col-8
             .card
                 .card-header Notes
                 .card-body
-                    each note in notes
-                        p= note.Text
-                        p.text-secondary= '- ' + note.WhenCreated
+                    each note in listing.notes
+                        p= note.comment
+                        p.text-secondary= '- ' + note.whenCreated
                         hr
-    form(method='POST' action='/listings/view/' + listing.Id + '/update').modal.fade#edit-listing-modal
+    form(method='POST' action='/listings/view/' + listing.uuid + '/update').modal.fade#edit-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -113,21 +112,21 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label Name
-                        input(type='text' name='name' value=listing.Name).form-control
+                        input(type='text' name='name' value=listing.name).form-control
                     .form-group.mb-3
                         label Listing Number
-                        input(type='text' name='listingNumber' value=listing.ListingNumber).form-control
+                        input(type='text' name='listingNumber' value=listing.listingNumber).form-control
                     .form-group.mb-3
                         label Price
-                        input(type='number' step=".01" name='price' value=listing.Price).form-control
+                        input(type='number' step=".01" name='price' value=listing.price).form-control
                     .form-group.mb-3
                         label Quantity
-                        input(type='number' step="1" name='quantity' value=listing.Quantity).form-control
+                        input(type='number' step="1" name='quantity' value=listing.quantity).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Update
-    form(method='POST' action='/listings/view/' + listing.Id + '/end').modal.fade#end-listing-modal
+    form(method='POST' action='/listings/view/' + listing.uuid + '/end').modal.fade#end-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -140,7 +139,7 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Yes
-    form(method='POST' action='/listings/view/' + listing.Id + '/renew').modal.fade#renew-listing-modal
+    form(method='POST' action='/listings/view/' + listing.uuid + '/renew').modal.fade#renew-listing-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -149,12 +148,12 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label End Date
-                        input(type='date' name='endDate' value=listing.EndDate).form-control
+                        input(type='date' name='endDate' value=listing.endDate).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Renew
-    form(method='POST' action='/listings/view/' + listing.Id + '/assign-item').modal.fade#add-item-modal
+    form(method='POST' action='/listings/view/' + listing.uuid + '/assign-item').modal.fade#add-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -165,12 +164,12 @@ block content
                         label Item
                         select(name='itemId').form-control
                             each row in items
-                                option(value=row.Id)= row.Sku + " " + row.Name
+                                option(value=row.uuid)= row.sku + " " + row.name
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
-    form(method='POST' action='/listings/view/' + listing.Id + '/assign-postage-policy').modal.fade#add-postage-policy-modal
+    form(method='POST' action='/listings/view/' + listing.uuid + '/assign-postage-policy').modal.fade#add-postage-policy-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -181,12 +180,12 @@ block content
                         label Postage Policy
                         select(name='policyId').form-control
                             each row in postagePolicies
-                                option(value=row.Id)= row.Name
+                                option(value=row.uuid)= row.name
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
-    form(method='POST' action='/listings/' + listing.Id + '/add-note').modal.fade#add-note-modal
+    form(method='POST' action='/listings/' + listing.uuid + '/add-note').modal.fade#add-note-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header

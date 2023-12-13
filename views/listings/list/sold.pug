@@ -30,12 +30,12 @@ block content
             each row in listings
                 tr
                     td
-                        a(href="https://ebay.co.uk/itm/" + row.ListingNumber, target="_blank")= row.ListingNumber
-                    td= row.Name
-                    td= row.Price
-                    td= row.EndDate
+                        a(href="https://ebay.co.uk/itm/" + row.listingNumber, target="_blank")= row.listingNumber
+                    td= row.name
+                    td= row.price
+                    td= row.endDate
                     td
-                        a(href="/listings/view/" + row.Id).btn.text-primary
+                        a(href="/listings/view/" + row.uuid).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/listings/new').modal.fade#new-listing-modal
@@ -55,7 +55,7 @@ block content
                         label Item
                         select(name='itemId').form-control
                             each row in items
-                                option(value=row.Id)= row.Sku + " " + row.Name + " (" + row.UnlistedQuantity + " Unlisted)"
+                                option(value=row.uuid)= row.sku + " " + row.name + " (" + row.quantities.unlisted + " Unlisted)"
                     .form-group.mb-3
                         label Price
                         input(type='number' step=".01" name='price').form-control

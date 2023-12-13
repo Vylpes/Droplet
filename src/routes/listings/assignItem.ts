@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../database/entities/Item";
-import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import MessageHelper from "../../helpers/MessageHelper";
+import Listing from "../../contracts/entities/Listing/Listing";
 
 export default class AssignItem extends Page {
     constructor(router: Router) {
@@ -25,19 +27,7 @@ export default class AssignItem extends Page {
 
             const itemId = req.body.itemId;
 
-            const item = await Item.FetchOneById(Item, itemId);
-
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items"
-            ]);
-
-            listing.AddItemToListing(item);
-
-            await listing.Save(Listing, listing);
-
-            item.MarkAsListed(listing.Quantity, ItemStatus.Unlisted);
-
-            await item.Save(Item, item);
+            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $push: { r_items: itemId } });
 
             res.redirect(`/listings/view/${Id}`);
         });

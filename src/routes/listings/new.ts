@@ -1,10 +1,13 @@
 import { Request, Response, Router } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import { Page } from "../../contracts/Page";
-import { Item } from "../../database/entities/Item";
-import { Listing } from "../../database/entities/Listing";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import Listing from "../../contracts/entities/Listing/Listing";
+import { v4 } from "uuid";
+import { ListingStatus } from "../../constants/Status/ListingStatus";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -35,23 +38,24 @@ export default class New extends Page {
             const quantity = req.body.quantity;
             const itemId = req.body.itemId;
 
-            const item = await Item.FetchOneById(Item, itemId);
+            const listing: Listing = {
+                uuid: v4(),
+                name: name,
+                listingNumber: listingNumber,
+                price: price,
+                endDate: endDate,
+                quantities: {
+                    left: quantity,
+                    sold: 0,
+                },
+                status: ListingStatus.Active,
+                timesRelisted: 0,
+                postagePolicy: null,
+                notes: [],
+                r_items: [ itemId ],
+            }
 
-            let listing = new Listing(name, listingNumber, price, endDate, quantity);
-
-            await listing.Save(Listing, listing);
-
-            listing = await Listing.FetchOneById(Listing, listing.Id, [
-                "Items"
-            ]);;
-
-            listing.AddItemToListing(item);
-
-            await listing.Save(Listing, listing);
-
-            item.MarkAsListed(quantity, ItemStatus.Unlisted);
-
-            await item.Save(Item, item);
+            await ConnectionHelper.InsertOne<Listing>("listing", listing);
 
             res.redirect('/listings/active');
         });
