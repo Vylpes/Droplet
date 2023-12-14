@@ -3,7 +3,7 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import UpdateItemQuantityCommand from "../../domain/commands/Item/UpdateItemQuantityCommand";
 
 export default class UpdateQuantity extends Page {
     constructor(router: Router) {
@@ -37,7 +37,7 @@ export default class UpdateQuantity extends Page {
             const sold = req.body.sold;
             const rejected = req.body.rejected;
 
-            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { items: { uuid: itemId } }, { $set: { 'items.$.quantities.unlisted': unlisted, 'items.$.quantities.listed': listed, 'items.$.quantities.sold': sold, 'items.$.quantities.rejected': rejected } });
+            await UpdateItemQuantityCommand(itemId, unlisted, listed, sold, rejected);
 
             res.redirect(`/items/${itemId}`);
         });

@@ -3,10 +3,9 @@ import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import { Note } from "../../contracts/entities/ItemPurchase/Note";
 import { v4 } from "uuid";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import AddNoteToItemCommand from "../../domain/commands/Item/AddNoteToItemCommand";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -27,17 +26,7 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            const note: Note = {
-                uuid: v4(),
-                comment: text,
-                whenCreated: new Date(),
-                author: {
-                    username: req.session.User.username,
-                    r_userId: req.session.User.uuid,
-                },
-            }
-
-            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { items: { uuid: itemId } }, { $push: { 'items.$.notes': note } });
+            await AddNoteToItemCommand(itemId, text, req.session.User.userId, req.session.User.username);
 
             res.redirect(`/items/${itemId}`);
         });

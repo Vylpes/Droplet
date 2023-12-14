@@ -6,9 +6,10 @@ import { Item } from "../../database/entities/Item";
 import Note from "../../database/entities/Note";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 import { RoundTo } from "../../helpers/NumberHelper";
-import Storage from "../../contracts/entities/Storage/Storage";
+import ItemQueries from "../../queries/ItemQueries";
+import StorageQueries from "../../queries/StorageQueries";
+import ItemPurchaseQueries from "../../queries/ItemPurchaseQueries";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -24,27 +25,19 @@ export default class view extends Page {
                 return;
             }
 
-            const itemPurchaseMaybe = await ConnectionHelper.FindOne<ItemPurchase>('item-purchase', { items: { uuid: itemId } });
+            const item = await ItemQueries.GetOneById(itemId);
 
-
-            if (!itemPurchaseMaybe.IsSuccess) {
-                next(createHttpError(404));
-                return;
-            }
-
-            const itemPurchase = itemPurchaseMaybe.Value!;
-            const item = itemPurchase.items.find(x => x.uuid == itemId);
-
-            const storageBuildingMaybe = await ConnectionHelper.FindOne<Storage>('storage', { units: { bins: { uuid: item.r_storageBin } }});
-            const storageBuilding = storageBuildingMaybe.IsSuccess ? storageBuildingMaybe.Value! : null;
-            const storageUnit = storageBuildingMaybe.IsSuccess ? storageBuilding.units[0] : null;
-            const storageBin = storageBuildingMaybe.IsSuccess ? storageUnit.bins[0] : null;
+            const storageBuilding = await StorageQueries.GetOneByBinId(item.r_storageBin);
+            const storageUnit = storageBuilding.units[0];
+            const storageBin = storageUnit.bins[0];
 
             const notes = item.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
+            const itemPurchase = await ItemPurchaseQueries.GetOneById(item.r_itemPurchase);
+
             res.locals.item = item;
             res.locals.notes = notes;
-            res.locals.buyPrice = RoundTo(RoundTo(itemPurchase.price / itemPurchase.items.length,2) / (item.quantities.listed + item.quantities.unlisted + item.quantities.sold + item.quantities.rejected), 2);
+            res.locals.buyPrice = RoundTo(RoundTo(itemPurchase.price / itemPurchase.r_items.length,2) / (item.quantities.listed + item.quantities.unlisted + item.quantities.sold + item.quantities.rejected), 2);
             res.locals.storageBuilding = storageBuilding;
             res.locals.storageUnit = storageUnit;
             res.locals.storageBin = storageBin;

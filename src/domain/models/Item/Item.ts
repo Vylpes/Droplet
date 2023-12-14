@@ -1,5 +1,7 @@
-import { ItemStatus } from "../../../constants/Status/ItemStatus";
+import { v4 } from "uuid";
 import { Note } from "./Note";
+import { ItemStatus } from "../../../constants/Status/ItemStatus";
+import ConnectionHelper from "../../../helpers/ConnectionHelper";
 
 export default interface Item {
     uuid: string,
@@ -14,6 +16,7 @@ export default interface Item {
     status: ItemStatus,
     notes: Note[],
     r_storageBin: string,
+    r_itemPurchase: string,
 }
 
 export function CalculateStatus(item: Item): ItemStatus {

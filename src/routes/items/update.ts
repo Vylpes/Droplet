@@ -4,7 +4,7 @@ import { Item } from "../../database/entities/Item";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import UpdateItemBasicDetailsCommand from "../../domain/commands/Item/UpdateItemBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -25,7 +25,7 @@ export default class Update extends Page {
 
             const name = req.body.name;
 
-            await ConnectionHelper.UpdateOne<ItemPurchase>('item-purchase', { items: { uuid: itemId } }, { $set: { 'items.$.name': name } });
+            await UpdateItemBasicDetailsCommand(itemId, name);
 
             res.redirect(`/items/${itemId}`);
         });
