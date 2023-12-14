@@ -1,5 +1,4 @@
 import { ItemPurchaseStatus } from "../../../constants/Status/ItemPurchaseStatus";
-import Item from "./Item";
 import { Note } from "./Note";
 
 export default interface ItemPurchase {
@@ -7,6 +6,6 @@ export default interface ItemPurchase {
     description: string;
     status: ItemPurchaseStatus
     price: number,
-    items: Item[],
     notes: Note[],
+    r_items: string[],
 }

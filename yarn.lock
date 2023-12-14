@@ -683,6 +683,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@qnn92/mediatorts@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@qnn92/mediatorts/-/mediatorts-1.0.8.tgz#fb03b2958bc18965df5f4fd564e382540b33b09d"
+  integrity sha512-Ush5YX6yttFP11r4y9X7kcDV5qHYPb5OJqfH8iOuteSHQJR4XxWJH23Dn07G5+JugwDu/dc9mHPwsrKeztbpqA==
+
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
