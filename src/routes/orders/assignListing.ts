@@ -4,8 +4,9 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Listing } from "../../database/entities/Listing";
-import { Order } from "../../database/entities/Order";
 import { Item } from "../../database/entities/Item";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Order from "../../contracts/entities/Order/Order";
 
 export default class AssignListing extends Page {
     constructor(router: Router) {
@@ -30,27 +31,7 @@ export default class AssignListing extends Page {
             const listingId = req.body.listingId;
             const amount = req.body.amount;
 
-            const listing = await Listing.FetchOneById(Listing, listingId, [
-                "Items"
-            ]);
-
-            const order = await Order.FetchOneById(Order, Id, [
-                "Listings"
-            ]);
-
-            order.AddListingToOrder(listing);
-
-            await order.Save(Order, order);
-
-            listing.MarkAsSold(amount);
-
-            await listing.Save(Listing, listing);
-
-            for (const item of listing.Items) {
-                item.MarkAsSold(amount, ItemStatus.Listed);
-
-                await item.Save(Item, item);
-            }
+            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { r_listings: listingId }});
 
             res.redirect(`/orders/view/${Id}`);
         });

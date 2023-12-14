@@ -10,10 +10,10 @@ export default interface Order {
     offerAccepted: boolean,
     status: OrderStatus,
     dispatchBy: Date,
-    Buyer: string,
+    buyer: string,
     trackingNumbers: TrackingNumber[],
     postagePolicy: PostagePolicy,
-    notes: Note,
+    notes: Note[],
     r_listings: string[],
     r_supplies: string[],
 }

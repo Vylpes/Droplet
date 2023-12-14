@@ -34,13 +34,13 @@ block content
             each row in orders
                 tr
                     td
-                        a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + row.OrderNumber, target="_blank")= row.OrderNumber
+                        a(href="https://www.ebay.co.uk/sh/ord/details?orderid=" + row.orderNumber, target="_blank")= row.orderNumber
                     td
-                        a(href="https://ebay.co.uk/usr/" + row.Buyer, target="_blank")= row.Buyer
-                    td= row.Price
-                    td= row.OfferAccepted
+                        a(href="https://ebay.co.uk/usr/" + row.buyer, target="_blank")= row.buyer
+                    td= row.price
+                    td= row.offerAccepted
                     td
-                        a(href="/orders/view/" + row.Id).btn.text-primary
+                        a(href="/orders/view/" + row.uuid).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/orders/new').modal.fade#new-order-modal
@@ -65,13 +65,13 @@ block content
                         label Listing
                         select(name='listingId').form-control
                             each row in listings
-                                option(value=row.Id)= row.ListingNumber + " " + row.Name
+                                option(value=row.uuid)= row.listingNumber + " " + row.name
                     .form-group.mb-3
                         label Postage Policy
                         select(name='postagePolicyId').form-control
                             option(value="INHERIT") (INHERIT)
                             each row in postagePolicies
-                                option(value=row.Id)= row.Name
+                                option(value=row.Id)= row.name
                     .form-group.mb-3
                         label Amount
                         input(type='number' step='1' name='amount').form-control

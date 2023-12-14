@@ -2,7 +2,8 @@ import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import { Order } from "../../database/entities/Order";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Order from "../../contracts/entities/Order/Order";
 
 export default class Discount extends Page {
     constructor(router: Router) {
@@ -24,11 +25,7 @@ export default class Discount extends Page {
 
             const amount = req.body.amount;
 
-            const order = await Order.FetchOneById(Order, Id);
-
-            order.ApplyDiscount(amount);
-
-            await order.Save(Order, order);
+            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $inc: { price: (amount * -1) } });
 
             res.redirect(`/orders/view/${Id}`);
         });

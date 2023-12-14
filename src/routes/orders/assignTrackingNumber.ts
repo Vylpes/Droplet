@@ -4,7 +4,9 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { TrackingNumber } from "../../database/entities/TrackingNumber";
-import { Order } from "../../database/entities/Order";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Order from "../../contracts/entities/Order/Order";
+import { v4 } from "uuid";
 
 export default class AssignTrackingNumber extends Page {
     constructor(router: Router) {
@@ -29,17 +31,7 @@ export default class AssignTrackingNumber extends Page {
             const number = req.body.number;
             const service = req.body.service;
 
-            const trackingNumber = new TrackingNumber(number, service, TrackingNumberType.Order);
-
-            await trackingNumber.Save(TrackingNumber, trackingNumber);
-
-            const order = await Order.FetchOneById(Order, Id, [
-                "TrackingNumbers"
-            ]);
-
-            order.AddTrackingNumberToOrder(trackingNumber);
-
-            await order.Save(Order, order);
+            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { trackingNumbers: { uuid: v4(), number, service } } });
 
             res.redirect(`/orders/view/${Id}`);
         });

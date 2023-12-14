@@ -3,7 +3,8 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Supply } from "../../database/entities/Supply";
-import { Order } from "../../database/entities/Order";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Order from "../../contracts/entities/Order/Order";
 
 export default class AssignSupply extends Page {
     constructor(router: Router) {
@@ -28,19 +29,7 @@ export default class AssignSupply extends Page {
             const supplyId = req.body.supplyId;
             const amount = req.body.amount;
 
-            const supply = await Supply.FetchOneById(Supply, supplyId);
-
-            const order = await Order.FetchOneById(Order, Id, [
-                "Supplies"
-            ]);
-
-            order.AddSupplyToOrder(supply);
-
-            await order.Save(Order, order);
-
-            supply.RemoveStock(amount);
-
-            await supply.Save(Supply, supply);
+            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { r_supplies: supplyId } });
 
             res.redirect(`/orders/view/${Id}`);
         });

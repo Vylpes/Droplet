@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
-import Note from "../../database/entities/Note";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Note } from "../../contracts/entities/Order/Note";
+import { v4 } from "uuid";
+import ConnectionHelper from "../../helpers/ConnectionHelper";
+import Order from "../../contracts/entities/Order/Order";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -24,9 +27,17 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            const note = new Note(text, NoteType.Order, Id);
+            const note: Note = {
+                uuid: v4(),
+                comment: text,
+                whenCreated: new Date(),
+                author: {
+                    username: req.session.User.username,
+                    r_userId: req.session.User.uuid,
+                },
+            };
 
-            await note.Save(Note, note);
+            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { notes: note }});
 
             res.redirect(`/orders/view/${Id}`);
         });
