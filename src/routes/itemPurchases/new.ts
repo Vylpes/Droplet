@@ -2,10 +2,10 @@ import { Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 import { v4 } from "uuid";
 import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
+import CreateItemPurchaseCommand from "../../domain/commands/ItemPurchase/CreateItemPurchaseCommand";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -23,16 +23,7 @@ export default class New extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase: ItemPurchase = {
-                uuid: v4(),
-                description: description,
-                price: price,
-                status: ItemPurchaseStatus.Ordered,
-                items: [],
-                notes: [],
-            }
-
-            await ConnectionHelper.InsertOne<ItemPurchase>("item-purchase", purchase);
+            await CreateItemPurchaseCommand(description, price);
 
             res.redirect('/item-purchases/ordered');
         });

@@ -8,5 +8,5 @@ export default async function UpdateItemBasicDetailsCommand(itemId: string, name
         return;
     }
 
-    await ConnectionHelper.UpdateOne<Item>("item", { uuid: itemId }, { name });
+    await ConnectionHelper.UpdateOne<Item>("item", { uuid: itemId }, { $set: { name } });
 }

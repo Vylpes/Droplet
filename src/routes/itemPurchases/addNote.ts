@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { Page } from "../../contracts/Page";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import { INote } from "../../contracts/entities/ItemPurchase/INote";
 import { v4 } from "uuid";
 import Body from "../../helpers/Validation/Body";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import AddNoteToItemPurchaseCommand from "../../domain/commands/ItemPurchase/AddNoteToItemPurchaseCommand";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -26,17 +25,7 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            const note: INote = {
-                uuid: v4(),
-                comment: text,
-                whenCreated: new Date(),
-                author: {
-                    r_userId: req.session.User.uuid,
-                    username: req.session.User.username,
-                },
-            };
-
-            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: Id }, { $push: { notes: note } });
+            await AddNoteToItemPurchaseCommand(Id, text, req.session.User.Id, req.session.User.username);
 
             res.redirect(`/item-purchases/view/${Id}`);
         });

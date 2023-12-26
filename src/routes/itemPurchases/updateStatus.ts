@@ -3,7 +3,7 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import UpdateItemPurchaseStatusCommand from "../../domain/commands/ItemPurchase/UpdateItemPurchaseStatusCommand";
 
 export default class UpdateStatus extends Page {
     constructor(router: Router) {
@@ -25,7 +25,7 @@ export default class UpdateStatus extends Page {
 
             const status = req.body.status;
 
-            await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: Id }, { status: status });
+            await UpdateItemPurchaseStatusCommand(Id, status);
 
             res.redirect(`/item-purchases/view/${Id}`);
         });

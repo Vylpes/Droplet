@@ -4,7 +4,7 @@ import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page"
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
+import GetAllItemPurchasesByStatus from "../../domain/queries/ItemPurchase/GetAllItemPurchasesByStatus";
 
 export default class List extends Page {
     constructor(router: Router) {
@@ -13,39 +13,9 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const status = req.params.status;
+            const status: ItemPurchaseStatus = Number(req.params.status);
 
-            let visible: ItemPurchaseStatus;
-
-            switch(status) {
-                case 'ordered':
-                    visible = ItemPurchaseStatus.Ordered;
-                    break;
-                case 'received':
-                    visible = ItemPurchaseStatus.Received;
-                    break;
-                case 'inventoried':
-                    visible = ItemPurchaseStatus.Inventoried;
-                    break;
-                case 'completed':
-                    visible = ItemPurchaseStatus.Complete;
-                    break;
-                case 'rejected':
-                    visible = ItemPurchaseStatus.Rejected;
-                    break;
-                default:
-                    next(createHttpError(404));
-                    return;
-            }
-
-            const purchaseMaybe = await ConnectionHelper.FindMultiple<ItemPurchase>("item-purchase", { status: visible });
-
-            if (!purchaseMaybe.IsSuccess) {
-                next(createHttpError(500));
-                return;
-            }
-
-            const purchases = purchaseMaybe.Value!;
+            const purchases = await GetAllItemPurchasesByStatus(status);
 
             res.locals.purchases = purchases;
 
