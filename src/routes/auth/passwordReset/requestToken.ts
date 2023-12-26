@@ -8,9 +8,9 @@ import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import MessageHelper from "../../../helpers/MessageHelper";
 import ConnectionHelper from "../../../helpers/ConnectionHelper";
-import User from "../../../contracts/entities/User/User";
-import UserToken from "../../../contracts/entities/User/IUserToken";
 import { v4 } from "uuid";
+import GetOneUserByEmail from "../../../domain/queries/User/GetOneUserByEmail";
+import AddTokenToUserCommand from "../../../domain/commands/User/AddTokenToUserCommand";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -36,17 +36,7 @@ export default class RequestToken extends Page {
         super.router.post('/password-reset/request', bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
             const email = req.body.email;
 
-            const userMaybe = await ConnectionHelper.FindOne<User>("user", { email: email })
-
-            if (!userMaybe.IsSuccess) {
-                const message = new MessageHelper(req);
-                await message.Info('If this email is correct you should receive an email to reset your password.');
-
-                res.redirect('/auth/login');
-                return;
-            }
-
-            const user = userMaybe.Value;
+            const user = await GetOneUserByEmail(email);
 
             const now = new Date();
 
@@ -69,16 +59,7 @@ export default class RequestToken extends Page {
                 .replace('{token}', token)
                 .replace('{username}', user.username);
 
-            const userToken: UserToken = {
-                uuid: v4(),
-                token: hashedToken,
-                expires: tokenExpiryDate,
-                type: UserTokenType.PasswordReset,
-            }
-
-            user.tokens.push(userToken);
-
-            await ConnectionHelper.UpdateOne<User>("user", { uuid: user.uuid }, { "$set": user });
+            await AddTokenToUserCommand(user.uuid, hashedToken, tokenExpiryDate, UserTokenType.PasswordReset);
 
             await EmailHelper.SendEmail(user.email, "PasswordReset", [{
                 key: "username",

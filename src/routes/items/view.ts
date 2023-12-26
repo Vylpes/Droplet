@@ -7,9 +7,9 @@ import Note from "../../database/entities/Note";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
 import { RoundTo } from "../../helpers/NumberHelper";
-import ItemQueries from "../../queries/ItemQueries";
-import StorageQueries from "../../queries/StorageQueries";
-import ItemPurchaseQueries from "../../queries/ItemPurchaseQueries";
+import GetOneItemById from "../../domain/queries/Item/GetOneItemById";
+import GetOneStorageByBinId from "../../domain/queries/Storage/GetOneStorageByBinId";
+import GetOneItemPurchaseById from "../../domain/queries/ItemPurchase/GetOneItemPurchaseById";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -25,15 +25,15 @@ export default class view extends Page {
                 return;
             }
 
-            const item = await ItemQueries.GetOneById(itemId);
+            const item = await GetOneItemById(itemId);
 
-            const storageBuilding = await StorageQueries.GetOneByBinId(item.r_storageBin);
+            const storageBuilding = await GetOneStorageByBinId(item.r_storageBin);
             const storageUnit = storageBuilding.units[0];
             const storageBin = storageUnit.bins[0];
 
             const notes = item.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
-            const itemPurchase = await ItemPurchaseQueries.GetOneById(item.r_itemPurchase);
+            const itemPurchase = await GetOneItemPurchaseById(item.r_itemPurchase);
 
             res.locals.item = item;
             res.locals.notes = notes;
