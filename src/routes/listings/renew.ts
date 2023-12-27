@@ -3,7 +3,7 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Listing from "../../contracts/entities/Listing/Listing";
+import RenewListingCommand from "../../domain/commands/Listing/RenewListingCommand";
 
 export default class Renew extends Page {
     constructor(router: Router) {
@@ -23,8 +23,8 @@ export default class Renew extends Page {
             }
 
             const endDate = req.body.endDate;
-
-            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $inc: { timesRelisted: 1 }, endDate: endDate });
+            
+            await RenewListingCommand(Id, endDate);
 
             res.redirect(`/listings/view/${Id}`);
         });

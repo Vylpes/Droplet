@@ -4,10 +4,9 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
-import Listing from "../../contracts/entities/Listing/Listing";
 import { v4 } from "uuid";
 import { ListingStatus } from "../../constants/Status/ListingStatus";
+import CreateNewListingCommand from "../../domain/commands/Listing/CreateNewListingCommand";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -37,25 +36,8 @@ export default class New extends Page {
             const endDate = req.body.endDate;
             const quantity = req.body.quantity;
             const itemId = req.body.itemId;
-
-            const listing: Listing = {
-                uuid: v4(),
-                name: name,
-                listingNumber: listingNumber,
-                price: price,
-                endDate: endDate,
-                quantities: {
-                    left: quantity,
-                    sold: 0,
-                },
-                status: ListingStatus.Active,
-                timesRelisted: 0,
-                postagePolicy: null,
-                notes: [],
-                r_items: [ itemId ],
-            }
-
-            await ConnectionHelper.InsertOne<Listing>("listing", listing);
+            
+            await CreateNewListingCommand(name, listingNumber, price, endDate, quantity, itemId);
 
             res.redirect('/listings/active');
         });

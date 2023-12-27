@@ -6,11 +6,12 @@ import { Page } from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Listing from "../../contracts/entities/Listing/Listing";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
-import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
 import { ListingStatusNames } from "../../constants/Status/ListingStatus";
-import Item from "../../contracts/entities/ItemPurchase/Item";
+import GetOneListingById from "../../domain/queries/Listing/GetOneListingById";
+import GetAllItemsAssignedByListingId from "../../domain/queries/Item/GetAllItemsAssignedByListingId";
+import GetAllItemsByStatus from "../../domain/queries/Item/GetAllItemsByStatus";
+import GetAllPostagePoliciesNotArchived from "../../domain/queries/PostagePolicy/GetAllPostagePoliciesNotArchived";
+import Item from "../../domain/models/Item/Item";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -25,31 +26,13 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const listingMaybe = await ConnectionHelper.FindOne<Listing>("listing", { uuid: Id });
-
-            if (!listingMaybe.IsSuccess) {
-                next(createHttpError(404));
-                return;
-            }
-
-            const listing = listingMaybe.Value;
-
-            const itemPurchasesMaybe = await ConnectionHelper.FindMultiple<ItemPurchase>("item-purchase", {});
-            const allItemPurchases = itemPurchasesMaybe.Value!;
-
-            const assignedItems = allItemPurchases
-                .flatMap(x => x.items)
-                .filter(x => listing.r_items.includes(x.uuid));
-
-            const items = allItemPurchases
-                .flatMap(x => x.items)
-                .filter(x => x.status == ItemStatus.Unlisted);
-
-            const postagePoliciesMaybe = await ConnectionHelper.FindMultiple<PostagePolicy>("postage-policy", { archived: false });
-            const postagePolicies = postagePoliciesMaybe.Value!;
+            const listing = await GetOneListingById(Id);
+            const assignedItems = await GetAllItemsAssignedByListingId(Id);
+            const unlistedItems = await GetAllItemsByStatus(ItemStatus.Unlisted);
+            const postagePolicies = await GetAllPostagePoliciesNotArchived();
 
             res.locals.listing = listing;
-            res.locals.items = items;
+            res.locals.items = unlistedItems;
             res.locals.assignedItems = assignedItems;
             res.locals.postagePolicies = postagePolicies;
             res.locals.statusName = ListingStatusNames.get(listing.status);

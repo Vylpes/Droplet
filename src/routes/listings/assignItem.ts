@@ -4,9 +4,8 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
 import MessageHelper from "../../helpers/MessageHelper";
-import Listing from "../../contracts/entities/Listing/Listing";
+import AssignItemToListingCommand from "../../domain/commands/Listing/AssignItemToListingCommand";
 
 export default class AssignItem extends Page {
     constructor(router: Router) {
@@ -27,7 +26,7 @@ export default class AssignItem extends Page {
 
             const itemId = req.body.itemId;
 
-            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $push: { r_items: itemId } });
+            await AssignItemToListingCommand(Id, itemId);
 
             res.redirect(`/listings/view/${Id}`);
         });

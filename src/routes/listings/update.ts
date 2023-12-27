@@ -3,7 +3,7 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Listing from "../../contracts/entities/Listing/Listing";
+import UpdateListingBasicDetailsCommand from "../../domain/commands/Listing/UpdateListingBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -35,7 +35,7 @@ export default class Update extends Page {
             const price = req.body.price;
             const quantity = req.body.quantity;
 
-            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { name, listingNumber, price, quantities: { left: quantity } });
+            await UpdateListingBasicDetailsCommand(Id, name, listingNumber, price, quantity);
 
             res.redirect(`/listings/view/${Id}`);
         });

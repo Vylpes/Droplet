@@ -3,9 +3,8 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Listing from "../../contracts/entities/Listing/Listing";
-import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
 import MessageHelper from "../../helpers/MessageHelper";
+import AssignPostagePolicyToListingCommand from "../../domain/commands/Listing/AssignPostagePolicyToListingCommand";
 
 export default class AssignPostagePolicy extends Page {
     constructor(router: Router) {
@@ -26,19 +25,7 @@ export default class AssignPostagePolicy extends Page {
 
             const policyId = req.body.policyId;
 
-            const policyMaybe = await ConnectionHelper.FindOne<PostagePolicy>("postage-policy", { uuid: policyId, archived: false });
-
-            if (!policyMaybe.IsSuccess) {
-                const message = new MessageHelper(req);
-                await message.Error("Unable to find policy");
-
-                res.redirect(`/listings/view/${Id}`);
-                return;
-            }
-
-            const policy = policyMaybe.Value!;
-
-            await ConnectionHelper.UpdateOne<Listing>("listing", { uuid: Id }, { $set: { postagePolicy: { uuid: policy.uuid, name: policy.name, costToBuyer: policy.costToBuyer, actualCost: policy.actualCost } }});
+            await AssignPostagePolicyToListingCommand(Id, policyId);
 
             res.redirect(`/listings/view/${Id}`);
         });
