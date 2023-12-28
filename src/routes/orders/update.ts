@@ -4,6 +4,9 @@ import { Order } from "../../database/entities/Order";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdateOrderBasicDetailsCommand from "../../domain/commands/Order/UpdateOrderBasicDetailsCommand";
+import AssignPostagePolicyToOrderCommand from "../../domain/commands/Order/AssignPostagePolicyToOrderCommand";
+import RemovePostagePolicyFromOrderCommand from "../../domain/commands/Order/RemovePostagePolicyFromOrderCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -32,22 +35,12 @@ export default class Update extends Page {
             const buyer = req.body.buyer;
             const postagePolicyId = req.body.postagePolicyId;
 
-            const order = await Order.FetchOneById(Order, Id);
-
-            order.UpdateBasicDetails(orderNumber, offerAccepted, buyer);
-
-            await order.Save(Order, order);
+            await UpdateOrderBasicDetailsCommand(Id, orderNumber, offerAccepted, buyer);
 
             if (postagePolicyId) {
-                const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
-
-                order.AddPostagePolicyToOrder(postagePolicy);
-
-                await order.Save(Order, order);
+                await AssignPostagePolicyToOrderCommand(Id, postagePolicyId);
             } else {
-                order.RemovePostagePolicy();
-
-                await order.Save(Order, order);
+                await RemovePostagePolicyFromOrderCommand(Id);
             }
 
             res.redirect(`/orders/view/${Id}`);

@@ -3,7 +3,7 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
+import DiscountOrderCommand from "../../domain/commands/Order/DiscountOrderCommand";
 
 export default class Discount extends Page {
     constructor(router: Router) {
@@ -25,7 +25,7 @@ export default class Discount extends Page {
 
             const amount = req.body.amount;
 
-            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $inc: { price: (amount * -1) } });
+            await DiscountOrderCommand(Id, amount);
 
             res.redirect(`/orders/view/${Id}`);
         });

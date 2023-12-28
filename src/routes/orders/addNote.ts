@@ -3,10 +3,9 @@ import { NoteType } from "../../constants/NoteType";
 import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
-import { Note } from "../../contracts/entities/Order/Note";
 import { v4 } from "uuid";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
+import AddNoteToOrderCommand from "../../domain/commands/Order/AddNoteToOrderCommand";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -26,18 +25,8 @@ export default class AddNote extends Page {
             }
 
             const text = req.body.text;
-
-            const note: Note = {
-                uuid: v4(),
-                comment: text,
-                whenCreated: new Date(),
-                author: {
-                    username: req.session.User.username,
-                    r_userId: req.session.User.uuid,
-                },
-            };
-
-            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { notes: note }});
+            
+            await AddNoteToOrderCommand(Id, text, req.session.User.userId, req.session.User.username);
 
             res.redirect(`/orders/view/${Id}`);
         });

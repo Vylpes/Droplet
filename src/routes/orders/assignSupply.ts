@@ -4,7 +4,7 @@ import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Supply } from "../../database/entities/Supply";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
+import AssignSupplyToOrderCommand from "../../domain/commands/Order/AssignSupplyToOrderCommand";
 
 export default class AssignSupply extends Page {
     constructor(router: Router) {
@@ -27,9 +27,10 @@ export default class AssignSupply extends Page {
             }
 
             const supplyId = req.body.supplyId;
+            // TODO: Remove amount from supply
             const amount = req.body.amount;
 
-            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { r_supplies: supplyId } });
+            await AssignSupplyToOrderCommand(Id, supplyId);
 
             res.redirect(`/orders/view/${Id}`);
         });

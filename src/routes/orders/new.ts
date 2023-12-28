@@ -4,13 +4,15 @@ import { Page } from "../../contracts/Page";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
 import { v4 } from "uuid";
 import { OrderStatus } from "../../constants/Status/OrderStatus";
-import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
-import ItemPurchase from "../../contracts/entities/ItemPurchase/ItemPurchase";
-import Listing from "../../contracts/entities/Listing/Listing";
-import Item, { CalculateStatus } from "../../contracts/entities/ItemPurchase/Item";
+import CreateNewOrderCommand from "../../domain/commands/Order/CreateNewOrderCommand";
+import GetOnePostagePolicyById from "../../domain/queries/PostagePolicy/GetOnePostagePolicyById";
+import GetAllItemsAssignedByListingId from "../../domain/queries/Item/GetAllItemsAssignedByListingId";
+import UpdateItemQuantityCommand from "../../domain/commands/Item/UpdateItemQuantityCommand";
+import UpdateItemBasicDetailsCommand from "../../domain/commands/Item/UpdateItemBasicDetailsCommand";
+import UpdateItemStatusCommand from "../../domain/commands/Item/UpdateItemStatusCommand";
+import { CalculateStatus } from "../../domain/models/Item/Item";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -41,54 +43,15 @@ export default class New extends Page {
             const listingId = req.body.listingId;
             const postagePolicyId = req.body.postagePolicyId;
 
-            for (const item of listing.Items) {
-                item.MarkAsSold(amount, ItemStatus.Listed);
+            const postagePolicy = await GetOnePostagePolicyById(postagePolicyId);
 
-                item.Save(Item, item);
-            }
+            await CreateNewOrderCommand(orderNumber, amount, offerAccepted, buyer, postagePolicy.name, postagePolicy.costToBuyer, postagePolicy.actualCost);
 
-            const postagePolicyMaybe = await ConnectionHelper.FindOne<PostagePolicy>("postage-policy", { uuid: postagePolicyId });
-            const postagePolicy = postagePolicyMaybe.Value!;
-
-            const order: Order = {
-                uuid: v4(),
-                orderNumber,
-                offerAccepted,
-                price: amount,
-                dispatchBy: new Date(),
-                status: OrderStatus.AwaitingPayment,
-                buyer: buyer,
-                postagePolicy: {
-                    uuid: v4(),
-                    name: postagePolicy.name,
-                    costToBuyer: postagePolicy.costToBuyer,
-                    actualCost: postagePolicy.actualCost,
-                },
-                trackingNumbers: [],
-                notes: [],
-                r_listings: [ listingId ],
-                r_supplies: [],
-            }
-
-            await ConnectionHelper.InsertOne<Order>("order", order);
-
-            const listingMaybe = await ConnectionHelper.FindOne<Listing>("listing", { uuid: listingId });
-            const listing = listingMaybe.Value!;
-
-            const itemPurchaseMaybe = await ConnectionHelper.FindMultiple<ItemPurchase>("item-purchase", { items: { uuid: listing.r_items } });
-            const itemPurchase = itemPurchaseMaybe.Value!;
-
-            const items = itemPurchase.flatMap(x => x.items)
-                .filter(x => listing.r_items.includes(x.uuid));
-
-            const processedItems: Item[] = [];
+            const items = await GetAllItemsAssignedByListingId(listingId);
 
             for (let item of items) {
-                item.quantities.sold += amount;
-                item.quantities.listed -= amount;
-                item.status = CalculateStatus(item);
-
-                processedItems.push(item);
+                await UpdateItemQuantityCommand(item.uuid, item.quantities.unlisted, item.quantities.listed -= amount, item.quantities.sold += amount, item.quantities.rejected);
+                await UpdateItemStatusCommand(item.uuid, CalculateStatus(item));
             }
 
             res.redirect('/orders/awaiting-payment');

@@ -6,7 +6,7 @@ import { UserMiddleware } from "../../middleware/userMiddleware";
 import { Listing } from "../../database/entities/Listing";
 import { Item } from "../../database/entities/Item";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
+import AssignListingToOrderCommand from "../../domain/commands/Order/AssignListingToOrderCommand";
 
 export default class AssignListing extends Page {
     constructor(router: Router) {
@@ -29,9 +29,10 @@ export default class AssignListing extends Page {
             }
 
             const listingId = req.body.listingId;
+            // TODO: Remove amount from listing stock
             const amount = req.body.amount;
 
-            await ConnectionHelper.UpdateOne<Order>("order", { uuid: Id }, { $push: { r_listings: listingId }});
+            await AssignListingToOrderCommand(Id, listingId);
 
             res.redirect(`/orders/view/${Id}`);
         });

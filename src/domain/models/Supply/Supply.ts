@@ -1,7 +1,7 @@
 import { SupplyStatus } from "../../../constants/Status/SupplyStatus";
 import { Note } from "./Note";
 
-export default interface ISupply {
+export default interface Supply {
     uuid: string,
     sku: string;
     name: string;
@@ -13,7 +13,7 @@ export default interface ISupply {
     notes: Note[],
 }
 
-export function CalculateStatus(supply: ISupply): SupplyStatus {
+export function CalculateStatus(supply: Supply): SupplyStatus {
     if (supply.quantities.unused == 0) {
         return SupplyStatus.Used;
     }

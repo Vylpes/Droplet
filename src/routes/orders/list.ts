@@ -5,9 +5,9 @@ import { OrderStatus, OrderStatusTypes } from "../../constants/Status/OrderStatu
 import { Page } from "../../contracts/Page"
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import Order from "../../contracts/entities/Order/Order";
-import Listing from "../../contracts/entities/Listing/Listing";
-import PostagePolicy from "../../contracts/entities/PostagePolicy/PostagePolicy";
+import GetAllOrdersByStatus from "../../domain/queries/Order/GetAllOrdersByStatus";
+import GetAllListingsByStatus from "../../domain/queries/Listing/GetAllListingsByStatus";
+import GetAllPostagePoliciesNotArchived from "../../domain/queries/PostagePolicy/GetAllPostagePoliciesNotArchived";
 
 export default class List extends Page {
     constructor(router: Router) {
@@ -18,14 +18,9 @@ export default class List extends Page {
         super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             let status = OrderStatusTypes.get(req.params.status);
 
-            const ordersMaybe = await ConnectionHelper.FindMultiple<Order>("order", { status });
-            const orders = ordersMaybe.Value!;
-
-            const listingsMaybe = await ConnectionHelper.FindMultiple<Listing>("listing", { status: ListingStatus.Active });
-            const listings = listingsMaybe.Value!;
-
-            const postagePoliciesMaybe = await ConnectionHelper.FindMultiple<PostagePolicy>("postage-policy", { archived: false });
-            const postagePolicies = postagePoliciesMaybe.Value!;
+            const orders = await GetAllOrdersByStatus(status);
+            const listings = await GetAllListingsByStatus(ListingStatus.Active);
+            const postagePolicies = await GetAllPostagePoliciesNotArchived();
 
             res.locals.orders = orders;
             res.locals.listings = listings;
