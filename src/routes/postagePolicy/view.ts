@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetOnePostagePolicyById from "../../domain/queries/PostagePolicy/GetOnePostagePolicyById";
 
 export default class View extends Page {
     constructor(router: Router) {
@@ -17,13 +18,7 @@ export default class View extends Page {
                 next(createHttpError(404));
             }
 
-            const policy = await PostagePolicy.FetchOneById(PostagePolicy, Id, [
-                "Listings"
-            ]);
-
-            if (!policy) {
-                next(createHttpError(404));
-            }
+            const policy = await GetOnePostagePolicyById(Id);
 
             res.locals.viewData.policy = policy;
 

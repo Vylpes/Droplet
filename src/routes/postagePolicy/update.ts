@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdatePostagePolicyBasicDetailsCommand from "../../domain/commands/PostagePolicy/UpdatePostagePolicyBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -30,12 +31,8 @@ export default class Update extends Page {
             const name = req.body.name;
             const costToBuyer = req.body.costToBuyer;
             const actualCost = req.body.actualCost;
-
-            const policy = await PostagePolicy.FetchOneById(PostagePolicy, id);
-
-            policy.UpdateBasicDetails(name, costToBuyer, actualCost);
-
-            await policy.Save(PostagePolicy, policy);
+            
+            await UpdatePostagePolicyBasicDetailsCommand(id, name, costToBuyer, actualCost);
 
             res.redirect(`/postage-policies/${id}`);
         });

@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import CreatePostagePolicyCommand from "../../domain/commands/PostagePolicy/CreatePostagePolicyCommand";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -23,10 +24,8 @@ export default class New extends Page {
             const name = req.body.name;
             const costToBuyer = req.body.costToBuyer;
             const actualCost = req.body.actualCost;
-
-            const policy = new PostagePolicy(name, costToBuyer, actualCost);
-
-            await policy.Save(PostagePolicy, policy);
+            
+            await CreatePostagePolicyCommand(name, costToBuyer, actualCost);
 
             res.redirect('/postage-policies');
         });

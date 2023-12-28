@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import ArchivePostagePolicyCommand from "../../domain/commands/PostagePolicy/ArchivePostagePolicyCommand";
 
 export default class Archive extends Page {
     constructor(router: Router) {
@@ -16,16 +17,8 @@ export default class Archive extends Page {
             if (!Id) {
                 next(createHttpError(404));
             }
-
-            const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, Id);
-
-            if (!postagePolicy) {
-                next(createHttpError(404));
-            }
-
-            postagePolicy.ArchivePolicy();
-
-            await postagePolicy.Save(PostagePolicy, postagePolicy);
+            
+            await ArchivePostagePolicyCommand(Id);
 
             res.redirect(`/postage-policies`);
         });
