@@ -5,6 +5,7 @@ import { Page } from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import { Return } from "../../database/entities/Return";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetOneReturnById from "../../domain/queries/Return/GetOneReturnById";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -19,16 +20,13 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const ret = await Return.FetchOneById(Return, Id, [
-                "TrackingNumbers",
-                "Order"
-            ]);
+            const ret = await GetOneReturnById(Id);
 
             if (!ret) {
                 next(createHttpError(404));
             }
 
-            const notes = await Note.FetchAllForId(NoteType.Return, Id);
+            const notes = ret.notes;
 
             res.locals.viewData.ret = ret;
             res.locals.viewData.notes = notes;

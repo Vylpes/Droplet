@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdateReturnBasicDetailsCommand from "../../domain/commands/Return/UpdateReturnBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -25,12 +26,8 @@ export default class Update extends Page {
 
             const returnNumber = req.body.returnNumber;
             const returnBy = req.body.returnBy;
-
-            const ret = await Return.FetchOneById(Return, Id);
-
-            ret.UpdateBasicDetails(returnNumber, ret.RMA, returnBy);
-
-            await ret.Save(Return, ret);
+            
+            await UpdateReturnBasicDetailsCommand(Id, returnNumber, returnBy);
 
             res.redirect(`/returns/view/${Id}`);
         });

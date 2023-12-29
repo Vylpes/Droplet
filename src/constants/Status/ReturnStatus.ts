@@ -15,3 +15,12 @@ export const ReturnStatusNames = new Map<ReturnStatus, string>([
     [ ReturnStatus.Refunded, "Refunded" ],
     [ ReturnStatus.Closed, "Closed" ],
 ]);
+
+export const ReturnStatusParse = new Map<string, ReturnStatus>([
+    [ "opened", ReturnStatus.Opened ],
+    [ "started", ReturnStatus.Started ],
+    [ "item-posted", ReturnStatus.ItemPosted ],
+    [ "item-received", ReturnStatus.ItemReceived ],
+    [ "refunded", ReturnStatus.Refunded ],
+    [ "closed", ReturnStatus.Closed ],
+]);

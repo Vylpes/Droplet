@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import MarkReturnAsReceivedCommand from "../../domain/commands/Return/MarkReturnAsReceivedCommand";
 
 export default class Received extends Page {
     constructor(router: Router) {
@@ -22,12 +23,8 @@ export default class Received extends Page {
             }
 
             const returnBy = req.body.returnBy;
-
-            const ret = await Return.FetchOneById(Return, Id);
-
-            ret.MarkAsReceived(returnBy);
-
-            await ret.Save(Return, ret);
+            
+            await MarkReturnAsReceivedCommand(Id, returnBy);
 
             res.redirect(`/returns/view/${Id}`);
         });

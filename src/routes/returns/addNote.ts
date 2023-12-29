@@ -4,6 +4,7 @@ import { Page } from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import AddNoteToReturnCommand from "../../domain/commands/Return/AddNoteToReturnCommand";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -23,10 +24,8 @@ export default class AddNote extends Page {
             }
 
             const text = req.body.text;
-
-            const note = new Note(text, NoteType.Return, Id);
-
-            await note.Save(Note, note);
+            
+            await AddNoteToReturnCommand(Id, text, req.session.User.userId, req.session.User.username);
 
             res.redirect(`/returns/view/${Id}`);
         });

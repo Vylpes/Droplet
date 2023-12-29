@@ -4,6 +4,11 @@ import { Order } from "../../database/entities/Order";
 import { Return } from "../../database/entities/Return";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import MarkReturnAsRefundedCommand from "../../domain/commands/Return/MarkReturnAsRefundedCommand";
+import GetOneReturnById from "../../domain/queries/Return/GetOneReturnById";
+import GetOneOrderById from "../../domain/queries/Order/GetOneOrderById";
+import UpdateOrderStatusCommand from "../../domain/commands/Order/UpdateOrderStatusCommand";
+import { OrderStatus } from "../../constants/Status/OrderStatus";
 
 export default class Refund extends Page {
     constructor(router: Router) {
@@ -25,19 +30,11 @@ export default class Refund extends Page {
 
             const refundAmount = req.body.refundAmount;
 
-            const ret = await Return.FetchOneById(Return, Id, [
-                "Order"
-            ]);
+            await MarkReturnAsRefundedCommand(Id, refundAmount);
 
-            ret.MarkAsRefunded(refundAmount);
+            const ret = await GetOneReturnById(Id);
 
-            await ret.Save(Return, ret);
-
-            const order = await Order.FetchOneById(Order, ret.Order.Id);
-
-            order.MarkAsReturned();
-
-            await order.Save(Order, order);
+            await UpdateOrderStatusCommand(ret.r_order, OrderStatus.Returned);
 
             res.redirect(`/returns/view/${Id}`);
         });
