@@ -3,6 +3,8 @@ import { Page } from "../../../contracts/Page";
 import { User } from "../../../database/entities/User";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 import MessageHelper from "../../../helpers/MessageHelper";
+import GetOneUserById from "../../../domain/queries/User/GetOneUserById";
+import ToggleUserActiveCommand from "../../../domain/commands/User/ToggleUserActiveCommand";
 
 export default class ToggleActive extends Page {
     constructor(router: Router) {
@@ -22,7 +24,7 @@ export default class ToggleActive extends Page {
                 return;
             }
 
-            const user = await User.FetchOneById(User, id);
+            const user = await GetOneUserById(id);
 
             if (!user) {
                 const message = new MessageHelper(req);
@@ -32,7 +34,7 @@ export default class ToggleActive extends Page {
                 return;
             }
 
-    	    if (user.Id == currentUser.Id) {
+    	    if (user.uuid == currentUser.uuid) {
                 const message = new MessageHelper(req);
                 await message.Error('You can not deactivate yourself');
 
@@ -40,10 +42,8 @@ export default class ToggleActive extends Page {
                 return;
     	    }
 
-    	    user.ToggleActive();
-
-            await user.Save(User, user);
-
+    	    await ToggleUserActiveCommand(id);
+            
             res.redirect(`/settings/users/${id}`);
         });
     }

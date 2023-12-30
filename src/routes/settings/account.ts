@@ -5,6 +5,9 @@ import { User } from "../../database/entities/User";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import MessageHelper from "../../helpers/MessageHelper";
+import GetOneUserById from "../../domain/queries/User/GetOneUserById";
+import UpdateUserBasicDetailsCommand from "../../domain/commands/User/UpdateUserBasicDetailsCommand";
+import UpdateUserPasswordCommand from "../../domain/commands/User/UpdateUserPasswordCommand";
 
 export default class Account extends Page {
     constructor(router: Router) {
@@ -56,25 +59,12 @@ export default class Account extends Page {
                 return;
             }
 
-            const userFromDb = await User.FetchOneById(User, user.Id);
-
-            if (!userFromDb)
-            {
-                req.session.error = "Sorry an error has occurred.";
-                res.redirect('/settings/account');
-                return;
-            }
-
-            userFromDb.UpdateBasicDetails(email, username, user.Admin, user.Active);
+            await UpdateUserBasicDetailsCommand(user.uuid, email, username, user.admin, user.active);
 
             if (newPassword) {
                 const hashedPassword = await hash(newPassword, 10);
-                user.UpdatePassword(hashedPassword);
+                await UpdateUserPasswordCommand(user.uuid, hashedPassword);
             }
-
-            await userFromDb.Save(User, userFromDb);
-
-            req.session.User = userFromDb;
 
             res.redirect('/settings/account');
         });

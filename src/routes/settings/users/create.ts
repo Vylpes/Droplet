@@ -9,6 +9,11 @@ import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 import MessageHelper from "../../../helpers/MessageHelper";
+import GetOneUserByUsername from "../../../domain/queries/User/GetOneUserByUsername";
+import GetOneUserByEmail from "../../../domain/queries/User/GetOneUserByEmail";
+import CreateNewUserCommand from "../../../domain/commands/User/CreateNewUserCommand";
+import AddTokenToUserCommand from "../../../domain/commands/User/AddTokenToUserCommand";
+import EmailUserVerificationTokenIntegrationEvent from "../../../domain/integrationEvents/EmailUserVerificationTokenIntegrationEvent";
 
 export default class Create extends Page {
     constructor(router: Router) {
@@ -30,8 +35,8 @@ export default class Create extends Page {
             const email = req.body.email;
             const admin = req.body.admin;
 
-            const userByUsername = await User.FetchOneByUsername(username);
-            const userByEmail = await User.FetchOneByEmail(email);
+            const userByUsername = await GetOneUserByUsername(username);
+            const userByEmail = await GetOneUserByEmail(email);
 
             if (userByUsername || userByEmail) {
                 const message = new MessageHelper(req);
@@ -41,13 +46,7 @@ export default class Create extends Page {
                 return;
             }
 
-            let user = new User(email, username, await PasswordHelper.GenerateRandomHashedPassword(), false, admin == "true", true);
-
-            await user.Save(User, user);
-
-            user = await User.FetchOneById(User, user.Id, [
-                "Tokens"
-            ]);
+            const user = await CreateNewUserCommand(username, email, admin);
 
             const now = new Date();
 
@@ -56,33 +55,8 @@ export default class Create extends Page {
             const token = await PasswordHelper.GenerateRandomToken();
             const hashedToken = await hash(token, 10);
 
-            let verifyLink = process.env.EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK;
-
-            if (!verifyLink) {
-                const message = new MessageHelper(req);
-                await message.Error('Invalid config: EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK');
-
-                res.redirect('/settings/users');
-                return;
-            }
-
-            verifyLink = verifyLink.replace('{token}', token);
-
-            const userToken = new UserToken(hashedToken, tokenExpiryDate, UserTokenType.Verification);
-
-            await userToken.Save(UserToken, userToken);
-
-            user.AddTokenToUser(userToken);
-
-            await user.Save(User, user);
-
-            await EmailHelper.SendEmail(user.Email, "VerifyUser", [{
-                key: "username",
-                value: user.Username,
-            }, {
-                key: "verify_link",
-                value: verifyLink,
-            }]);
+            await AddTokenToUserCommand(user.uuid, hashedToken, tokenExpiryDate, UserTokenType.Verification);
+            await EmailUserVerificationTokenIntegrationEvent(email, username, token);
 
             const message = new MessageHelper(req);
             await message.Info('Successfully created user');

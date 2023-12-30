@@ -3,6 +3,7 @@ import { Page } from "../../../contracts/Page";
 import { User } from "../../../database/entities/User";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 import MessageHelper from "../../../helpers/MessageHelper";
+import GetOneUserById from "../../../domain/queries/User/GetOneUserById";
 
 export default class View extends Page {
     constructor(router: Router) {
@@ -21,7 +22,7 @@ export default class View extends Page {
                 return;
             }
 
-            const user = await User.FetchOneById(User, id);
+            const user = await GetOneUserById(id);
 
             if (!user) {
                 const message = new MessageHelper(req);

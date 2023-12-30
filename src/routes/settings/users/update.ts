@@ -4,6 +4,7 @@ import { User } from "../../../database/entities/User";
 import Body from "../../../helpers/Validation/Body";
 import { UserMiddleware } from "../../../middleware/userMiddleware";
 import MessageHelper from "../../../helpers/MessageHelper";
+import UpdateUserBasicDetailsCommand from "../../../domain/commands/User/UpdateUserBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -31,16 +32,6 @@ export default class Update extends Page {
                 return;
             }
 
-            const user = await User.FetchOneById(User, id);
-
-            if (!user) {
-                const message = new MessageHelper(req);
-                await message.Error('User not found');
-
-                res.redirect('/settings/users');
-                return;
-            }
-
             const username = req.body.username;
             const email = req.body.email;
             const admin = req.body.admin;
@@ -49,9 +40,7 @@ export default class Update extends Page {
             const adminBool = admin == 'true';
             const activeBool = active == 'true';
 
-            user.UpdateBasicDetails(email, username, adminBool, activeBool);
-
-            await user.Save(User, user);
+            await UpdateUserBasicDetailsCommand(id, email, username, adminBool, activeBool);
 
             res.redirect(`/settings/users/${id}`);
         });
