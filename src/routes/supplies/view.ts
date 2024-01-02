@@ -5,6 +5,7 @@ import { Page } from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import { Supply } from "../../database/entities/Supply";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetOneSupplyById from "../../domain/queries/Supply/GetOneSupplyById";
 
 export default class view extends Page {
     constructor(router: Router) {
@@ -19,18 +20,10 @@ export default class view extends Page {
                 next(createHttpError(404));
             }
 
-            const supply = await Supply.FetchOneById<Supply>(Supply, Id, [
-                "Purchase"
-            ]);
-
-            if (!supply) {
-                next(createHttpError(404));
-            }
-
-            const notes = await Note.FetchAllForId(NoteType.Supply, Id);
+            const supply = await GetOneSupplyById(Id);
 
             res.locals.item = supply;
-            res.locals.notes = notes;
+            res.locals.notes = supply.notes;
 
             res.render('supplies/view', res.locals.viewData);
         });

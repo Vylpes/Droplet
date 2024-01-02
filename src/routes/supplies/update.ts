@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { Supply } from "../../database/entities/Supply";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdateSupplyBasicDetailsCommand from "../../domain/commands/Supply/UpdateSupplyBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -28,13 +29,8 @@ export default class Update extends Page {
 
             const name = req.body.name;
             const sku = req.body.sku;
-            const quantity = req.body.quantity;
 
-            const supply = await Supply.FetchOneById<Supply>(Supply, Id);
-
-            supply.EditBasicDetails(name, sku);
-
-            await supply.Save(Supply, supply);
+            await UpdateSupplyBasicDetailsCommand(Id, sku, name);
 
             res.redirect(`/supplies/${Id}`);
         });

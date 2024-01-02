@@ -4,6 +4,8 @@ import { Supply } from "../../database/entities/Supply";
 import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import CreateSupplyCommand from "../../domain/commands/Supply/CreateSupplyCommand";
+import AssignSupplyToPurchaseCommand from "../../domain/commands/SupplyPurchase/AssignSupplyToPurchaseCommand";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -37,18 +39,9 @@ export default class New extends Page {
                     return;
                 }
 
-                const supply = new Supply(name, sku, quantity);
+                const supply = await CreateSupplyCommand(sku, name, quantity);
 
-                await supply.Save(Supply, supply);
-
-                const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, [
-                    "Supplies"
-                ]);
-
-                purchase.AddSupplyToOrder(supply);
-
-                await purchase.Save(SupplyPurchase, purchase);
-                await purchase.CalculateItemPrices();
+                await AssignSupplyToPurchaseCommand(supply.uuid, purchaseId);
 
                 res.redirect(`/supply-purchases/view/${purchaseId}`);
             }

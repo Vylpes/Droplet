@@ -4,6 +4,7 @@ import { Page } from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import AddNoteToSupplyCommand from "../../domain/commands/Supply/AddNoteToSupplyCommand";
 
 export default class AddNote extends Page {
     constructor(router: Router) {
@@ -24,9 +25,7 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            const note = new Note(text, NoteType.Supply, Id);
-
-            await note.Save(Note, note);
+            await AddNoteToSupplyCommand(Id, text, req.session.User.uuid, req.session.User.username);
 
             res.redirect(`/supplies/${Id}`);
         });

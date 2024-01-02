@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { Supply } from "../../database/entities/Supply";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdateSupplyQuantityCommand from "../../domain/commands/Supply/UpdateSupplyQuantityCommand";
 
 export default class UpdateQuantity extends Page {
     constructor(router: Router) {
@@ -28,11 +29,7 @@ export default class UpdateQuantity extends Page {
             const unused = req.body.unused;
             const used = req.body.used;
 
-            const supply = await Supply.FetchOneById<Supply>(Supply, Id);
-
-            supply.SetStock(unused, used);
-
-            await supply.Save(Supply, supply);
+            await UpdateSupplyQuantityCommand(Id, unused, used);
 
             res.redirect(`/supplies/${Id}`);
         });
