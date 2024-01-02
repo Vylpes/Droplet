@@ -25,7 +25,7 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            await AddNoteToItemPurchaseCommand(Id, text, req.session.User.Id, req.session.User.username);
+            await AddNoteToItemPurchaseCommand(Id, text, req.session.User.uuid, req.session.User.username);
 
             res.redirect(`/item-purchases/view/${Id}`);
         });

@@ -26,7 +26,7 @@ export default class AddNote extends Page {
 
             const text = req.body.text;
 
-            await AddNoteToListingCommand(Id, text, req.session.User.Id, req.session.User.Username);
+            await AddNoteToListingCommand(Id, text, req.session.User.uuid, req.session.User.username);
 
             res.redirect(`/listings/view/${Id}`);
         });

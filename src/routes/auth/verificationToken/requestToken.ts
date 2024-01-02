@@ -8,9 +8,9 @@ import PasswordHelper from "../../../helpers/PasswordHelper";
 import Body from "../../../helpers/Validation/Body";
 import MessageHelper from "../../../helpers/MessageHelper";
 import ConnectionHelper from "../../../helpers/ConnectionHelper";
-import User from "../../../contracts/entities/User/User";
-import UserToken from "../../../contracts/entities/User/IUserToken";
 import { v4 } from "uuid";
+import User from "../../../domain/models/User/User";
+import IUserToken from "../../../domain/models/User/IUserToken";
 
 export default class RequestToken extends Page {
     constructor(router: Router) {
@@ -54,7 +54,7 @@ export default class RequestToken extends Page {
                 return;
             }
 
-            const userTokens: UserToken[] = [];
+            const userTokens: IUserToken[] = [];
 
             const now = new Date();
 
@@ -77,7 +77,7 @@ export default class RequestToken extends Page {
                 .replace('{token}', token)
                 .replace('{username}', user.username);
 
-            const userToken: UserToken = {
+            const userToken: IUserToken = {
                 uuid: v4(),
                 token: hashedToken,
                 expires: tokenExpiryDate,

@@ -51,7 +51,7 @@ export default class Account extends Page {
                 return;
             }
 
-            if (!await User.IsLoginCorrect(user.Email, currentPassword)) {
+            if (!await User.IsLoginCorrect(user.email, currentPassword)) {
                 const message = new MessageHelper(req);
                 await message.Error('Your password is incorrect');
 

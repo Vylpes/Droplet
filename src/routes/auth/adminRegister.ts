@@ -4,9 +4,9 @@ import createHttpError from "http-errors";
 import { Page } from "../../contracts/Page";
 import BodyValidation from "../../helpers/Validation/Body";
 import MessageHelper from "../../helpers/MessageHelper";
-import User from "../../contracts/entities/User/User";
 import { v4 } from "uuid";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
+import User from "../../domain/models/User/User";
 
 export default class AdminRegister extends Page {
     constructor(router: Router) {

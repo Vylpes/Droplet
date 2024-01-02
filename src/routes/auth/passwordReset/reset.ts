@@ -7,7 +7,7 @@ import Body from "../../../helpers/Validation/Body";
 import Query from "../../../helpers/Validation/Query";
 import MessageHelper from "../../../helpers/MessageHelper";
 import ConnectionHelper from "../../../helpers/ConnectionHelper";
-import User from "../../../contracts/entities/User/User";
+import User from "../../../domain/models/User/User";
 
 export default class Reset extends Page {
     constructor(router: Router) {

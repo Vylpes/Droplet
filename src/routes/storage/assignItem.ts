@@ -15,7 +15,7 @@ export default class AssignItem extends Page {
         const bodyValidation = new Body("itemId")
                 .NotEmpty();
 
-        super.router.post('/:storageId/:unitId/:binId/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
+        super.router.post('/:storageId/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
             const storageId = req.params.storageId;
             const unitId = req.params.unitId;
             const binId = req.params.binId;
@@ -27,7 +27,7 @@ export default class AssignItem extends Page {
 
             const itemId = req.body.itemId;
 
-            await AssignStorageToItemCommand(itemId, storageId, unitId, binId);
+            await AssignStorageToItemCommand(itemId, storageId);
 
             res.redirect(`/storage/${storageId}/${unitId}/${binId}/view`);
         });

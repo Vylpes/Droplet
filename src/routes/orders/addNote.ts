@@ -25,8 +25,8 @@ export default class AddNote extends Page {
             }
 
             const text = req.body.text;
-            
-            await AddNoteToOrderCommand(Id, text, req.session.User.userId, req.session.User.username);
+
+            await AddNoteToOrderCommand(Id, text, req.session.User.uuid, req.session.User.username);
 
             res.redirect(`/orders/view/${Id}`);
         });

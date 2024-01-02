@@ -3,8 +3,8 @@ import { Page } from "../../contracts/Page";
 import BodyValidation from "../../helpers/Validation/Body";
 import MessageHelper from "../../helpers/MessageHelper";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
-import User from "../../contracts/entities/User/User";
 import { compare } from "bcryptjs";
+import User from "../../domain/models/User/User";
 
 export class Login extends Page {
     constructor(router: Router) {

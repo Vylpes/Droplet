@@ -12,7 +12,7 @@ export class UserMiddleware {
     }
 
     public static AdminAuthorise(req: Request, res: Response, next: NextFunction) {
-        if (req.session.User && req.session.User!.Admin) {
+        if (req.session.User && req.session.User!.admin) {
             next();
         } else {
             next(createHttpError(403));

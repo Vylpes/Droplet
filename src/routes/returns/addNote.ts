@@ -24,8 +24,8 @@ export default class AddNote extends Page {
             }
 
             const text = req.body.text;
-            
-            await AddNoteToReturnCommand(Id, text, req.session.User.userId, req.session.User.username);
+
+            await AddNoteToReturnCommand(Id, text, req.session.User.uuid, req.session.User.username);
 
             res.redirect(`/returns/view/${Id}`);
         });

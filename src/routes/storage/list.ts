@@ -24,7 +24,8 @@ export default class List extends Page {
             let storage: Storage;
 
             if (type != 'building' && Id) {
-                storage = await GetOneStorageByBinId(Id);
+                const storageGet = await GetOneStorageByBinId(Id);
+                storage = storageGet.bin;
             }
 
             switch(type) {

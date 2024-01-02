@@ -27,9 +27,11 @@ export default class view extends Page {
 
             const item = await GetOneItemById(itemId);
 
-            const storageBuilding = await GetOneStorageByBinId(item.r_storageBin);
-            const storageUnit = storageBuilding.units[0];
-            const storageBin = storageUnit.bins[0];
+            const storage = await GetOneStorageByBinId(item.r_storageBin);
+
+            const storageBuilding = storage.building;
+            const storageUnit = storage.unit;
+            const storageBin = storage.bin;
 
             const notes = item.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
