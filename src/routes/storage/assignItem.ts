@@ -4,6 +4,7 @@ import { Item } from "../../database/entities/Item";
 import { Storage } from "../../database/entities/Storage";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import AssignStorageToItemCommand from "../../domain/commands/Item/AssignStorageToItemCommand";
 
 export default class AssignItem extends Page {
     constructor(router: Router) {
@@ -14,39 +15,21 @@ export default class AssignItem extends Page {
         const bodyValidation = new Body("itemId")
                 .NotEmpty();
 
-        super.router.post('/view/:Id/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        super.router.post('/:storageId/:unitId/:binId/assign-item', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
+            const storageId = req.params.storageId;
+            const unitId = req.params.unitId;
+            const binId = req.params.binId;
 
             if (req.session.id) {
-                res.redirect(`/storage/view/${Id}`);
+                res.redirect(`/storage/${storageId}/${unitId}/${binId}/view`);
                 return;
             }
 
             const itemId = req.body.itemId;
 
-            const storage = await Storage.FetchOneById(Storage, Id, [
-                "Items"
-            ]);
+            await AssignStorageToItemCommand(itemId, storageId, unitId, binId);
 
-            let item = await Item.FetchOneById(Item, itemId, [
-                "Storage"
-            ]);
-
-            storage.AddItemToBin(item);
-
-            await storage.Save(Storage, storage);
-
-            item = await Item.FetchOneById(Item, itemId, [
-                "Storage",
-                "Storage.Parent",
-                "Storage.Parent.Parent"
-            ]);
-
-            item.GenerateSku();
-
-            await item.Save(Item, item);
-
-            res.redirect(`/storage/view/${Id}`);
+            res.redirect(`/storage/${storageId}/${unitId}/${binId}/view`);
         });
     }
 }

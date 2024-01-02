@@ -4,6 +4,9 @@ import { Page } from "../../contracts/Page"
 import { Item } from "../../database/entities/Item";
 import { Storage } from "../../database/entities/Storage";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetOneStorageByBinId from "../../domain/queries/Storage/GetOneStorageByBinId";
+import GetAllStoragesByType from "../../domain/queries/Storage/GetAllStoragesByType";
+import GetAllItemsNotAssignedToStorage from "../../domain/queries/Item/GetAllItemsNotAssignedToStorage";
 
 export default class View extends Page {
     constructor(router: Router) {
@@ -14,23 +17,13 @@ export default class View extends Page {
         super.router.get('/view/:Id', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
             let id = req.params.Id;
 
-            const bin = await Storage.FetchOneById(Storage, id, [
-                "Items",
-                "Items.Storage",
-                "Parent"
-            ]);
+            const storage = await GetOneStorageByBinId(id);
+            const bins = await GetAllStoragesByType(StorageType.Bin);
+            const items = await GetAllItemsNotAssignedToStorage();
 
-            const items = await Item.FetchAll(Item, [
-                "Storage"
-            ]);
-
-            const storages = await Storage.FetchAll(Storage, [
-                "Items"
-            ]);
-
-            res.locals.viewData.storage = bin;
-            res.locals.viewData.items = items.filter(x => x.Storage == null);
-            res.locals.viewData.storages = storages.filter(x => x.StorageType == StorageType.Bin);
+            res.locals.viewData.storage = storage.bin;
+            res.locals.viewData.items = items;
+            res.locals.viewData.bins = bins;
 
             res.render(`storage/view`, res.locals.viewData);
         });

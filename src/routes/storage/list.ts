@@ -1,9 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { StorageType } from "../../constants/StorageType";
+import { StorageType, StorageTypeParse } from "../../constants/StorageType";
 import { Page } from "../../contracts/Page"
-import { Storage } from "../../database/entities/Storage";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetAllStorageBinsByUnitId from "../../domain/queries/Storage/GetAllStorageBinsByUnitId";
+import Storage from "../../domain/models/Storage/Storage";
+import GetAllStorageUnitsByBuildingId from "../../domain/queries/Storage/GetAllStorageUnitsByBuildingId";
+import GetAllStorageBuildings from "../../domain/queries/Storage/GetAllStorageBuildings";
+import GetOneStorageByBinId from "../../domain/queries/Storage/GetOneStorageByBinId";
 
 export default class List extends Page {
     constructor(router: Router) {
@@ -15,37 +19,30 @@ export default class List extends Page {
             let type = req.params.type;
             let Id = req.params.id;
 
-            const storages = await Storage.FetchAll(Storage, [
-                "Items",
-                "Children"
-            ]);
+            let storages: Storage[];
 
             let storage: Storage;
 
             if (type != 'building' && Id) {
-                storage = await Storage.FetchOneById(Storage, Id, [
-                    "Parent"
-                ]);
+                storage = await GetOneStorageByBinId(Id);
             }
-
-            let visible: Storage[];
 
             switch(type) {
                 case 'bin':
-                    visible = storages.filter(x => x.StorageType == StorageType.Bin);
+                    storages = await GetAllStorageBinsByUnitId(Id);
                     break;
                 case 'unit':
-                    visible = storages.filter(x => x.StorageType == StorageType.Unit);
+                    storages = await GetAllStorageUnitsByBuildingId(Id);
                     break;
                 case 'building':
-                    visible = storages.filter(x => x.StorageType == StorageType.Building);
+                    storages = await GetAllStorageBuildings();
                     break;
                 default:
                     next(createHttpError(404));
                     return;
             }
 
-            res.locals.viewData.storages = visible;
+            res.locals.viewData.storages = storages;
             res.locals.viewData.storage = storage;
 
             res.render(`storage/list/${type}`, res.locals.viewData);

@@ -9,3 +9,9 @@ export const StorageTypeNames = new Map<StorageType, string>([
     [ StorageType.Unit, "Unit" ],
     [ StorageType.Building, "Building" ],
 ]);
+
+export const StorageTypeParse = new Map<string, StorageType>([
+    [ "bin", StorageType.Bin ],
+    [ "unit", StorageType.Unit ],
+    [ "building", StorageType.Building ],
+]);
