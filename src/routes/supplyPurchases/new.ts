@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import CreateSupplyPurchaseCommand from "../../domain/commands/SupplyPurchase/CreateSupplyPurchaseCommand";
 
 export default class New extends Page {
     constructor(router: Router) {
@@ -20,9 +21,7 @@ export default class New extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = new SupplyPurchase(description, price);
-
-            await purchase.Save(SupplyPurchase, purchase);
+            await CreateSupplyPurchaseCommand(description, price);
 
             res.redirect('/supply-purchases/ordered');
         });

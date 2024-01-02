@@ -3,6 +3,7 @@ import { Page } from "../../contracts/Page";
 import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import UpdateSupplyPurchaseBasicDetailsCommand from "../../domain/commands/SupplyPurchase/UpdateSupplyPurchaseBasicDetailsCommand";
 
 export default class Update extends Page {
     constructor(router: Router) {
@@ -27,14 +28,7 @@ export default class Update extends Page {
             const description = req.body.description;
             const price = req.body.price;
 
-            const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, Id, [
-                "Supplies"
-            ]);
-
-            purchase.UpdateBasicDetails(description, price);
-
-            await purchase.Save(SupplyPurchase, purchase);
-            await purchase.CalculateItemPrices();
+            await UpdateSupplyPurchaseBasicDetailsCommand(Id, description, price);
 
             res.redirect(`/supply-purchases/view/${Id}`);
         });

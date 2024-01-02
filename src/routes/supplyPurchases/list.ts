@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { SupplyPurchaseStatus } from "../../constants/Status/SupplyPurchaseStatus";
+import { SupplyPurchaseStatus, SupplyPurchaseStatusParse } from "../../constants/Status/SupplyPurchaseStatus";
 import { Page } from "../../contracts/Page"
 import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import { UserMiddleware } from "../../middleware/userMiddleware";
+import GetAllSupplyPurchasesByStatus from "../../domain/queries/SupplyPurchase/GetAllSupplyPurchasesByStatus";
 
 export default class List extends Page {
     constructor(router: Router) {
@@ -12,36 +13,13 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const status = req.params.status;
+            const statusString = req.params.status;
 
-            const purchases = await SupplyPurchase.FetchAll(SupplyPurchase, [
-                "Supplies"
-            ]);
+            const status = SupplyPurchaseStatusParse.get(statusString);
 
-            let visible: SupplyPurchase[];
+            const purchases = await GetAllSupplyPurchasesByStatus(status);
 
-            switch(status) {
-                case 'ordered':
-                    visible = purchases.filter(x => x.Status == SupplyPurchaseStatus.Ordered);
-                    break;
-                case 'received':
-                    visible = purchases.filter(x => x.Status == SupplyPurchaseStatus.Received);
-                    break;
-                case 'inventoried':
-                    visible = purchases.filter(x => x.Status == SupplyPurchaseStatus.Inventoried);
-                    break;
-                case 'completed':
-                    visible = purchases.filter(x => x.Status == SupplyPurchaseStatus.Complete);
-                    break;
-                case 'rejected':
-                    visible = purchases.filter(x => x.Status == SupplyPurchaseStatus.Rejected);
-                    break;
-                default:
-                    next(createHttpError(404));
-                    return;
-            }
-
-            res.locals.purchases = visible;
+            res.locals.purchases = purchases;
 
             res.render(`supply-purchases/list/${status}`, res.locals.viewData);
         });

@@ -1,4 +1,4 @@
-import User from "../contracts/entities/User/User";
+import User from "../domain/models/User/User";
 
 declare module 'express-session' {
     interface Session {
