@@ -32,9 +32,9 @@ block content
                 tr
                     td= row.description
                     td= row.price
-                    td= row.items.length
+                    td= row.r_items.length
                     td
-                        a(href="/item-purchases/view/" + row.Id).btn.text-primary
+                        a(href="/item-purchases/view/" + row.uuid).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/item-purchases/new').modal.fade#new-purchase-modal

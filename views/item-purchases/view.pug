@@ -6,7 +6,7 @@ block content
         span.ms-1 Back to List
     .row.mt-3
         .col
-            h1= purchase.Description
+            h1= purchase.description
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
                 button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
@@ -37,7 +37,7 @@ block content
                         p= purchase.price
                     .mb-2
                         p.mb-0.text-secondary Items
-                        p= purchase.items.length
+                        p= purchase.r_items.length
         .col-8
             .card
                 .card-header Items
@@ -60,7 +60,7 @@ block content
                                     td= itemStatusName(row)
                                     td= calculateItemPrice(row)
                                     td
-                                        a(href="/items/" + row.Id).btn.text-primary
+                                        a(href="/items/" + row.uuid).btn.text-primary
                                             i.fas.fa-eye
                                             span.ms-1 View
     .row.mt-3
@@ -69,10 +69,10 @@ block content
                 .card-header Notes
                 .card-body
                     each note in notes
-                        p= note.Text
-                        p.text-secondary= '- ' + note.WhenCreated
+                        p= note.comment
+                        p.text-secondary= '- ' + note.whenCreated
                         hr
-    form(method='POST' action='/item-purchases/view/' + purchase.Id + '/update').modal.fade#edit-purchase-modal
+    form(method='POST' action='/item-purchases/view/' + purchase.uuid + '/update').modal.fade#edit-purchase-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -81,10 +81,10 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label Name
-                        input(type='text' name='description' value=purchase.Description).form-control
+                        input(type='text' name='description' value=purchase.description).form-control
                     .form-group.mb-3
                         label Price
-                        input(type='number' step=".01" name='price' value=purchase.Price).form-control
+                        input(type='number' step=".01" name='price' value=purchase.price).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
@@ -97,7 +97,7 @@ block content
                     button(type='button' data-bs-dismiss='modal').btn-close
                 .modal-body
                     .form-group
-                        input(type='hidden' name='purchaseId' value=purchase.Id)
+                        input(type='hidden' name='purchaseId' value=purchase.uuid)
                     .form-group.mb-3
                         label Name
                         input(type='text' name='name').form-control
@@ -108,7 +108,7 @@ block content
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
-    form(method='POST' action='/item-purchases/view/' + purchase.Id + '/update-status').modal.fade#update-status-modal
+    form(method='POST' action='/item-purchases/view/' + purchase.uuid + '/update-status').modal.fade#update-status-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -116,20 +116,20 @@ block content
                     button(type='button' data-bs-dismiss='modal').btn-close
                 .modal-body
                     .form-group
-                        input(type='hidden' name='purchaseId' value=purchase.Id)
+                        input(type='hidden' name='purchaseId' value=purchase.uuid)
                     .form-group.mb-3
                         label Status
                         select(name='status').form-control
                             option(value="0") Ordered
-                            option(value="1" selected= purchase.Status == 0) Received
-                            option(value="2" selected= purchase.Status == 1) Inventoried
-                            option(value="3" selected= purchase.Status == 2 || purchase.Status == 3) Complete
-                            option(value="4" selected= purchase.Status == 4) Rejected
+                            option(value="1" selected= purchase.status == 0) Received
+                            option(value="2" selected= purchase.status == 1) Inventoried
+                            option(value="3" selected= purchase.status == 2 || purchase.status == 3) Complete
+                            option(value="4" selected= purchase.status == 4) Rejected
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Create
-    form(method='POST' action='/item-purchases/' + purchase.Id + '/add-note').modal.fade#add-note-modal
+    form(method='POST' action='/item-purchases/' + purchase.uuid + '/add-note').modal.fade#add-note-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header

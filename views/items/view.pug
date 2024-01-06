@@ -1,12 +1,12 @@
 extends ../layout
 
 block content
-    a(href="/item-purchases/view/" + item.Purchase.Id).btn.text-primary
+    a(href="/item-purchases/view/" + purchase.uuid).btn.text-primary
         i.fas.fa-chevron-circle-left
         span.ms-1 Back to Purchase
     .row.mt-3
         .col
-            h1= item.Name
+            h1= item.name
         .col
             .d-grid.gap-2.d-md-flex.justify-content-md-end
                 button(data-bs-toggle='modal' data-bs-target='#add-note-modal').btn.text-secondary
@@ -68,10 +68,10 @@ block content
                 .card-header Notes
                 .card-body
                     each note in notes
-                        p= note.Text
-                        p.text-secondary= '- ' + note.WhenCreated
+                        p= note.comment
+                        p.text-secondary= '- ' + note.whenCreated
                         hr
-    form(method='POST' action='/items/' + item.Id + '/update').modal.fade#edit-item-modal
+    form(method='POST' action='/items/' + item.uuid + '/update').modal.fade#edit-item-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -80,12 +80,12 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label Name
-                        input(type='text' name='name' value=item.Name).form-control
+                        input(type='text' name='name' value=item.name).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Update
-    form(method='POST' action='/items/' + item.Id + '/update-quantity').modal.fade#edit-quantity-modal
+    form(method='POST' action='/items/' + item.uuid + '/update-quantity').modal.fade#edit-quantity-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header
@@ -94,21 +94,21 @@ block content
                 .modal-body
                     .form-group.mb-3
                         label Unlisted
-                        input(type='number' step="1" name='unlisted' value=item.UnlistedQuantity).form-control
+                        input(type='number' step="1" name='unlisted' value=item.quantities.unlisted).form-control
                     .form-group.mb-3
                         label Listed
-                        input(type='number' step="1" name='listed' value=item.ListedQuantity).form-control
+                        input(type='number' step="1" name='listed' value=item.quantities.listed).form-control
                     .form-group.mb-3
                         label Sold
-                        input(type='number' step="1" name='sold' value=item.SoldQuantity).form-control
+                        input(type='number' step="1" name='sold' value=item.quantities.sold).form-control
                     .form-group.mb-3
                         label Rejected
-                        input(type='number' step="1" name='rejected' value=item.RejectedQuantity).form-control
+                        input(type='number' step="1" name='rejected' value=item.quantities.rejected).form-control
                     .form-group.text-center
                         button(type='submit').btn.text-primary
                             i.fas.fa-check-square
                             span.ms-1 Update
-    form(method='POST' action='/items/' + item.Id + '/add-note').modal.fade#add-note-modal
+    form(method='POST' action='/items/' + item.uuid + '/add-note').modal.fade#add-note-modal
         .modal-dialog.modal-dialog-scrollable
             .modal-content
                 .modal-header

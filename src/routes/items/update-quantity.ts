@@ -4,6 +4,7 @@ import Body from "../../helpers/Validation/Body";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
 import UpdateItemQuantityCommand from "../../domain/commands/Item/UpdateItemQuantityCommand";
+import UpdateItemStatusCommand from "../../domain/commands/Item/UpdateItemStatusCommand";
 
 export default class UpdateQuantity extends Page {
     constructor(router: Router) {

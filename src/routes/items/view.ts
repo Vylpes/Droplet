@@ -27,11 +27,10 @@ export default class view extends Page {
 
             const item = await GetOneItemById(itemId);
 
-            const storage = await GetOneStorageByBinId(item.r_storageBin);
-
-            const storageBuilding = storage.building;
-            const storageUnit = storage.unit;
-            const storageBin = storage.bin;
+            if (!item) {
+                next(createHttpError(404));
+                return;
+            }
 
             const notes = item.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
@@ -40,9 +39,19 @@ export default class view extends Page {
             res.locals.item = item;
             res.locals.notes = notes;
             res.locals.buyPrice = RoundTo(RoundTo(itemPurchase.price / itemPurchase.r_items.length,2) / (item.quantities.listed + item.quantities.unlisted + item.quantities.sold + item.quantities.rejected), 2);
-            res.locals.storageBuilding = storageBuilding;
-            res.locals.storageUnit = storageUnit;
-            res.locals.storageBin = storageBin;
+            res.locals.purchase = itemPurchase;
+
+            if (item.r_storageBin) {
+                const storage = await GetOneStorageByBinId(item.r_storageBin);
+
+                const storageBuilding = storage.building;
+                const storageUnit = storage.unit;
+                const storageBin = storage.bin;
+
+                res.locals.storageBuilding = storageBuilding;
+                res.locals.storageUnit = storageUnit;
+                res.locals.storageBin = storageBin;
+            }
 
             res.render('items/view', res.locals.viewData);
         });

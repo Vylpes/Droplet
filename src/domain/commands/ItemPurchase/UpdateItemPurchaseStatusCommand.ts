@@ -9,5 +9,5 @@ export default async function UpdateItemPurchaseStatusCommand(itemPurchaseId: st
         return;
     }
 
-    await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: itemPurchaseId }, { $set: { status }});
+    await ConnectionHelper.UpdateOne<ItemPurchase>("item-purchase", { uuid: itemPurchaseId }, { $set: { status: Number(status) }});
 }

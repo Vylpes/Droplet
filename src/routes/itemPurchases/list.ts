@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { ItemPurchaseStatus } from "../../constants/Status/ItemPurchaseStatus";
+import { ItemPurchaseStatus, ItemPurchaseStatusParse } from "../../constants/Status/ItemPurchaseStatus";
 import { Page } from "../../contracts/Page"
 import { UserMiddleware } from "../../middleware/userMiddleware";
 import ConnectionHelper from "../../helpers/ConnectionHelper";
@@ -13,13 +13,14 @@ export default class List extends Page {
 
     public OnGet(): void {
         super.router.get('/:status', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const status: ItemPurchaseStatus = Number(req.params.status);
+            const statusString = req.params.status;
+            const status = ItemPurchaseStatusParse.get(statusString);
 
             const purchases = await GetAllItemPurchasesByStatus(status);
 
             res.locals.purchases = purchases;
 
-            res.render(`item-purchases/list/${status}`, res.locals.viewData);
+            res.render(`item-purchases/list/${statusString}`, res.locals.viewData);
         });
     }
 }

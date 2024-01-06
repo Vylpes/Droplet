@@ -65,7 +65,9 @@ export default class AdminRegister extends Page {
             next(createHttpError(403));
         }
 
-        if (await ConnectionHelper.Any<User>("user")) {
+        const hasUsers = await ConnectionHelper.Any<User>("user");
+
+        if (hasUsers.Value) {
             next(createHttpError(403));
         }
 

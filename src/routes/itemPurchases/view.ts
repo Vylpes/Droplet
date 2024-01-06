@@ -21,10 +21,17 @@ export default class view extends Page {
 
             if (!Id) {
                 next(createHttpError(404));
+                return;
             }
 
             const purchase = await GetOneItemPurchaseById(Id);
             const items = await GetAllItemsAssignedByPurchaseId(Id);
+
+            if (!purchase || !items) {
+                next(createHttpError(404));
+                return;
+            }
+
             const notes = purchase.notes.sort((a, b) => a.whenCreated < b.whenCreated ? -1 : a.whenCreated > b.whenCreated ? 1 : 0);
 
             res.locals.purchase = purchase;
