@@ -30,11 +30,11 @@ block content
         tbody
             each row in purchases
                 tr
-                    td= row.Description
-                    td= row.Price
-                    td= row.Supplies.length
+                    td= row.description
+                    td= row.price
+                    td= row.r_supplies.length
                     td
-                        a(href="/supply-purchases/view/" + row.Id).btn.text-primary
+                        a(href="/supply-purchases/view/" + row.uuid).btn.text-primary
                             i.fas.fa-eye
                             span.ms-1 View
     form(method='POST' action='/supply-purchases/new').modal.fade#new-purchase-modal

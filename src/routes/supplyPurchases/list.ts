@@ -21,7 +21,7 @@ export default class List extends Page {
 
             res.locals.purchases = purchases;
 
-            res.render(`supply-purchases/list/${status}`, res.locals.viewData);
+            res.render(`supply-purchases/list/${statusString}`, res.locals.viewData);
         });
     }
 }
