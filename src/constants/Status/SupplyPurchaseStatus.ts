@@ -11,7 +11,7 @@ export const SupplyPurchaseStatusNames = new Map<SupplyPurchaseStatus, string>([
     [ SupplyPurchaseStatus.Received, "Received" ],
     [ SupplyPurchaseStatus.Inventoried, "Inventoried" ],
     [ SupplyPurchaseStatus.Complete, "Complete" ],
-    [ SupplyPurchaseStatus.Received, "Rejected" ],
+    [ SupplyPurchaseStatus.Rejected, "Rejected" ],
 ]);
 
 export const SupplyPurchaseStatusParse = new Map<string, SupplyPurchaseStatus>([
