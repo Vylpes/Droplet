@@ -2,8 +2,6 @@ import { Router, Request, Response } from "express";
 import { Page } from "../../contracts/Page";
 import { User } from "../../database/entities/User";
 import BodyValidation from "../../helpers/Validation/Body";
-import { sys } from "typescript";
-import { threadId } from "worker_threads";
 import MessageHelper from "../../helpers/MessageHelper";
 
 export class Login extends Page {
@@ -15,7 +13,7 @@ export class Login extends Page {
         super.router.get('/login', (req: Request, res: Response) => {
             if (res.locals.viewData.isAuthenticated) {
                 res.redirect('/dashboard');
-		return;
+		        return;
             }
 
             res.render('auth/login', res.locals.viewData);

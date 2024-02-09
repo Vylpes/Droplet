@@ -49,6 +49,7 @@ export default class Update extends Page {
             const adminBool = admin == 'true';
             const activeBool = active == 'true';
 
+            // TODO: Check if email and username already exist
             user.UpdateBasicDetails(email, username, adminBool, activeBool);
 
             await user.Save(User, user);

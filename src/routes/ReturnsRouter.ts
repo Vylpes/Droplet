@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { Route } from "../contracts/Route";
-import newPage from "./items/new";
 import Update from "./returns/update";
-import UpdateQuantity from "./items/update-quantity";
 import Close from "./returns/close";
 import List from "./returns/list";
 import New from "./returns/new";
@@ -27,7 +25,7 @@ export default class ReturnsRouter extends Route {
 
     constructor() {
         super();
-        
+
         this.close = new Close(super.router);
         this.list = new List(super.router);
         this.create = new New(super.router);

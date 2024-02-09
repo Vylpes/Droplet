@@ -65,6 +65,7 @@ export default class Account extends Page {
                 return;
             }
 
+            // TODO: Check if email and username already exist
             userFromDb.UpdateBasicDetails(email, username, user.Admin, user.Active);
 
             if (newPassword) {

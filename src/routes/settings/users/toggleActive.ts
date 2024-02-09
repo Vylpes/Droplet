@@ -9,6 +9,8 @@ export default class ToggleActive extends Page {
         super(router);
     }
 
+    // TODO: Replace with OnPost
+    // TODO: Update to be 2 separate methods rather than a toggle
     public OnGet(): void {
         super.router.get('/users/:id/toggle-active', UserMiddleware.AdminAuthorise, async (req: Request, res: Response) => {
             const id = req.params.id;
