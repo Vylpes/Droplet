@@ -1,0 +1,78 @@
+name: Deploy To Stage
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    environment: stage
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn test
+
+    - name: RSync to Stage Server
+      uses: D3rHase/rsync-deploy-action@v0.2
+      with:
+        HOST: ${{ secrets.SSH_HOST }}
+        PORT: ${{ secrets.SSH_PORT }}
+        USER: ${{ secrets.SSH_USER }}
+        PRIVATE_SSH_KEY: ${{ secrets.SSH_KEY }}
+        REPOSITORY_PATH: ${{ secrets.SSH_REPO_PATH }}
+        SERVER_PATH: ${{ secrets.SSH_SERVER_PATH }}
+
+  deploy:
+    environment: stage
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: appleboy/ssh-action@v1.0.0
+      env:
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_AUTH_USER: ${{ secrets.DB_AUTH_USER }}
+        DB_AUTH_PASS: ${{ secrets.DB_AUTH_PASS }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_ROOT_HOST: ${{ secrets.DB_ROOT_HOST }}
+        DB_SYNC: ${{ secrets.DB_SYNC }}
+        DB_LOGGING: ${{ secrets.DB_LOGGING }}
+        DB_DATA_LOCATION: ${{ secrets.DB_DATA_LOCATION }}
+        EXPRESS_PORT: ${{ secrets.EXPRESS_PORT }}
+        EXPRESS_PROTOCOL: ${{ secrets.EXPRESS_PROTOCOL }}
+        EXPRESS_SECRET: ${{ secrets.EXPRESS_SECRET }}
+        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+        EMAIL_SECURE: ${{ secrets.EMAIL_SECURE }}
+        EMAIL_FROM_NAME: ${{ vars.EMAIL_FROM_NAME }}
+        EMAIL_FROM_ADDRESS: ${{ vars.EMAIL_FROM_ADDRESS }}
+        EMAIL_AUTH_ENABLE: ${{ secrets.EMAIL_AUTH_ENABLE }}
+        EMAIL_AUTH_USER: ${{ secrets.EMAIL_AUTH_USER }}
+        EMAIL_AUTH_PASS: ${{ secrets.EMAIL_AUTH_PASS }}
+        EMAIL_TLS_REJECT_UNAUTHORISED: ${{ secrets.EMAIL_TLS_REJECT_UNAUTHORISED }}
+        EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK: ${{ vars.EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK }}
+        EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK: ${{ vars.EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK }}
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        envs: DB_NAME,DB_AUTH_USER,DB_AUTH_PASS,DB_HOST,DB_PORT,DB_ROOT_HOST,DB_SYNC,DB_LOGGING,DB_DATA_LOCATION,EXPRESS_PORT,EXPRESS_PROTOCOL,EXPRESS_SECRET,EMAIL_HOST,EMAIL_PORT,EMAIL_SECURE,EMAIL_FROM_NAME,EMAIL_FROM_ADDRESS,EMAIL_AUTH_ENABLE,EMAIL_AUTH_USER,EMAIL_AUTH_PASS,EMAIL_TLS_REJECT_UNAUTHORISED,EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK,EMAIL_TEMPLATE_VERIFYUSER_VERIFYLINK
+        script: |
+          cd ~/app \
+          && docker compose down \
+          && (pm2 stop droplet || true) \
+          && (pm2 delete droplet || true) \
+          && docker compose up -d \
+          && sleep 10 \
+          && yarn run db:up \
+          && pm2 start --name droplet dist/index.js
