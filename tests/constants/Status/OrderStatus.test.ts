@@ -1,11 +1,23 @@
+import { OrderStatus, OrderStatusNames } from '../../../src/constants/Status/OrderStatus';
+
 describe('OrderStatusNames', () => {
-    test.todo('GIVEN input is AwaitingPayment, EXPECT Awaiting Payment string returned');
+    test('GIVEN input is AwaitingPayment, EXPECT Awaiting Payment string returned', () => {
+        expect(OrderStatusNames.get(OrderStatus.AwaitingPayment)).toBe("Awaiting Payment");
+    });
 
-    test.todo('GIVEN input is AwaitingDispatch, EXPECT Awaiting Dispatch string returned');
+    test('GIVEN input is AwaitingDispatch, EXPECT Awaiting Dispatch string returned', () => {
+        expect(OrderStatusNames.get(OrderStatus.AwaitingDispatch)).toBe("Awaiting Dispatch");
+    });
 
-    test.todo('GIVEN input is Dispatched, EXPECT Dispatched string returned');
+    test('GIVEN input is Dispatched, EXPECT Dispatched string returned', () => {
+        expect(OrderStatusNames.get(OrderStatus.Dispatched)).toBe("Dispatched");
+    });
 
-    test.todo('GIVEN input is Cancelled, EXPECT Cancelled string returned');
+    test('GIVEN input is Cancelled, EXPECT Cancelled string returned', () => {
+        expect(OrderStatusNames.get(OrderStatus.Cancelled)).toBe("Cancelled");
+    });
 
-    test.todo('GIVEN input is Returned, EXPECT Returned string returned');
+    test('GIVEN input is Returned, EXPECT Returned string returned', () => {
+        expect(OrderStatusNames.get(OrderStatus.Returned)).toBe("Returned");
+    });
 });

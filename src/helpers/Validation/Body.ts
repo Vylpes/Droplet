@@ -124,8 +124,7 @@ export default class Body {
                     }
                     break;
                 case ValidationRule.Number:
-                    console.log(typeof Number(0));
-                    if (typeof Number(req.body[rule.field]) != "number") {
+                    if (!Number(req.body[rule.field])) {
                         await message.Error(rule.errorMessage || `${rule.field} must be a number`);
 
                         if (!this.onFail) {
@@ -164,7 +163,7 @@ export default class Body {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.body[rule.field]) <= rule.length) {
+                    if (!Number(req.body[rule.field]) || Number(req.body[rule.field]) <= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         if (!this.onFail) {
@@ -177,7 +176,7 @@ export default class Body {
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.body[rule.field]) >= rule.length) {
+                    if (!Number(req.body[rule.field]) || Number(req.body[rule.field]) >= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         if (!this.onFail) {

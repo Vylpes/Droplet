@@ -6,7 +6,7 @@ export class UserMiddleware {
         if (req.session.User) {
             next();
         } else {
-            req.session.error = "Access denied";
+            req.flash('error', 'Access denied');
             res.redirect('/auth/login');
         }
     }

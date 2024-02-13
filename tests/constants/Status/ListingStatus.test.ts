@@ -1,7 +1,15 @@
+import { ListingStatus, ListingStatusNames } from '../../../src/constants/Status/ListingStatus';
+
 describe('ListingStatusNames', () => {
-    test.todo('GIVEN input is Active, EXPECT Active string returned');
+    test('GIVEN input is Active, EXPECT Active string returned', () => {
+        expect(ListingStatusNames.get(ListingStatus.Active)).toBe("Active");
+    });
 
-    test.todo('GIVEN input is Sold, EXPECT Sold string returned');
+    test('GIVEN input is Sold, EXPECT Sold string returned', () => {
+        expect(ListingStatusNames.get(ListingStatus.Sold)).toBe("Sold");
+    });
 
-    test.todo('GIVEN string is Unsold, EXPECT Unsold string returned');
+    test('GIVEN input is Unsold, EXPECT Unsold string returned', () => {
+        expect(ListingStatusNames.get(ListingStatus.Unsold)).toBe("Unsold");
+    });
 });

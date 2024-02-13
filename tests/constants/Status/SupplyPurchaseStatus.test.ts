@@ -1,11 +1,23 @@
+import { SupplyPurchaseStatus, SupplyPurchaseStatusNames } from '../../../src/constants/Status/SupplyPurchaseStatus';
+
 describe('SupplyPurchaseStatusNames', () => {
-    test.todo('GIVEN input is Ordered, EXPECT Ordered string returned');
+    test('GIVEN input is Ordered, EXPECT Ordered string returned', () => {
+        expect(SupplyPurchaseStatusNames.get(SupplyPurchaseStatus.Ordered)).toBe("Ordered");
+    });
 
-    test.todo('GIVEN input is Received, EXPECT Received string returned');
+    test('GIVEN input is Received, EXPECT Received string returned', () => {
+        expect(SupplyPurchaseStatusNames.get(SupplyPurchaseStatus.Received)).toBe("Received");
+    });
 
-    test.todo('GIVEN input is Inventoried, EXPECT Inventoried string returned');
+    test('GIVEN input is Inventoried, EXPECT Inventoried string returned', () => {
+        expect(SupplyPurchaseStatusNames.get(SupplyPurchaseStatus.Inventoried)).toBe("Inventoried");
+    });
 
-    test.todo('GIVEN input is Complete, EXPECT Complete string returned');
+    test('GIVEN input is Complete, EXPECT Complete string returned', () => {
+        expect(SupplyPurchaseStatusNames.get(SupplyPurchaseStatus.Complete)).toBe("Complete");
+    });
 
-    test.todo('GIVEN input is Rejected, EXPECT Rejected string returned');
+    test('GIVEN input is Rejected, EXPECT Rejected string returned', () => {
+        expect(SupplyPurchaseStatusNames.get(SupplyPurchaseStatus.Rejected)).toBe("Rejected");
+    });
 });
