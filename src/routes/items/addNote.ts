@@ -1,34 +1,28 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { NoteType } from "../../constants/NoteType";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import Note from "../../database/entities/Note";
-import Body from "../../helpers/Validation/Body";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class AddNote extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("text")
+export default class AddNote implements Page {
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        const bodyValidation = new BodyValidator("text")
                 .NotEmpty();
 
-        super.router.post('/:itemId/add-note', bodyValidation.Validate.bind(bodyValidation), UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const itemId = req.params.itemId;
+        const itemId = req.params.itemId;
 
-            if (req.session.error) {
-                res.redirect(`/items/${itemId}`);
-                return;
-            }
-
-            const text = req.body.text;
-
-            const note = new Note(text, NoteType.Item, itemId);
-
-            await note.Save(Note, note);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/items/${itemId}`);
-        });
+            return;
+        }
+
+        const text = req.body.text;
+
+        const note = new Note(text, NoteType.Item, itemId);
+
+        await note.Save(Note, note);
+
+        res.redirect(`/items/${itemId}`);
     }
 }

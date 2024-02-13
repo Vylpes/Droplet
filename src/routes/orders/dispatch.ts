@@ -1,26 +1,19 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Order } from "../../database/entities/Order";
 
-export default class Dispatch extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class Dispatch implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const Id = req.params.Id;
 
-    public OnPost(): void {
-        super.router.post('/view/:Id/dispatch', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const Id = req.params.Id;
+        const order = await Order.FetchOneById(Order, Id, [
+            "Listings"
+        ]);
 
-            const order = await Order.FetchOneById(Order, Id, [
-                "Listings"
-            ]);
+        order.MarkAsDispatched();
 
-            order.MarkAsDispatched();
+        await order.Save(Order, order);
 
-            await order.Save(Order, order);
-
-            res.redirect(`/orders/view/${Id}`);
-        });
+        res.redirect(`/orders/view/${Id}`);
     }
 }

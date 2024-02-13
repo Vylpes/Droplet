@@ -1,22 +1,20 @@
-import { NextFunction, Request, Response } from "express";
+import { Request } from "express";
 import { ValidationRule } from "../../constants/ValidationRule";
 import IValidationRule from "../../contracts/IValidationRule";
 import MessageHelper from "../MessageHelper";
 
-export default class Body {
+export default class ParamsValidator {
     private rules: IValidationRule[];
 
-    private onFail?: string;
     private field: string;
 
-    constructor(field: string, onFail?: string) {
+    constructor(field: string) {
         this.rules = [];
 
         this.field = field;
-        this.onFail = onFail;
     }
 
-    public async Validate(req: Request, res: Response, next: NextFunction) {
+    public async Validate(req: Request): Promise<boolean> {
         const message = new MessageHelper(req);
 
         for (let i = 0; i < this.rules.length; i++) {
@@ -26,177 +24,104 @@ export default class Body {
                 const shouldRun = rule.whenCallback(req);
 
                 if (!shouldRun) {
-                    next();
-                    return;
+                    continue;
                 }
             }
 
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
-                    if (!req.body[rule.field] || req.body[rule.field].length == 0) {
+                    if (!req.params[rule.field] || req.params[rule.field].length == 0) {
                         await message.Error(rule.errorMessage || `${rule.field} is required`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.EqualTo:
-                    if (req.body[rule.field] != rule.to) {
+                    if (req.params[rule.field] != rule.to) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to ${rule.to}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.NotEqualTo:
-                    if (req.body[rule.field] == rule.to) {
+                    if (req.params[rule.field] == rule.to) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to ${rule.to}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.EqualToField:
-                    if (req.body[rule.field] != req.body[rule.to]) {
+                    if (req.params[rule.field] != req.params[rule.to]) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.NotEqualToField:
-                    if (req.body[rule.field] == req.body[rule.to]) {
+                    if (req.params[rule.field] == req.params[rule.to]) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.MaxLength:
-                    if (req.body[rule.field].length > rule.length) {
+                    if (req.params[rule.field].length > rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no more than ${rule.length} characters long`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.MinLength:
-                    if (req.body[rule.field].length < rule.length) {
+                    if (req.params[rule.field].length < rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no less than ${rule.length} characters long`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.Number:
                     console.log(typeof Number(0));
-                    if (typeof Number(req.body[rule.field]) != "number") {
+                    if (typeof Number(req.params[rule.field]) != "number") {
                         await message.Error(rule.errorMessage || `${rule.field} must be a number`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.EmailAddress:
-                    if (!String(req.body[rule.field]).match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+                    if (!String(req.params[rule.field]).match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
                         await message.Error(rule.errorMessage || `${rule.field} must be an email address`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.Boolean:
-                    if (req.body[rule.field] != "true" && req.body[rule.field] != "false") {
+                    if (req.params[rule.field] != "true" && req.params[rule.field] != "false") {
                         await message.Error(rule.errorMessage || `${rule.field} must be a boolean`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.body[rule.field]) <= rule.length) {
+                    if (Number(req.params[rule.field]) <= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.body[rule.field]) >= rule.length) {
+                    if (Number(req.params[rule.field]) >= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
-                        if (!this.onFail) {
-                            next();
-                            return;
-                        }
-
-                        res.redirect(this.onFail);
-                        return;
+                        return false;
                     }
                     break;
                 default:
             }
         }
 
-        next();
+        return true;
     }
 
-    public NotEmpty(): Body {
+    public NotEmpty(): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEmpty,
@@ -205,7 +130,7 @@ export default class Body {
         return this;
     }
 
-    public EqualTo(value: string): Body {
+    public EqualTo(value: string): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualTo,
@@ -215,7 +140,7 @@ export default class Body {
         return this;
     }
 
-    public NotEqualTo(value: string): Body {
+    public NotEqualTo(value: string): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualTo,
@@ -225,7 +150,7 @@ export default class Body {
         return this;
     }
 
-    public EqualToField(field: string): Body {
+    public EqualToField(field: string): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualToField,
@@ -235,7 +160,7 @@ export default class Body {
         return this;
     }
 
-    public NotEqualToField(field: string): Body {
+    public NotEqualToField(field: string): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualToField,
@@ -245,7 +170,7 @@ export default class Body {
         return this;
     }
 
-    public MaxLength(length: number): Body {
+    public MaxLength(length: number): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.MaxLength,
@@ -256,7 +181,7 @@ export default class Body {
     }
 
 
-    public MinLength(length: number): Body {
+    public MinLength(length: number): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.MinLength,
@@ -266,7 +191,7 @@ export default class Body {
         return this;
     }
 
-    public Number(): Body {
+    public Number(): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.Number,
@@ -275,7 +200,7 @@ export default class Body {
         return this;
     }
 
-    public EmailAddress(): Body {
+    public EmailAddress(): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EmailAddress,
@@ -284,7 +209,7 @@ export default class Body {
         return this;
     }
 
-    public Boolean(): Body {
+    public Boolean(): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.Boolean,
@@ -293,7 +218,7 @@ export default class Body {
         return this;
     }
 
-    public GreaterThan(num: number): Body {
+    public GreaterThan(num: number): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.GreaterThan,
@@ -303,7 +228,7 @@ export default class Body {
         return this;
     }
 
-    public LessThan(num: number): Body {
+    public LessThan(num: number): ParamsValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.LessThan,
@@ -313,7 +238,7 @@ export default class Body {
         return this;
     }
 
-    public WithMessage(message: string): Body {
+    public WithMessage(message: string): ParamsValidator {
         const rulesLength = this.rules.length;
 
         if (rulesLength == 0) return this;
@@ -323,7 +248,7 @@ export default class Body {
         return this;
     }
 
-    public When(whenCallback: Function): Body {
+    public When(whenCallback: Function): ParamsValidator {
         const rulesLength = this.rules.length;
 
         if (rulesLength == 0) return this;
@@ -333,7 +258,7 @@ export default class Body {
         return this;
     }
 
-    public ChangeField(field: string): Body {
+    public ChangeField(field: string): ParamsValidator {
         this.field = field;
 
         return this;

@@ -1,24 +1,17 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class Posted extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class Posted implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const Id = req.params.Id;
 
-    public OnPost(): void {
-        super.router.post('/view/:Id/posted', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const Id = req.params.Id;
+        const ret = await Return.FetchOneById(Return, Id);
 
-            const ret = await Return.FetchOneById(Return, Id);
+        ret.MarkAsPosted();
 
-            ret.MarkAsPosted();
+        await ret.Save(Return, ret);
 
-            await ret.Save(Return, ret);
-
-            res.redirect(`/returns/view/${Id}`);
-        });
+        res.redirect(`/returns/view/${Id}`);
     }
 }

@@ -1,16 +1,11 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("name", "/postage-policies")
+export default class New implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("costToBuyer")
                 .NotEmpty()
@@ -19,16 +14,19 @@ export default class New extends Page {
                 .NotEmpty()
                 .Number();
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const name = req.body.name;
-            const costToBuyer = req.body.costToBuyer;
-            const actualCost = req.body.actualCost;
+        if (!await bodyValidation.Validate(req.body)) {
+            res.redirect("/postage-policies");
+            return;
+        }
 
-            const policy = new PostagePolicy(name, costToBuyer, actualCost);
+        const name = req.body.name;
+        const costToBuyer = req.body.costToBuyer;
+        const actualCost = req.body.actualCost;
 
-            await policy.Save(PostagePolicy, policy);
+        const policy = new PostagePolicy(name, costToBuyer, actualCost);
 
-            res.redirect('/postage-policies');
-        });
+        await policy.Save(PostagePolicy, policy);
+
+        res.redirect('/postage-policies');
     }
 }

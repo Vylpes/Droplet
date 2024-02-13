@@ -16,17 +16,17 @@ import AppDataSource from "./database/dataSources/appDataSource";
 
 import { AuthRouter } from "./routes/auth";
 import { DashboardRouter } from "./routes/dashboard";
-import { IndexRouter } from "./routes";
-import SettingsRouter from "./routes/settingsRouter";
-import ItemsRouter from "./routes/itemsRouter";
-import ItemPurchasesRouter from "./routes/itemPurchasesRouter";
-import SuppliesRouters from "./routes/suppliesRouter";
-import SupplyPurchasesRouter from "./routes/SupplyPurchasesRouter";
-import ListingsRouter from "./routes/listingsRouter";
-import OrdersRouter from "./routes/ordersRouter";
-import StorageRouter from "./routes/storageRouter";
-import ReturnsRouter from "./routes/ReturnsRouter";
-import PostagePolicyRouter from "./routes/postagePolicyRouter";
+import { IndexRouter } from "./routes/index";
+import SettingsRouter from "./routes/settings";
+import ItemsRouter from "./routes/items";
+import ItemPurchasesRouter from "./routes/itemPurchases";
+import SuppliesRouters from "./routes/supplies";
+import SupplyPurchasesRouter from "./routes/supplyPurchases";
+import ListingsRouter from "./routes/listings";
+import OrdersRouter from "./routes/orders";
+import StorageRouter from "./routes/storage";
+import ReturnsRouter from "./routes/returns";
+import PostagePolicyRouter from "./routes/postagePolicy";
 
 export class App {
     private _app: Express;

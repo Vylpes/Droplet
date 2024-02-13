@@ -1,38 +1,31 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import { Supply } from "../../database/entities/Supply";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class view extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class View implements Page {
+    public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
+        const Id = req.params.Id;
 
-    public OnGet(): void {
-        super.router.get('/:Id', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        if (!Id) {
+            next(createHttpError(404));
+        }
 
-            if (!Id) {
-                next(createHttpError(404));
-            }
+        const supply = await Supply.FetchOneById<Supply>(Supply, Id, [
+            "Purchase"
+        ]);
 
-            const supply = await Supply.FetchOneById<Supply>(Supply, Id, [
-                "Purchase"
-            ]);
+        if (!supply) {
+            next(createHttpError(404));
+        }
 
-            if (!supply) {
-                next(createHttpError(404));
-            }
+        const notes = await Note.FetchAllForId(NoteType.Supply, Id);
 
-            const notes = await Note.FetchAllForId(NoteType.Supply, Id);
+        res.locals.item = supply;
+        res.locals.notes = notes;
 
-            res.locals.item = supply;
-            res.locals.notes = notes;
-
-            res.render('supplies/view', res.locals.viewData);
-        });
+        res.render('supplies/view', res.locals.viewData);
     }
 }

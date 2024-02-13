@@ -1,15 +1,12 @@
-import { Router, Request, Response } from "express";
-import { UserMiddleware } from "../../middleware/userMiddleware";
-import { Page } from "../../contracts/Page";
+import { Route } from "../../contracts/Route";
+import Calculator from "./calculator";
+import { Index } from "./indexPage";
 
-export class Index extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export class DashboardRouter extends Route {
+    constructor() {
+        super(true);
 
-    OnGet() {
-        super.router.get('/', UserMiddleware.Authorise, (req: Request, res: Response) => {
-            res.render('dashboard/index', res.locals.viewData);
-        });
+        this.AddPage("/", new Index());
+        this.AddPage("/calculator", new Calculator());
     }
 }

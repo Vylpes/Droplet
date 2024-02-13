@@ -1,16 +1,10 @@
-import { Router, Request, Response } from "express";
-import { Page } from "../../contracts/Page";
+import { Router, Request, Response, NextFunction } from "express";
+import Page from "../../contracts/Page";
 
-export class Logout extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    OnGet() {
-        super.router.get('/logout', (req: Request, res: Response) => {
-            req.session.destroy(() => {
-                res.redirect('/');
-            });
+export class Logout implements Page {
+    OnGet(req: Request, res: Response, next: NextFunction) {
+        req.session.destroy(() => {
+            res.redirect('/');
         });
     }
 }

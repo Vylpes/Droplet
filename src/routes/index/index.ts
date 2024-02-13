@@ -1,18 +1,10 @@
-import { Router, Request, Response } from "express";
-import { Page } from "../../contracts/Page";
+import { Route } from "../../contracts/Route";
+import { Index } from "./indexPage";
 
-export class Index extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export class IndexRouter extends Route {
+    constructor() {
+        super();
 
-    OnGet() {
-        super.router.get('/', (req: Request, res: Response) => {
-            if (res.locals.viewData.isAuthenticated) {
-                res.redirect('/dashboard');
-            }
-
-            res.render('index/index', res.locals.viewData);
-        });
+        this.AddPage("/", new Index());
     }
 }

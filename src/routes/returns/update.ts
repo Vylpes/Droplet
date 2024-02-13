@@ -1,38 +1,31 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { NextFunction, Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class Update extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("returnNumber")
+export default class Update implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("returnNumber")
                 .NotEmpty()
             .ChangeField("returnBy")
                 .NotEmpty();
 
-        super.router.post('/view/:Id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const Id = req.params.Id;
 
-            if (req.session.error) {
-                res.redirect(`/returns/view/${Id}`);
-                return;
-            }
-
-            const returnNumber = req.body.returnNumber;
-            const returnBy = req.body.returnBy;
-
-            const ret = await Return.FetchOneById(Return, Id);
-
-            ret.UpdateBasicDetails(returnNumber, ret.RMA, returnBy);
-
-            await ret.Save(Return, ret);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/returns/view/${Id}`);
-        });
+            return;
+        }
+
+        const returnNumber = req.body.returnNumber;
+        const returnBy = req.body.returnBy;
+
+        const ret = await Return.FetchOneById(Return, Id);
+
+        ret.UpdateBasicDetails(returnNumber, ret.RMA, returnBy);
+
+        await ret.Save(Return, ret);
+
+        res.redirect(`/returns/view/${Id}`);
     }
 }
