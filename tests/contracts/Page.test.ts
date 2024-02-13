@@ -1,11 +1,30 @@
-describe('constructor', () => {
-    test.todo("EXPECT properties to be set");
-});
+import { Router } from 'express';
+import { Page } from '../../src/contracts/Page';
 
-describe("router", () => {
-    test.todo("EXPECT router to be returned");
-});
+describe('Page', () => {
+    let page: Page;
+    let router: Router;
 
-describe("Route", () => {
-    test.todo("EXPECT OnGet and OnPost to be called");
+    beforeEach(() => {
+        router = {} as Router;
+        page = new Page(router);
+    });
+
+    describe('constructor', () => {
+        test('EXPECT properties to be set', () => {
+            expect(page.router).toBeDefined();
+        });
+    });
+
+    describe('Route', () => {
+        test('EXPECT OnGet and OnPost methods to be called', () => {
+            jest.spyOn(page, 'OnGet');
+            jest.spyOn(page, 'OnPost');
+
+            page.Route();
+
+            expect(page.OnGet).toHaveBeenCalled();
+            expect(page.OnPost).toHaveBeenCalled();
+        });
+    });
 });

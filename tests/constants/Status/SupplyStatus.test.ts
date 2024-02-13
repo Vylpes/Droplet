@@ -1,5 +1,11 @@
-describe('SupplyStatusNames', () => {
-    test.todo('GIVEN input is Unused, EXPECT Unused string returned');
+import { SupplyStatus, SupplyStatusNames } from '../../../src/constants/Status/SupplyStatus';
 
-    test.todo('GIVEN input is Used, EXPECT Used string returned');
+describe('SupplyStatusNames', () => {
+    test('GIVEN input is Unused, EXPECT Unused string returned', () => {
+        expect(SupplyStatusNames.get(SupplyStatus.Unused)).toBe("Unused");
+    });
+
+    test('GIVEN input is Used, EXPECT Used string returned', () => {
+        expect(SupplyStatusNames.get(SupplyStatus.Used)).toBe("Used");
+    });
 });

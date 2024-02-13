@@ -1,11 +1,17 @@
-describe('constructor', () => {
-    test.todo('EXPECT properties to be set');
-});
+import { Route } from '../../src/contracts/Route';
 
-describe("router", () => {
-    test.todo("EXPECT router to be returned");
+describe("constructor", () => {
+    test("EXPECT properties to be set", () => {
+        const route = new Route();
+
+        expect(route.router).toBeDefined();
+    });
 });
 
 describe("Route", () => {
-    test.todo("EXPECT router to be returned");
+    test("EXPECT Route to be returned", () => {
+        const route = new Route();
+
+        expect(route.Route()).toBe(route.router);
+    });
 });

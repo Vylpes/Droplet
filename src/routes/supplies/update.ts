@@ -28,6 +28,7 @@ export default class Update extends Page {
 
             const name = req.body.name;
             const sku = req.body.sku;
+            const quantity = req.body.quantity;
 
             const supply = await Supply.FetchOneById<Supply>(Supply, Id);
 

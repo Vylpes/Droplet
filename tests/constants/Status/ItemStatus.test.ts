@@ -1,9 +1,19 @@
+import { ItemStatus, ItemStatusNames } from '../../../src/constants/Status/ItemStatus';
+
 describe('ItemStatusNames', () => {
-    test.todo('GIVEN input is Unlisted, EXPECT Unlisted string returned');
+    test('GIVEN input is Unlisted, EXPECT Unlisted string returned', () => {
+        expect(ItemStatusNames.get(ItemStatus.Unlisted)).toBe("Unlisted");
+    });
 
-    test.todo('GIVEN input is Listed, EXPECT Listed string returned');
+    test('GIVEN input is Listed, EXPECT Listed string returned', () => {
+        expect(ItemStatusNames.get(ItemStatus.Listed)).toBe("Listed");
+    });
 
-    test.todo('GIVEN input is Sold, EXPECT Sold string returned');
+    test('GIVEN input is Sold, EXPECT Sold string returned', () => {
+        expect(ItemStatusNames.get(ItemStatus.Sold)).toBe("Sold");
+    });
 
-    test.todo('GIVEN input is Rejected, EXPECT Rejected string returned');
+    test('GIVEN input is Rejected, EXPECT Rejected string returned', () => {
+        expect(ItemStatusNames.get(ItemStatus.Rejected)).toBe("Rejected");
+    });
 });

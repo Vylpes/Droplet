@@ -1,11 +1,23 @@
+import { ItemPurchaseStatus, ItemPurchaseStatusNames } from '../../../src/constants/Status/ItemPurchaseStatus';
+
 describe('ItemPurchaseStatusNames', () => {
-    test.todo('GIVEN input is Ordered, EXPECT Ordered string returned');
+    test('GIVEN input is Ordered, EXPECT Ordered string returned', () => {
+        expect(ItemPurchaseStatusNames.get(ItemPurchaseStatus.Ordered)).toBe("Ordered");
+    });
 
-    test.todo('GIVEN input is Received, EXPECT Received string returned');
+    test('GIVEN input is Received, EXPECT Received string returned', () => {
+        expect(ItemPurchaseStatusNames.get(ItemPurchaseStatus.Received)).toBe("Received");
+    });
 
-    test.todo('GIVEN input is Inventoried, EXPECT Inventoried string returned');
+    test('GIVEN input is Inventoried, EXPECT Inventoried string returned', () => {
+        expect(ItemPurchaseStatusNames.get(ItemPurchaseStatus.Inventoried)).toBe("Inventoried");
+    });
 
-    test.todo('GIVEN input is Complete, EXPECT Complete string returned');
+    test('GIVEN input is Complete, EXPECT Complete string returned', () => {
+        expect(ItemPurchaseStatusNames.get(ItemPurchaseStatus.Complete)).toBe("Complete");
+    });
 
-    test.todo('GIVEN input is Rejected, EXPECT Rejected string returned');
+    test('GIVEN input is Rejected, EXPECT Rejected string returned', () => {
+        expect(ItemPurchaseStatusNames.get(ItemPurchaseStatus.Rejected)).toBe("Rejected");
+    });
 });
