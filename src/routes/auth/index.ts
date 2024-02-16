@@ -1,12 +1,12 @@
 import { Route } from "../../contracts/Route";
 import AdminRegister from "./adminRegister";
-import { Login } from "./login";
-import { Logout } from "./logout";
+import Login from "./login";
+import Logout from "./logout";
 import PasswordResetRouter from "./passwordReset";
 import verificationTokenRouter from "./verificationToken";
 import Verify from "./verify";
 
-export class AuthRouter extends Route {
+export default class AuthRouter extends Route {
     constructor() {
         super();
 

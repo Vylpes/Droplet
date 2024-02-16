@@ -1,12 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import Page from "../../contracts/Page";
 import { User } from "../../database/entities/User";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { sys } from "typescript";
-import { threadId } from "worker_threads";
 import MessageHelper from "../../helpers/MessageHelper";
 
-export class Login implements Page {
+export default class Login implements Page {
     OnGet(req: Request, res: Response, next: NextFunction) {
         if (res.locals.viewData.isAuthenticated) {
             res.redirect('/dashboard');

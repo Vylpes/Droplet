@@ -1,8 +1,8 @@
 import { Route } from "../../contracts/Route";
 import Calculator from "./calculator";
-import { Index } from "./indexPage";
+import Index from "./indexPage";
 
-export class DashboardRouter extends Route {
+export default class DashboardRouter extends Route {
     constructor() {
         super(true);
 

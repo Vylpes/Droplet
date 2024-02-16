@@ -14,9 +14,9 @@ import connectFlash from "connect-flash";
 import { PugMiddleware } from "./middleware/pugMiddleware";
 import AppDataSource from "./database/dataSources/appDataSource";
 
-import { AuthRouter } from "./routes/auth";
-import { DashboardRouter } from "./routes/dashboard";
-import { IndexRouter } from "./routes/index";
+import AuthRouter from "./routes/auth";
+import DashboardRouter from "./routes/dashboard";
+import IndexRouter from "./routes/index";
 import SettingsRouter from "./routes/settings";
 import ItemsRouter from "./routes/items";
 import ItemPurchasesRouter from "./routes/itemPurchases";
