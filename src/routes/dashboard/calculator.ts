@@ -1,15 +1,8 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 
-export default class Calculator extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnGet(): void {
-        super.router.get('/calculator', UserMiddleware.Authorise, (req: Request, res: Response) => {
-            res.render('dashboard/calculator', res.locals.viewData);
-        });
+export default class Calculator implements Page {
+    public OnGet(req: Request, res: Response): void {
+        res.render('dashboard/calculator', res.locals.viewData);
     }
 }

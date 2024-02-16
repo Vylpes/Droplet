@@ -1,17 +1,12 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { ItemPurchase } from "../../database/entities/ItemPurchase";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("name")
+export default class New implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("quantity")
                 .NotEmpty()
@@ -19,30 +14,33 @@ export default class New extends Page {
             .ChangeField("purchaseId")
                 .NotEmpty();
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const name = req.body.name;
-            const quantity = req.body.quantity;
-            const purchaseId = req.body.purchaseId;
+        if (!await bodyValidation.Validate(req.body)) {
+            res.redirect("/item-purchases/ordered");
+            return;
+        }
 
-            const item = new Item(name, quantity);
+        const name = req.body.name;
+        const quantity = req.body.quantity;
+        const purchaseId = req.body.purchaseId;
 
-            await item.Save(Item, item);
+        const item = new Item(name, quantity);
 
-            let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-                "Items"
-            ]);
+        await item.Save(Item, item);
 
-            purchase.AddItemToOrder(item);
+        let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
+            "Items"
+        ]);
 
-            await purchase.Save(ItemPurchase, purchase);
+        purchase.AddItemToOrder(item);
 
-            purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-                "Items"
-            ]);
+        await purchase.Save(ItemPurchase, purchase);
 
-            await purchase.CalculateItemPrices();
+        purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
+            "Items"
+        ]);
 
-            res.redirect(`/item-purchases/view/${purchaseId}`);
-        });
+        await purchase.CalculateItemPrices();
+
+        res.redirect(`/item-purchases/view/${purchaseId}`);
     }
 }

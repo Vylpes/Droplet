@@ -1,35 +1,28 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class Received extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("returnBy")
+export default class Received implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("returnBy")
                 .NotEmpty();
 
-        super.router.post('/view/:Id/received', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const Id = req.params.Id;
+        const Id = req.params.Id;
 
-            if (req.session.error) {
-                res.redirect(`/returns/view/${Id}`);
-                return;
-            }
-
-            const returnBy = req.body.returnBy;
-
-            const ret = await Return.FetchOneById(Return, Id);
-
-            ret.MarkAsReceived(returnBy);
-
-            await ret.Save(Return, ret);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/returns/view/${Id}`);
-        });
+            return;
+        }
+
+        const returnBy = req.body.returnBy;
+
+        const ret = await Return.FetchOneById(Return, Id);
+
+        ret.MarkAsReceived(returnBy);
+
+        await ret.Save(Return, ret);
+
+        res.redirect(`/returns/view/${Id}`);
     }
 }

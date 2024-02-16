@@ -1,24 +1,17 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class Close extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class Close implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const Id = req.params.Id;
 
-    public OnPost(): void {
-        super.router.post('/view/:Id/close', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const Id = req.params.Id;
+        const ret = await Return.FetchOneById(Return, Id);
 
-            const ret = await Return.FetchOneById(Return, Id);
+        ret.MarkAsClosed();
 
-            ret.MarkAsClosed();
+        await ret.Save(Return, ret);
 
-            await ret.Save(Return, ret);
-
-            res.redirect(`/returns/view/${Id}`);
-        });
+        res.redirect(`/returns/view/${Id}`);
     }
 }

@@ -1,30 +1,28 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("description", "/supply-purchases/ordered")
+export default class New implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("description")
                 .NotEmpty()
             .ChangeField("price")
                 .NotEmpty()
                 .Number();
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const description = req.body.description;
-            const price = req.body.price;
-
-            const purchase = new SupplyPurchase(description, price);
-
-            await purchase.Save(SupplyPurchase, purchase);
-
+        if (!bodyValidation.Validate(req.body)) {
             res.redirect('/supply-purchases/ordered');
-        });
+            return;
+        }
+
+        const description = req.body.description;
+        const price = req.body.price;
+
+        const purchase = new SupplyPurchase(description, price);
+
+        await purchase.Save(SupplyPurchase, purchase);
+
+        res.redirect('/supply-purchases/ordered');
     }
 }

@@ -1,17 +1,12 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { NextFunction, Request, Response } from "express";
+import Page from "../../contracts/Page";
 import { Order } from "../../database/entities/Order";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class Update extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("orderNumber")
+export default class Update implements Page {
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        const bodyValidation = new BodyValidator("orderNumber")
                 .NotEmpty()
             .ChangeField("offerAccepted")
                 .NotEmpty()
@@ -19,38 +14,36 @@ export default class Update extends Page {
             .ChangeField("buyer")
                 .NotEmpty();
 
-        super.router.post('/view/:Id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const Id = req.params.Id;
 
-            if (req.session.error) {
-                res.redirect(`/orders/view/${Id}`);
-                return;
-            }
+        if (!await bodyValidation.Validate(req.body)) {
+            res.redirect(`/orders/view/${Id}`);
+            return;
+        }
 
-            const orderNumber = req.body.orderNumber;
-            const offerAccepted = req.body.offerAccepted == "true";
-            const buyer = req.body.buyer;
-            const postagePolicyId = req.body.postagePolicyId;
+        const orderNumber = req.body.orderNumber;
+        const offerAccepted = req.body.offerAccepted == "true";
+        const buyer = req.body.buyer;
+        const postagePolicyId = req.body.postagePolicyId;
 
-            const order = await Order.FetchOneById(Order, Id);
+        const order = await Order.FetchOneById(Order, Id);
 
-            order.UpdateBasicDetails(orderNumber, offerAccepted, buyer);
+        order.UpdateBasicDetails(orderNumber, offerAccepted, buyer);
+
+        await order.Save(Order, order);
+
+        if (postagePolicyId) {
+            const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
+
+            order.AddPostagePolicyToOrder(postagePolicy);
 
             await order.Save(Order, order);
+        } else {
+            order.RemovePostagePolicy();
 
-            if (postagePolicyId) {
-                const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
+            await order.Save(Order, order);
+        }
 
-                order.AddPostagePolicyToOrder(postagePolicy);
-
-                await order.Save(Order, order);
-            } else {
-                order.RemovePostagePolicy();
-
-                await order.Save(Order, order);
-            }
-
-            res.redirect(`/orders/view/${Id}`);
-        });
+        res.redirect(`/orders/view/${Id}`);
     }
 }
