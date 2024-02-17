@@ -79,8 +79,7 @@ export default class ParamsValidator {
                     }
                     break;
                 case ValidationRule.Number:
-                    console.log(typeof Number(0));
-                    if (typeof Number(req.params[rule.field]) != "number") {
+                    if (!Number(req.params[rule.field])) {
                         await message.Error(rule.errorMessage || `${rule.field} must be a number`);
 
                         return false;
@@ -101,14 +100,14 @@ export default class ParamsValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.params[rule.field]) <= rule.length) {
+                    if (!Number(req.params[rule.field]) || Number(req.params[rule.field]) <= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.params[rule.field]) >= rule.length) {
+                    if (!Number(req.params[rule.field]) || Number(req.params[rule.field]) >= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;

@@ -1,15 +1,14 @@
-import Body from '../../../src/helpers/Validation/Body';
+import BodyValidator from '../../../src/helpers/Validation/BodyValidator';
 import { Request, Response } from 'express';
 import MessageHelper from '../../../src/helpers/MessageHelper';
 import { ValidationRule } from '../../../src/constants/ValidationRule';
 
 describe('constructor', () => {
     test('EXPECT properties to be set', () => {
-        const body = new Body("fieldName", "/url");
+        const bodyValidator = new BodyValidator("fieldName");
 
-        expect(body['field']).toBe('fieldName');
-        expect(body['onFail']).toBe("/url");
-        expect(body['rules']).toEqual([]);
+        expect(bodyValidator['field']).toBe('fieldName');
+        expect(bodyValidator['rules']).toEqual([]);
     });
 });
 
@@ -21,14 +20,13 @@ describe("Validate", () => {
         const req = {
             body: { field: "field" },
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const body = new Body("field", "/url")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await body.Validate(req, res, jest.fn());
+        await bodyValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -41,13 +39,12 @@ describe("Validate", () => {
         const req = {
             body: { field: "" },
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const body = new Body("field", "/url")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty();
 
         // Act
-        await body.Validate(req, res, jest.fn());
+        await bodyValidator.Validate(req);
 
         // Assert
         expect(whenCallback).not.toHaveBeenCalled();
@@ -62,15 +59,13 @@ describe("Validate", () => {
             body: { field: "" },
             flash: jest.fn(),
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(false);
-        const next = jest.fn();
-        const body = new Body("field", "/url")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await body.Validate(req, res, next);
+        await bodyValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -85,15 +80,13 @@ describe("Validate", () => {
             body: { field: "" },
             flash: jest.fn(),
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const next = jest.fn();
-        const body = new Body("field", "/url")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await body.Validate(req, res, next);
+        await bodyValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -108,17 +101,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEmpty();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
-
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is null, EXPECT fail", async () => {
@@ -128,17 +119,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: null },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEmpty();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field is required");
-
+            expect(result).toBe(false);
         });
 
         test("GIVEN field length is 0, EXPECT fail", async () => {
@@ -148,16 +137,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEmpty();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field is required");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -167,39 +155,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEmpty()
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .NotEmpty();
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
-
         });
     });
 
@@ -211,17 +175,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualTo("field");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
-
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not equal to string, EXEPCT fail", async () => {
@@ -231,16 +193,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualTo("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be equal to otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -250,38 +211,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualTo("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .EqualTo("otherField");
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -293,16 +231,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualTo("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is equal to string, EXPECT fail", async () => {
@@ -312,16 +249,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualTo("field");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must not be equal to field");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -331,37 +267,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualTo("field")
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .NotEqualTo("field");
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -373,16 +287,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualToField("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not equal to other field, EXPECT fail", async () => {
@@ -392,16 +305,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualToField("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be equal to field otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -411,37 +323,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EqualToField("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field", otherField: "otherField" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .EqualToField("otherField");
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -453,35 +343,33 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualToField("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
-        test("GIVEN field is equal to other field, EXPECT pass", async () => {
+        test("GIVEN field is equal to other field, EXPECT fail", async () => {
             // Arrange
             MessageHelper.prototype.Error = jest.fn();
 
             const req = {
                 body: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualToField("otherField");
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must not be equal to field otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -491,37 +379,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .NotEqualToField("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field", otherField: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .NotEqualToField("otherField");
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -533,16 +399,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MaxLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is equal to max, EXPECT pass", async () => {
@@ -552,16 +417,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "fieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MaxLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is greater than max, EXPECT fail", async () => {
@@ -571,16 +435,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MaxLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be no more than 10 characters long");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -590,37 +453,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MaxLength(10)
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "fieldfieldfield" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .MaxLength(10);
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -632,16 +473,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MinLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is equal to min, EXPECT pass", async () => {
@@ -651,16 +491,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "fieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MinLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is less than min, EXPECT fail", async () => {
@@ -670,16 +509,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MinLength(10);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be no less than 10 characters long");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -689,37 +527,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .MinLength(10)
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .MinLength(10);
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -731,16 +547,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "1" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Number();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not a number, EXPECT fail", async () => {
@@ -750,16 +565,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Number();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be a number");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -769,37 +583,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Number()
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .Number();
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -811,16 +603,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "test@mail.com" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EmailAddress();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not an email, EXPECT fail", async () => {
@@ -830,16 +621,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EmailAddress();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be an email address");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -849,37 +639,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .EmailAddress()
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .EmailAddress();
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -891,16 +659,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "true" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Boolean();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is false, EXPECT pass", async () => {
@@ -910,16 +677,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "false" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Boolean();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not a boolean, EXPECT fail", async () => {
@@ -929,16 +695,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Boolean();
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be a boolean");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -948,37 +713,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .Boolean()
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .Boolean();
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -990,16 +733,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "6" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .GreaterThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is equal to value, EXPECT fail", async () => {
@@ -1009,16 +751,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "5" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .GreaterThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN field is less than value, EXPECT fail", async () => {
@@ -1028,16 +769,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "4" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .GreaterThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN field is not a number, EXPECT fail", async () => {
@@ -1047,16 +787,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .GreaterThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -1066,37 +805,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "4" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
+            const bodyValidator = new BodyValidator("field")
                 .GreaterThan(5)
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "4" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .GreaterThan(5);
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -1108,16 +825,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "4" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .LessThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is equal to value, EXPECT fail", async () => {
@@ -1127,16 +843,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "5" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .LessThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN field is greater than value, EXPECT fail", async () => {
@@ -1146,16 +861,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "6" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .LessThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN field is not a number, EXPECT fail", async () => {
@@ -1165,16 +879,15 @@ describe("Validate", () => {
             const req = {
                 body: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field", "/url")
+            const bodyValidator = new BodyValidator("field")
                 .LessThan(5);
 
             // Act
-            await body.Validate(req, res, next);
+            const result = await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -1184,163 +897,141 @@ describe("Validate", () => {
             const req = {
                 body: { field: "6" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
+            const bodyValidator = new BodyValidator("field")
                 .LessThan(5)
                     .WithMessage("custom message");
 
             // Act
-            await body.Validate(req, res, next);
+            await bodyValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                body: { field: "6" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const body = new Body("field")
-                .LessThan(5);
-
-            // Act
-            await body.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 });
 
 describe('NotEmpty', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.NotEmpty();
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty }]);
+        bodyValidator.NotEmpty();
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty }]);
     });
 });
 
 describe('EqualTo', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.EqualTo('value');
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualTo, to: 'value' }]);
+        bodyValidator.EqualTo('value');
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualTo, to: 'value' }]);
     });
 });
 
 describe('NotEqualTo', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.NotEqualTo('value');
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualTo, to: 'value' }]);
+        bodyValidator.NotEqualTo('value');
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualTo, to: 'value' }]);
     });
 });
 
 describe('EqualToField', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.EqualToField('otherField');
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualToField, to: 'otherField' }]);
+        bodyValidator.EqualToField('otherField');
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualToField, to: 'otherField' }]);
     });
 });
 
 describe('NotEqualToField', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.NotEqualToField('otherField');
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualToField, to: 'otherField' }]);
+        bodyValidator.NotEqualToField('otherField');
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualToField, to: 'otherField' }]);
     });
 });
 
 describe('MaxLength', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.MaxLength(10);
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.MaxLength, length: 10 }]);
+        bodyValidator.MaxLength(10);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.MaxLength, length: 10 }]);
     });
 });
 
 describe('MinLength', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.MinLength(5);
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.MinLength, length: 5 }]);
+        bodyValidator.MinLength(5);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.MinLength, length: 5 }]);
     });
 });
 
 describe('Number', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.Number();
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.Number }]);
+        bodyValidator.Number();
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.Number }]);
     });
 });
 
 describe('EmailAddress', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.EmailAddress();
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.EmailAddress }]);
+        bodyValidator.EmailAddress();
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EmailAddress }]);
     });
 });
 
 describe('Boolean', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.Boolean();
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.Boolean }]);
+        bodyValidator.Boolean();
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.Boolean }]);
     });
 });
 
 describe('GreaterThan', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.GreaterThan(5);
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.GreaterThan, length: 5 }]);
+        bodyValidator.GreaterThan(5);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.GreaterThan, length: 5 }]);
     });
 });
 
 describe('LessThan', () => {
     test('EXPECT rule to be pushed', () => {
-        const body = new Body('field');
+        const bodyValidator = new BodyValidator('field');
 
-        body.LessThan(10);
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.LessThan, length: 10 }]);
+        bodyValidator.LessThan(10);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.LessThan, length: 10 }]);
     });
 });
 
 describe("WithMessage", () => {
     test("EXPECT message to be set", () => {
-        const body = new Body("field")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty()
                 .WithMessage("custom message");
 
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, errorMessage: "custom message" }]);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, errorMessage: "custom message" }]);
     });
 
     test("GIVEN no rule, EXPECT nothing to happen", () => {
-        const body = new Body("field")
+        const bodyValidator = new BodyValidator("field")
             .WithMessage("custom message");
 
-        expect(body['rules']).toEqual([]);
+        expect(bodyValidator['rules']).toEqual([]);
     });
 });
 
@@ -1348,19 +1039,19 @@ describe("When", () => {
     test("EXPECT callback to be set", () => {
         const whenCallback = jest.fn();
 
-        const body = new Body("field")
+        const bodyValidator = new BodyValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
-        expect(body['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, whenCallback: whenCallback }]);
+        expect(bodyValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, whenCallback: whenCallback }]);
     });
 
     test("GIVEN no rule, EXPECT nothing to happen", () => {
         const whenCallback = jest.fn();
 
-        const body = new Body("field")
+        const bodyValidator = new BodyValidator("field")
             .When(whenCallback);
 
-        expect(body['rules']).toEqual([]);
+        expect(bodyValidator['rules']).toEqual([]);
     });
 });

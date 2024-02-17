@@ -1,15 +1,14 @@
-import Params from '../../../src/helpers/Validation/Params';
+import ParamsValidator from '../../../src/helpers/Validation/ParamsValidator';
 import { Request, Response } from 'express';
 import MessageHelper from '../../../src/helpers/MessageHelper';
 import { ValidationRule } from '../../../src/constants/ValidationRule';
 
 describe('constructor', () => {
     test('EXPECT properties to be set', () => {
-        const params = new Params("fieldName", "/url");
+        const paramsValidator = new ParamsValidator("fieldName");
 
-        expect(params['field']).toBe('fieldName');
-        expect(params['onFail']).toBe("/url");
-        expect(params['rules']).toEqual([]);
+        expect(paramsValidator['field']).toBe('fieldName');
+        expect(paramsValidator['rules']).toEqual([]);
     });
 });
 
@@ -21,14 +20,13 @@ describe("Validate", () => {
         const req = {
             params: { field: "field" },
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const params = new Params("field", "/url")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await params.Validate(req, res, jest.fn());
+        await paramsValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -41,13 +39,12 @@ describe("Validate", () => {
         const req = {
             params: { field: "" },
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const params = new Params("field", "/url")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty();
 
         // Act
-        await params.Validate(req, res, jest.fn());
+        await paramsValidator.Validate(req);
 
         // Assert
         expect(whenCallback).not.toHaveBeenCalled();
@@ -62,15 +59,13 @@ describe("Validate", () => {
             params: { field: "" },
             flash: jest.fn(),
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(false);
-        const next = jest.fn();
-        const params = new Params("field", "/url")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await params.Validate(req, res, next);
+        await paramsValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -85,15 +80,13 @@ describe("Validate", () => {
             params: { field: "" },
             flash: jest.fn(),
         } as unknown as Request;
-        const res = { redirect: jest.fn() } as unknown as Response;
         const whenCallback = jest.fn().mockReturnValue(true);
-        const next = jest.fn();
-        const params = new Params("field", "/url")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
         // Act
-        await params.Validate(req, res, next);
+        await paramsValidator.Validate(req);
 
         // Assert
         expect(whenCallback).toHaveBeenCalledWith(req);
@@ -108,17 +101,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEmpty();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
-
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is null, EXPECT fail", async () => {
@@ -128,17 +119,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: null },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEmpty();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field is required");
-
+            expect(result).toBe(false);
         });
 
         test("GIVEN field length is 0, EXPECT fail", async () => {
@@ -148,16 +137,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEmpty();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field is required");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -167,39 +155,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEmpty()
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .NotEmpty();
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
-
         });
     });
 
@@ -211,17 +175,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualTo("field");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
-
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not equal to string, EXEPCT fail", async () => {
@@ -231,16 +193,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualTo("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be equal to otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -250,38 +211,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualTo("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .EqualTo("otherField");
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -293,16 +231,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualTo("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is equal to string, EXPECT fail", async () => {
@@ -312,16 +249,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualTo("field");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must not be equal to field");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -331,37 +267,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualTo("field")
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .NotEqualTo("field");
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -373,16 +287,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualToField("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not equal to other field, EXPECT fail", async () => {
@@ -392,16 +305,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualToField("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be equal to field otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -411,37 +323,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EqualToField("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field", otherField: "otherField" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .EqualToField("otherField");
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -453,35 +343,33 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field", otherField: "otherField" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualToField("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
-        test("GIVEN field is equal to other field, EXPECT pass", async () => {
+        test("GIVEN field is equal to other field, EXPECT fail", async () => {
             // Arrange
             MessageHelper.prototype.Error = jest.fn();
 
             const req = {
                 params: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualToField("otherField");
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must not be equal to field otherField");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -491,37 +379,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field", otherField: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .NotEqualToField("otherField")
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field", otherField: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .NotEqualToField("otherField");
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -533,16 +399,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MaxLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is equal to max, EXPECT pass", async () => {
@@ -552,16 +417,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "fieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MaxLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is greater than max, EXPECT fail", async () => {
@@ -571,16 +435,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MaxLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be no more than 10 characters long");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -590,37 +453,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MaxLength(10)
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "fieldfieldfield" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .MaxLength(10);
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -632,16 +473,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "fieldfieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MinLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is equal to min, EXPECT pass", async () => {
@@ -651,16 +491,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "fieldfield" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MinLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field length is less than min, EXPECT fail", async () => {
@@ -670,16 +509,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MinLength(10);
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be no less than 10 characters long");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -689,37 +527,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .MinLength(10)
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .MinLength(10);
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -731,16 +547,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "1" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .Number();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not a number, EXPECT fail", async () => {
@@ -750,16 +565,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .Number();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be a number");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -769,37 +583,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .Number()
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
-        });
-
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
-            // Arrange
-            MessageHelper.prototype.Error = jest.fn();
-
-            const req = {
-                params: { field: "field" },
-            } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .Number();
-
-            // Act
-            await params.Validate(req, res, next);
-
-            // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
         });
     });
 
@@ -811,16 +603,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "test@mail.com" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EmailAddress();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
         });
 
         test("GIVEN field is not an email, EXPECT fail", async () => {
@@ -830,16 +621,15 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EmailAddress();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be an email address");
+            expect(result).toBe(false);
         });
 
         test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
@@ -849,136 +639,399 @@ describe("Validate", () => {
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field", "/url")
+            const paramsValidator = new ParamsValidator("field")
                 .EmailAddress()
                     .WithMessage("custom message");
 
             // Act
-            await params.Validate(req, res, next);
+            await paramsValidator.Validate(req);
 
             // Assert
             expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
         });
+    });
 
-        test("GIVEN onFail is not supplied, EXPECT next to be called", async () => {
+    describe("Boolean", () => {
+        test("GIVEN field is true, EXPECT pass", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "true" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .Boolean();
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        test("GIVEN field is false, EXPECT pass", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "false" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .Boolean();
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        test("GIVEN field is not a boolean, EXPECT fail", async () => {
             // Arrange
             MessageHelper.prototype.Error = jest.fn();
 
             const req = {
                 params: { field: "field" },
             } as unknown as Request;
-            const res = { redirect: jest.fn() } as unknown as Response;
-            const next = jest.fn();
-            const params = new Params("field")
-                .EmailAddress();
+            const paramsValidator = new ParamsValidator("field")
+                .Boolean();
 
             // Act
-            await params.Validate(req, res, next);
+            const result = await paramsValidator.Validate(req);
 
             // Assert
-            expect(MessageHelper.prototype.Error).toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be a boolean");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "field" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .Boolean()
+                    .WithMessage("custom message");
+
+            // Act
+            await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
+        });
+    });
+
+    describe("GreaterThan", () => {
+        test("GIVEN field is greater than value, EXPECT pass", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "6" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .GreaterThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        test("GIVEN field is equal to value, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "5" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .GreaterThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN field is less than value, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "4" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .GreaterThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN field is not a number, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "field" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .GreaterThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be greater than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "4" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .GreaterThan(5)
+                    .WithMessage("custom message");
+
+            // Act
+            await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
+        });
+    });
+
+    describe("LessThan", () => {
+        test("GIVEN field is less than value, EXPECT pass", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "4" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .LessThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).not.toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
+        test("GIVEN field is equal to value, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "5" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .LessThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN field is greater than value, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "6" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .LessThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN field is not a number, EXPECT fail", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "field" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .LessThan(5);
+
+            // Act
+            const result = await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("field must be less than 5");
+            expect(result).toBe(false);
+        });
+
+        test("GIVEN errorMessage is supplied, EXPECT message to be custom set", async () => {
+            // Arrange
+            MessageHelper.prototype.Error = jest.fn();
+
+            const req = {
+                params: { field: "6" },
+            } as unknown as Request;
+            const paramsValidator = new ParamsValidator("field")
+                .LessThan(5)
+                    .WithMessage("custom message");
+
+            // Act
+            await paramsValidator.Validate(req);
+
+            // Assert
+            expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("custom message");
         });
     });
 });
 
 describe('NotEmpty', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.NotEmpty();
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty }]);
+        paramsValidator.NotEmpty();
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty }]);
     });
 });
 
 describe('EqualTo', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.EqualTo('value');
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualTo, to: 'value' }]);
+        paramsValidator.EqualTo('value');
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualTo, to: 'value' }]);
     });
 });
 
 describe('NotEqualTo', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.NotEqualTo('value');
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualTo, to: 'value' }]);
+        paramsValidator.NotEqualTo('value');
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualTo, to: 'value' }]);
     });
 });
 
 describe('EqualToField', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.EqualToField('otherField');
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualToField, to: 'otherField' }]);
+        paramsValidator.EqualToField('otherField');
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EqualToField, to: 'otherField' }]);
     });
 });
 
 describe('NotEqualToField', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.NotEqualToField('otherField');
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualToField, to: 'otherField' }]);
+        paramsValidator.NotEqualToField('otherField');
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEqualToField, to: 'otherField' }]);
     });
 });
 
 describe('MaxLength', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.MaxLength(10);
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.MaxLength, length: 10 }]);
+        paramsValidator.MaxLength(10);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.MaxLength, length: 10 }]);
     });
 });
 
 describe('MinLength', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.MinLength(5);
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.MinLength, length: 5 }]);
+        paramsValidator.MinLength(5);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.MinLength, length: 5 }]);
     });
 });
 
 describe('Number', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.Number();
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.Number }]);
+        paramsValidator.Number();
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.Number }]);
     });
 });
 
 describe('EmailAddress', () => {
     test('EXPECT rule to be pushed', () => {
-        const params = new Params('field');
+        const paramsValidator = new ParamsValidator('field');
 
-        params.EmailAddress();
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.EmailAddress }]);
+        paramsValidator.EmailAddress();
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.EmailAddress }]);
+    });
+});
+
+describe('Boolean', () => {
+    test('EXPECT rule to be pushed', () => {
+        const paramsValidator = new ParamsValidator('field');
+
+        paramsValidator.Boolean();
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.Boolean }]);
+    });
+});
+
+describe('GreaterThan', () => {
+    test('EXPECT rule to be pushed', () => {
+        const paramsValidator = new ParamsValidator('field');
+
+        paramsValidator.GreaterThan(5);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.GreaterThan, length: 5 }]);
+    });
+});
+
+describe('LessThan', () => {
+    test('EXPECT rule to be pushed', () => {
+        const paramsValidator = new ParamsValidator('field');
+
+        paramsValidator.LessThan(10);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.LessThan, length: 10 }]);
     });
 });
 
 describe("WithMessage", () => {
     test("EXPECT message to be set", () => {
-        const params = new Params("field")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty()
                 .WithMessage("custom message");
 
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, errorMessage: "custom message" }]);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, errorMessage: "custom message" }]);
     });
 
     test("GIVEN no rule, EXPECT nothing to happen", () => {
-        const params = new Params("field")
+        const paramsValidator = new ParamsValidator("field")
             .WithMessage("custom message");
 
-        expect(params['rules']).toEqual([]);
+        expect(paramsValidator['rules']).toEqual([]);
     });
 });
 
@@ -986,19 +1039,19 @@ describe("When", () => {
     test("EXPECT callback to be set", () => {
         const whenCallback = jest.fn();
 
-        const params = new Params("field")
+        const paramsValidator = new ParamsValidator("field")
             .NotEmpty()
                 .When(whenCallback);
 
-        expect(params['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, whenCallback: whenCallback }]);
+        expect(paramsValidator['rules']).toEqual([{ field: 'field', rule: ValidationRule.NotEmpty, whenCallback: whenCallback }]);
     });
 
     test("GIVEN no rule, EXPECT nothing to happen", () => {
         const whenCallback = jest.fn();
 
-        const params = new Params("field")
+        const paramsValidator = new ParamsValidator("field")
             .When(whenCallback);
 
-        expect(params['rules']).toEqual([]);
+        expect(paramsValidator['rules']).toEqual([]);
     });
 });

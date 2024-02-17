@@ -65,8 +65,7 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.Number:
-                    console.log(typeof Number(0));
-                    if (typeof Number(req.query[rule.field]) != "number") {
+                    if (!Number(req.query[rule.field])) {
                         await message.Error(rule.errorMessage || `${rule.field} must be a number`);
 
                         return false;
@@ -87,14 +86,14 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.query[rule.field]) <= rule.length) {
+                    if (!Number(req.query[rule.field]) || Number(req.query[rule.field]) <= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.query[rule.field]) >= rule.length) {
+                    if (!Number(req.query[rule.field]) || Number(req.query[rule.field]) >= rule.length) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;

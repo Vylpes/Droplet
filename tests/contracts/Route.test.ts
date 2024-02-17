@@ -1,4 +1,4 @@
-import { Route } from '../../src/contracts/Route';
+import Route from '../../src/contracts/Route';
 
 describe("constructor", () => {
     test("EXPECT properties to be set", () => {
