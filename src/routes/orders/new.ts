@@ -1,20 +1,15 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { Listing } from "../../database/entities/Listing";
 import { Order } from "../../database/entities/Order";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("orderNumber", "/orders/awaiting-payment")
+export default class New implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("orderNumber")
                 .NotEmpty()
             .ChangeField("offerAccepted")
                 .NotEmpty()
@@ -29,57 +24,60 @@ export default class New extends Page {
             .ChangeField("postagePolicyId")
                 .NotEmpty();
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const orderNumber = req.body.orderNumber;
-            const offerAccepted = req.body.offerAccepted;
-            const buyer = req.body.buyer;
-            const amount = req.body.amount;
-            const listingId = req.body.listingId;
-            const postagePolicyId = req.body.postagePolicyId;
+        if (!await bodyValidation.Validate(req.body)) {
+            res.redirect("/orders/awaiting-payment");
+            return;
+        }
 
-            const listing = await Listing.FetchOneById(Listing, listingId, [
-                "Items",
-                "PostagePolicy"
-            ]);
+        const orderNumber = req.body.orderNumber;
+        const offerAccepted = req.body.offerAccepted;
+        const buyer = req.body.buyer;
+        const amount = req.body.amount;
+        const listingId = req.body.listingId;
+        const postagePolicyId = req.body.postagePolicyId;
 
-            let postagePolicy: PostagePolicy;
+        const listing = await Listing.FetchOneById(Listing, listingId, [
+            "Items",
+            "PostagePolicy"
+        ]);
 
-            if (postagePolicyId == "INHERIT") {
-                if (listing.PostagePolicy != null) {
-                    postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, listing.PostagePolicy.Id);
-                };
-            } else {
-                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
-            }
+        let postagePolicy: PostagePolicy;
 
-            let order = new Order(orderNumber, offerAccepted, buyer);
+        if (postagePolicyId == "INHERIT") {
+            if (listing.PostagePolicy != null) {
+                postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, listing.PostagePolicy.Id);
+            };
+        } else {
+            postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, postagePolicyId);
+        }
 
-            await order.Save(Order, order);
+        let order = new Order(orderNumber, offerAccepted, buyer);
 
-            order = await Order.FetchOneById(Order, order.Id, [
-                "Listings",
-                "PostagePolicy"
-            ]);
+        await order.Save(Order, order);
 
-            order.AddListingToOrder(listing);
+        order = await Order.FetchOneById(Order, order.Id, [
+            "Listings",
+            "PostagePolicy"
+        ]);
 
-            if (postagePolicy != null) {
-                order.AddPostagePolicyToOrder(postagePolicy);
-            }
+        order.AddListingToOrder(listing);
 
-            await order.Save(Order, order);
+        if (postagePolicy != null) {
+            order.AddPostagePolicyToOrder(postagePolicy);
+        }
 
-            listing.MarkAsSold(amount);
+        await order.Save(Order, order);
 
-            await listing.Save(Listing, listing);
+        listing.MarkAsSold(amount);
 
-            for (const item of listing.Items) {
-                item.MarkAsSold(amount, ItemStatus.Listed);
+        await listing.Save(Listing, listing);
 
-                item.Save(Item, item);
-            }
+        for (const item of listing.Items) {
+            item.MarkAsSold(amount, ItemStatus.Listed);
 
-            res.redirect('/orders/awaiting-payment');
-        });
+            item.Save(Item, item);
+        }
+
+        res.redirect('/orders/awaiting-payment');
     }
 }

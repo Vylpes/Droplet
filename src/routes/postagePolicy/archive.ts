@@ -1,33 +1,26 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class Archive extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class Archive implements Page {
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        const Id = req.params.Id;
 
-    public OnPost(): void {
-        super.router.post('/:Id/archive', UserMiddleware.Authorise, async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        if (!Id) {
+            next(createHttpError(404));
+        }
 
-            if (!Id) {
-                next(createHttpError(404));
-            }
+        const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, Id);
 
-            const postagePolicy = await PostagePolicy.FetchOneById(PostagePolicy, Id);
+        if (!postagePolicy) {
+            next(createHttpError(404));
+        }
 
-            if (!postagePolicy) {
-                next(createHttpError(404));
-            }
+        postagePolicy.ArchivePolicy();
 
-            postagePolicy.ArchivePolicy();
+        await postagePolicy.Save(PostagePolicy, postagePolicy);
 
-            await postagePolicy.Save(PostagePolicy, postagePolicy);
-
-            res.redirect(`/postage-policies`);
-        });
+        res.redirect(`/postage-policies`);
     }
 }
