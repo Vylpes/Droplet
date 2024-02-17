@@ -1,19 +1,14 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { TrackingNumberType } from "../../constants/TrackingNumberType";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Order } from "../../database/entities/Order";
 import { Return } from "../../database/entities/Return";
 import { TrackingNumber } from "../../database/entities/TrackingNumber";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("returnNumber", "/returns/opened")
+export default class New implements Page {
+    public async OnGetAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("returnNumber")
                 .NotEmpty()
             .ChangeField("orderId")
                 .NotEmpty()
@@ -23,35 +18,38 @@ export default class New extends Page {
                 .NotEmpty()
                 .Number();
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const returnNumber = req.body.returnNumber;
-            const orderId = req.body.orderId;
-            const trackingNum = req.body.trackingNumber;
-            const trackingService = req.body.trackingService;
-            const rma = await Return.GenerateRMA();
+        if (!await bodyValidation.Validate(req.body)) {
+            res.redirect("/returns/opened");
+            return;
+        }
 
-            let ret = new Return(returnNumber, rma);
+        const returnNumber = req.body.returnNumber;
+        const orderId = req.body.orderId;
+        const trackingNum = req.body.trackingNumber;
+        const trackingService = req.body.trackingService;
+        const rma = await Return.GenerateRMA();
 
-            await ret.Save(Return, ret);
+        let ret = new Return(returnNumber, rma);
 
-            ret = await Return.FetchOneById(Return, ret.Id, [
-                "Order",
-                "TrackingNumbers"
-            ])
+        await ret.Save(Return, ret);
 
-            const order = await Order.FetchOneById(Order, orderId);
+        ret = await Return.FetchOneById(Return, ret.Id, [
+            "Order",
+            "TrackingNumbers"
+        ])
 
-            ret.AssignOrderToReturn(order);
+        const order = await Order.FetchOneById(Order, orderId);
 
-            const trackingNumber = new TrackingNumber(trackingNum, trackingService, TrackingNumberType.Return);
+        ret.AssignOrderToReturn(order);
 
-            await trackingNumber.Save(TrackingNumber, trackingNumber);
+        const trackingNumber = new TrackingNumber(trackingNum, trackingService, TrackingNumberType.Return);
 
-            ret.AssignTrackingNumber(trackingNumber);
+        await trackingNumber.Save(TrackingNumber, trackingNumber);
 
-            await ret.Save(Return, ret);
+        ret.AssignTrackingNumber(trackingNumber);
 
-            res.redirect(`/returns/opened`);
-        });
+        await ret.Save(Return, ret);
+
+        res.redirect(`/returns/opened`);
     }
 }

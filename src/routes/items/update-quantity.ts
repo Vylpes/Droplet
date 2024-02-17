@@ -1,16 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
-import Body from "../../helpers/Validation/Body";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class UpdateQuantity extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("unlisted")
+export default class UpdateQuantity implements Page {
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        const bodyValidation = new BodyValidator("unlisted")
                 .NotEmpty()
                 .Number()
             .ChangeField("listed")
@@ -23,26 +19,24 @@ export default class UpdateQuantity extends Page {
                 .NotEmpty()
                 .Number();
 
-        super.router.post('/:itemId/update-quantity', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
-            const itemId = req.params.itemId;
+        const itemId = req.params.itemId;
 
-            if (req.session.error) {
-                res.redirect(`/items/${itemId}`);
-                return;
-            }
-
-            const unlisted = req.body.unlisted;
-            const listed = req.body.listed;
-            const sold = req.body.sold;
-            const rejected = req.body.rejected;
-
-            const item = await Item.FetchOneById<Item>(Item, itemId);
-
-            item.EditQuantities(unlisted, listed, sold, rejected);
-
-            await item.Save(Item, item);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/items/${itemId}`);
-        });
+            return;
+        }
+
+        const unlisted = req.body.unlisted;
+        const listed = req.body.listed;
+        const sold = req.body.sold;
+        const rejected = req.body.rejected;
+
+        const item = await Item.FetchOneById<Item>(Item, itemId);
+
+        item.EditQuantities(unlisted, listed, sold, rejected);
+
+        await item.Save(Item, item);
+
+        res.redirect(`/items/${itemId}`);
     }
 }

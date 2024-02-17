@@ -1,34 +1,27 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { Listing } from "../../database/entities/Listing";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class End extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
+export default class End implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const Id = req.params.Id;
 
-    public OnPost(): void {
-        super.router.post('/view/:Id/end', UserMiddleware.Authorise, async (req: Request, res: Response) => {
-            const Id = req.params.Id;
+        const listing = await Listing.FetchOneById(Listing, Id, [
+            "Items"
+        ]);
 
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "Items"
-            ]);
+        listing.MarkAsUnsold();
 
-            listing.MarkAsUnsold();
+        await listing.Save(Listing, listing);
 
-            await listing.Save(Listing, listing);
+        for (const item of listing.Items) {
+            item.MarkAsUnlisted(listing.Quantity, ItemStatus.Listed);
 
-            for (const item of listing.Items) {
-                item.MarkAsUnlisted(listing.Quantity, ItemStatus.Listed);
+            await item.Save(Item, item);
+        }
 
-                await item.Save(Item, item);
-            }
-
-            res.redirect('/listings/active');
-        });
+        res.redirect('/listings/active');
     }
 }
