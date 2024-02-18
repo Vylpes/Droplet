@@ -1,24 +1,28 @@
 import { hash } from "bcryptjs";
 import { NextFunction, Request, Response, Router } from "express";
 import createHttpError from "http-errors";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { User } from "../../database/entities/User";
-import BodyValidation from "../../helpers/Validation/Body";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 import MessageHelper from "../../helpers/MessageHelper";
 
-export default class AdminRegister extends Page {
-    constructor(router: Router) {
-        super(router);
+export default class AdminRegister implements Page {
+    public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
+        if (req.session.User || await User.Any(User)) {
+            next(createHttpError(403));
+            return;
+        }
+
+        res.render('auth/admin-register', res.locals.viewData);
     }
 
-    public OnGet(): void {
-        super.router.get('/admin-register', this.CanViewChecks, async (req: Request, res: Response) => {
-            res.render('auth/admin-register', res.locals.viewData);
-        });
-    }
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        if (req.session.User || await User.Any(User)) {
+            next(createHttpError(403));
+            return;
+        }
 
-    public OnPost(): void {
-        const bodyValidation = new BodyValidation("username", "/auth/admin-register")
+        const bodyValidation = new BodyValidator("username")
                 .NotEmpty()
             .ChangeField("email")
                 .NotEmpty()
@@ -30,33 +34,24 @@ export default class AdminRegister extends Page {
                 .EqualToField("password")
                     .WithMessage("Passwords do not match");
 
-        super.router.post('/admin-register', this.CanViewChecks, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const username = req.body.username;
-            const email = req.body.email;
-            const password = req.body.password;
-
-            const hashedPassword = await hash(password, 10);
-
-            const user = new User(email, username, hashedPassword, true, true, true);
-
-            await user.Save(User, user);
-
-            const message = new MessageHelper(req);
-            await message.Info('Successfully registered admin user');
-
-            res.redirect('/');
-        });
-    }
-
-    private async CanViewChecks(req: Request, res: Response, next: NextFunction) {
-        if (req.session.User) {
-            next(createHttpError(403));
+        if (!await bodyValidation.Validate(req)) {
+            res.redirect("/auth/admin-register");
+            return;
         }
 
-        if (await User.Any(User)) {
-            next(createHttpError(403));
-        }
+        const username = req.body.username;
+        const email = req.body.email;
+        const password = req.body.password;
 
-        next();
+        const hashedPassword = await hash(password, 10);
+
+        const user = new User(email, username, hashedPassword, true, true, true);
+
+        await user.Save(User, user);
+
+        const message = new MessageHelper(req);
+        await message.Info('Successfully registered admin user');
+
+        res.redirect('/');
     }
 }

@@ -1,16 +1,11 @@
-import { Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import { Request, Response } from "express";
+import Page from "../../contracts/Page";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class Update extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("name")
+export default class Update implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("costToBuyer")
                 .NotEmpty()
@@ -19,25 +14,23 @@ export default class Update extends Page {
                 .NotEmpty()
                 .Number();
 
-        super.router.post('/:id/update', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const id = req.params.id;
+        const id = req.params.id;
 
-            if (req.session.error) {
-                res.redirect(`/postage-policies/${id}`);
-                return;
-            }
-
-            const name = req.body.name;
-            const costToBuyer = req.body.costToBuyer;
-            const actualCost = req.body.actualCost;
-
-            const policy = await PostagePolicy.FetchOneById(PostagePolicy, id);
-
-            policy.UpdateBasicDetails(name, costToBuyer, actualCost);
-
-            await policy.Save(PostagePolicy, policy);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/postage-policies/${id}`);
-        });
+            return;
+        }
+
+        const name = req.body.name;
+        const costToBuyer = req.body.costToBuyer;
+        const actualCost = req.body.actualCost;
+
+        const policy = await PostagePolicy.FetchOneById(PostagePolicy, id);
+
+        policy.UpdateBasicDetails(name, costToBuyer, actualCost);
+
+        await policy.Save(PostagePolicy, policy);
+
+        res.redirect(`/postage-policies/${id}`);
     }
 }

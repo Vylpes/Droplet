@@ -1,28 +1,9 @@
-import { Router } from "express";
+import { NextFunction, Request, Response } from "express";
 
-interface IPage {
-    Route(): any;
-    OnGet(): any;
-    OnPost(): any;
-}
+export default interface Page {
+    OnGet?(req: Request, res: Response, next: NextFunction): void;
+    OnPost?(req: Request, res: Response, next: NextFunction): void;
 
-export class Page implements IPage {
-    private _router: Router;
-
-    constructor(router: Router) {
-        this._router = router;
-    }
-
-    get router() {
-        return this._router;
-    }
-
-    Route() {
-        this.OnGet();
-        this.OnPost();
-    }
-
-    OnGet() {}
-    
-    OnPost() {}
+    OnGetAsync?(req: Request, res: Response, next: NextFunction): Promise<void>;
+    OnPostAsync?(req: Request, res: Response, next: NextFunction): Promise<void>;
 }

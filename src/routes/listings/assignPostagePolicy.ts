@@ -1,40 +1,34 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Listing } from "../../database/entities/Listing";
 import PostagePolicy from "../../database/entities/PostagePolicy";
-import Body from "../../helpers/Validation/Body";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 import { UserMiddleware } from "../../middleware/userMiddleware";
 
-export default class AssignPostagePolicy extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("policyId")
+export default class AssignPostagePolicy implements Page {
+    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+        const bodyValidation = new BodyValidator("policyId")
                 .NotEmpty();
 
-        super.router.post('/view/:Id/assign-postage-policy', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response, next: NextFunction) => {
-            const Id = req.params.Id;
+        const Id = req.params.Id;
 
-            if (req.session.error) {
-                res.redirect(`/listings/view/${Id}`);
-                return;
-            }
-
-            const policyId = req.body.policyId;
-
-            const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
-
-            const listing = await Listing.FetchOneById(Listing, Id, [
-                "PostagePolicy"
-            ]);
-
-            listing.AddPostagePolicyToListing(policy);
-
-            await listing.Save(Listing, listing);
-
+        if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/listings/view/${Id}`);
-        });
+            return;
+        }
+
+        const policyId = req.body.policyId;
+
+        const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
+
+        const listing = await Listing.FetchOneById(Listing, Id, [
+            "PostagePolicy"
+        ]);
+
+        listing.AddPostagePolicyToListing(policy);
+
+        await listing.Save(Listing, listing);
+
+        res.redirect(`/listings/view/${Id}`);
     }
 }

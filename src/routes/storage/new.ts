@@ -1,17 +1,12 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { StorageType } from "../../constants/StorageType";
-import { Page } from "../../contracts/Page";
+import Page from "../../contracts/Page";
 import { Storage } from "../../database/entities/Storage";
-import Body from "../../helpers/Validation/Body";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import BodyValidator from "../../helpers/Validation/BodyValidator";
 
-export default class New extends Page {
-    constructor(router: Router) {
-        super(router);
-    }
-
-    public OnPost(): void {
-        const bodyValidation = new Body("type", "/storage/list/building/all")
+export default class New implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new BodyValidator("type")
                 .NotEmpty()
             .ChangeField("name")
                 .NotEmpty()
@@ -21,56 +16,59 @@ export default class New extends Page {
                 .NotEmpty()
                 .When((req: Request) => req.body.type != 'building');
 
-        super.router.post('/new', UserMiddleware.Authorise, bodyValidation.Validate.bind(bodyValidation), async (req: Request, res: Response) => {
-            const type = req.body.type;
-            const name = req.body.name;
-            const skuPrefix = req.body.skuPrefix;
-            const parentId = req.body.parentId;
+        if (!await bodyValidation.Validate(req)) {
+            res.redirect('/storage/list/building/all');
+            return;
+        }
 
-            const storageType = () => { switch(type) {
-                case 'bin':
-                    return StorageType.Bin;
-                case 'unit':
-                    return StorageType.Unit;
-                case 'building':
-                    return StorageType.Building;
-                default:
-                    return StorageType.Building;
-            }};
+        const type = req.body.type;
+        const name = req.body.name;
+        const skuPrefix = req.body.skuPrefix;
+        const parentId = req.body.parentId;
 
-            const nextType = () => { switch(storageType()) {
-                case StorageType.Building:
-                    return 'unit';
-                case StorageType.Unit:
-                    return 'bin';
-                case StorageType.Bin:
-                    return 'view';
-            }};
+        const storageType = () => { switch(type) {
+            case 'bin':
+                return StorageType.Bin;
+            case 'unit':
+                return StorageType.Unit;
+            case 'building':
+                return StorageType.Building;
+            default:
+                return StorageType.Building;
+        }};
 
-            let parent: Storage;
+        const nextType = () => { switch(storageType()) {
+            case StorageType.Building:
+                return 'unit';
+            case StorageType.Unit:
+                return 'bin';
+            case StorageType.Bin:
+                return 'view';
+        }};
 
-            if (parentId) {
-                parent = await Storage.FetchOneById(Storage, parentId);
-            }
+        let parent: Storage;
 
-            let storage = new Storage(name, skuPrefix, storageType());
+        if (parentId) {
+            parent = await Storage.FetchOneById(Storage, parentId);
+        }
+
+        let storage = new Storage(name, skuPrefix, storageType());
+
+        await storage.Save(Storage, storage);
+
+        if (parent) {
+            storage = await Storage.FetchOneById(Storage, storage.Id);
+
+            storage.AssignParentStorage(parent);
 
             await storage.Save(Storage, storage);
+        }
 
-            if (parent) {
-                storage = await Storage.FetchOneById(Storage, storage.Id);
+        if (nextType() == 'view') {
+            res.redirect(`/storage/view/${storage.Id}`);
+            return;
+        }
 
-                storage.AssignParentStorage(parent);
-
-                await storage.Save(Storage, storage);
-            }
-
-            if (nextType() == 'view') {
-                res.redirect(`/storage/view/${storage.Id}`);
-                return;
-            }
-
-            res.redirect(`/storage/list/${nextType()}/${storage.Id}`);
-        });
+        res.redirect(`/storage/list/${nextType()}/${storage.Id}`);
     }
 }
