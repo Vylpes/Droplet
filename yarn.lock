@@ -1557,9 +1557,9 @@ cookie@0.6.0:
   integrity sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==
 
 core-js@^3.12.0:
-  version "3.35.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.1.tgz#9c28f8b7ccee482796f8590cc8d15739eaaf980c"
-  integrity sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==
+  version "3.36.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.36.1.tgz#c97a7160ebd00b2de19e62f4bbd3406ab720e578"
+  integrity sha512-BTvUrwxVBezj5SZ3f10ImnX2oRByMxql3EimVqMysepbC9EeMUOpLwdy6Eoili2x6E4kf+ZUB5k/+Jv55alPfA==
 
 cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
