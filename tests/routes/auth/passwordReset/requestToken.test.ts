@@ -157,7 +157,111 @@ describe("OnPostAsync", () => {
         expect(res.redirect).toHaveBeenCalledWith("/auth/login");
     });
 
-    test.todo("GIVEN user cannot be found, EXPECT masked error");
+    test("GIVEN user cannot be found, EXPECT masked error", async () => {
+        // Arrange
+        let userTokenSaved: UserToken | undefined;
 
-    test.todo("GIVEN resetLink is undefined, EXPECT invalid config error");
+        process.env.EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK = "reset_link";
+
+        const req = {
+            body: {
+                email: "email",
+            }
+        } as unknown as Request;
+
+        const res = {
+            redirect: jest.fn(),
+        } as unknown as Response;
+
+        const next = jest.fn();
+
+        BodyValidator.prototype.NotEmpty = jest.fn().mockReturnThis();
+        BodyValidator.prototype.EmailAddress = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Validate = jest.fn().mockResolvedValue(true);
+
+        User.FetchOneByEmail = jest.fn().mockResolvedValue(undefined);
+
+        PasswordHelper.GenerateRandomToken = jest.fn().mockResolvedValue("token");
+
+        jest.spyOn(bcryptjs, "hash").mockResolvedValue("hashed" as never);
+
+        UserToken.prototype.Save = jest.fn().mockImplementation((_, entity: UserToken) => {
+            userTokenSaved = entity;
+        });
+
+        jest
+            .useFakeTimers()
+            .setSystemTime(new Date("2024-04-01"));
+
+        EmailHelper.SendEmail = jest.fn();
+
+        MessageHelper.prototype.Info = jest.fn();
+
+        // Act
+        const route = new RequestToken();
+        await route.OnPostAsync(req, res, next);
+
+        expect(MessageHelper.prototype.Info).toHaveBeenCalledTimes(1);
+        expect(MessageHelper.prototype.Info).toHaveBeenCalledWith("If this email is correct you should receive an email to reset your password.");
+
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+    });
+
+    test("GIVEN resetLink is undefined, EXPECT invalid config error", async () => {
+        // Arrange
+        let userTokenSaved: UserToken | undefined;
+
+        const req = {
+            body: {
+                email: "email",
+            }
+        } as unknown as Request;
+
+        const res = {
+            redirect: jest.fn(),
+        } as unknown as Response;
+
+        const next = jest.fn();
+
+        BodyValidator.prototype.NotEmpty = jest.fn().mockReturnThis();
+        BodyValidator.prototype.EmailAddress = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Validate = jest.fn().mockResolvedValue(true);
+
+        const user = {
+            AddTokenToUser: jest.fn(),
+            Save: jest.fn(),
+            Username: "username",
+            Email: "email",
+        };
+
+        User.FetchOneByEmail = jest.fn().mockResolvedValue(user);
+
+        PasswordHelper.GenerateRandomToken = jest.fn().mockResolvedValue("token");
+
+        jest.spyOn(bcryptjs, "hash").mockResolvedValue("hashed" as never);
+
+        UserToken.prototype.Save = jest.fn().mockImplementation((_, entity: UserToken) => {
+            userTokenSaved = entity;
+        });
+
+        jest
+            .useFakeTimers()
+            .setSystemTime(new Date("2024-04-01"));
+
+        EmailHelper.SendEmail = jest.fn();
+
+        MessageHelper.prototype.Error = jest.fn();
+
+        // Act
+        const route = new RequestToken();
+        await route.OnPostAsync(req, res, next);
+
+        // Assert
+        expect(MessageHelper.prototype.Error).toHaveBeenCalledTimes(1);
+        expect(MessageHelper.prototype.Error).toHaveBeenCalledWith("Invalid config: EMAIL_TEMPLATE_PASSWORDRESET_RESETLINK");
+
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+    });
 });
