@@ -59,7 +59,7 @@ export default class Reset implements Page {
         const queryValidation = new QueryValidator("token")
                 .NotEmpty();
 
-        if (!queryValidation.Validate(req)) {
+        if (!await queryValidation.Validate(req)) {
             res.redirect("/");
             return;
         }
@@ -71,7 +71,7 @@ export default class Reset implements Page {
                 .MinLength(8)
                 .EqualToField("passwordRepeat");
 
-        if (!bodyValidation.Validate(req)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/auth/password-reset/reset?token=${token}`);
             return;
         }
