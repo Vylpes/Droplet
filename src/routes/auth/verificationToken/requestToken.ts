@@ -11,7 +11,7 @@ import BodyValidator from "../../../helpers/Validation/BodyValidator";
 import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class RequestToken implements Page {
-    public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
+    public OnGet(req: Request, res: Response, next: NextFunction) {
         if (req.session.User) {
             next(createHttpError(403));
             return;
