@@ -45,7 +45,8 @@ export default class RequestToken implements Page {
         }
 
         if (user.Verified || !user.Active) {
-            req.session.error = "User is either inactive or already verified";
+            const message = new MessageHelper(req);
+            await message.Error("User is either inactive or already verified");
             res.redirect('/auth/login');
             return;
         }
