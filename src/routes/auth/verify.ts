@@ -26,11 +26,6 @@ export default class Verify implements Page {
 
         const token = req.query.token.toString();
 
-        if (!token) {
-            next(createHttpError(401));
-            return;
-        }
-
         const tokens = await UserToken.FetchAll(UserToken, [
             "User"
         ]);
