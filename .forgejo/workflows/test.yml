@@ -1,0 +1,22 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - feature/*
+      - hotfix/*
+      - renovate/*
+
+jobs:
+  build:
+    runs-on: node
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn test
