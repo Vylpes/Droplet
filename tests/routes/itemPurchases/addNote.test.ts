@@ -1,9 +1,57 @@
-describe("OnPost", () => {
-    test.todo("EXPECT validator to be defined");
+import { Request, Response } from "express";
+import AddNote from "../../../src/routes/itemPurchases/addNote";
+import BodyValidator from "../../../src/helpers/Validation/BodyValidator";
+import Note from "../../../src/database/entities/Note";
+import { NoteType } from "../../../src/constants/NoteType";
 
-    test.todo("EXPECT router to be defined");
+describe("OnPostAsync", () => {
+    test("GIVEN body is valid, EXPECT note to be added", async () => {
+        let savedNote: Note | undefined;
 
-    test.todo("EXPECT note to be added");
+        // Arrange
+        const req = {
+            params: {
+                Id: "purchaseId",
+            },
+            body: {
+                text: "note text",
+            }
+        } as unknown as Request;
 
-    test.todo("GIVEN session contains an error, EXPECT redirect to itemPurchase page");
+        const res = {
+            redirect: jest.fn(),
+        } as unknown as Response;
+
+        BodyValidator.prototype.NotEmpty = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Validate = jest.fn().mockResolvedValue(true);
+
+        Note.prototype.Save = jest.fn().mockImplementation((_, note: Note) => {
+            savedNote = note;
+        });
+
+        // Act
+        const page = new AddNote();
+        await page.OnPostAsync(req, res);
+
+        // Assert
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/item-purchases/view/purchaseId");
+
+        expect(BodyValidator.prototype.NotEmpty).toHaveBeenCalledTimes(1);
+
+        expect(BodyValidator.prototype.Validate).toHaveBeenCalledTimes(1);
+        expect(BodyValidator.prototype.Validate).toHaveBeenCalledWith({
+            text: "note text",
+        });
+
+        expect(Note.prototype.Save).toHaveBeenCalledTimes(1);
+        expect(Note.prototype.Save).toHaveBeenCalledWith(Note, expect.any(Note));
+
+        expect(savedNote).toBeDefined();
+        expect(savedNote!.Text).toBe("note text");
+        expect(savedNote!.Type).toBe(NoteType.ItemPurchase);
+        expect(savedNote!.ForId).toBe("purchaseId");
+    });
+
+    test.todo("GIVEN body is invalid, EXPECT redirect to itemPurchase page");
 });
