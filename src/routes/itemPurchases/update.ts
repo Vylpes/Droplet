@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import createHttpError from "http-errors";
 
 export default class Update implements Page {
     public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
@@ -25,6 +25,11 @@ export default class Update implements Page {
         const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
             "Items"
         ]);
+
+        if (!purchase) {
+            next(createHttpError(404));
+            return;
+        }
 
         purchase.UpdateBasicDetails(description, price);
 
