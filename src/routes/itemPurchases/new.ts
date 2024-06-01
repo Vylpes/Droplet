@@ -1,8 +1,7 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { ItemPurchase } from "../../database/entities/ItemPurchase";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class New implements Page {
     public async OnPostAsync(req: Request, res: Response) {
