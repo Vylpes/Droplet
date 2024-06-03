@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Update from "../../../src/routes/itemPurchases/update";
 import BodyValidator from "../../../src/helpers/Validation/BodyValidator";
 import { ItemPurchase } from "../../../src/database/entities/ItemPurchase";
+import createHttpError from "http-errors";
 
 describe("OnPostAsync", () => {
     test("GIVEN body is valid, EXPECT item purchase to be updated", async () => {
@@ -65,7 +66,81 @@ describe("OnPostAsync", () => {
         expect(itemPurchase.CalculateItemPrices).toHaveBeenCalledTimes(1);
     });
 
-    test.todo("GIVEN body is invalid, EXPECT redirect to itemPurchase page");
+    test("GIVEN body is invalid, EXPECT redirect to itemPurchase page", async () => {
+        // Arrange
+        const req = {
+            params: {
+                Id: "itemPurchaseId",
+            },
+            body: {
+                description: "description",
+                price: 1.99,
+            }
+        } as unknown as Request;
 
-    test.todo("GIVEN item purchase can not be found, EXPECT 404 error");
+        const res = {
+            redirect: jest.fn(),
+        } as unknown as Response;
+
+        const next = jest.fn();
+
+        const itemPurchase = {
+            UpdateBasicDetails: jest.fn(),
+            CalculateItemPrices: jest.fn(),
+            Save: jest.fn(),
+        } as unknown as ItemPurchase;
+
+        BodyValidator.prototype.NotEmpty = jest.fn().mockReturnThis();
+        BodyValidator.prototype.ChangeField = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Number = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Validate = jest.fn().mockResolvedValue(false);
+
+        ItemPurchase.FetchOneById = jest.fn().mockResolvedValue(itemPurchase);
+
+        // Act
+        const page = new Update();
+        await page.OnPostAsync(req, res, next);
+
+        // Assert
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith("/item-purchases/view/itemPurchaseId");
+
+        expect(ItemPurchase.FetchOneById).not.toHaveBeenCalled();
+    });
+
+    test("GIVEN item purchase can not be found, EXPECT 404 error", async () => {
+        // Arrange
+        const req = {
+            params: {
+                Id: "itemPurchaseId",
+            },
+            body: {
+                description: "description",
+                price: 1.99,
+            }
+        } as unknown as Request;
+
+        const res = {
+            redirect: jest.fn(),
+        } as unknown as Response;
+
+        const next = jest.fn();
+
+        BodyValidator.prototype.NotEmpty = jest.fn().mockReturnThis();
+        BodyValidator.prototype.ChangeField = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Number = jest.fn().mockReturnThis();
+        BodyValidator.prototype.Validate = jest.fn().mockResolvedValue(true);
+
+        ItemPurchase.FetchOneById = jest.fn().mockResolvedValue(undefined);
+
+        // Act
+        const page = new Update();
+        await page.OnPostAsync(req, res, next);
+
+        // Assert
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(next).toHaveBeenCalledWith(createHttpError(404));
+
+        expect(res.redirect).not.toHaveBeenCalled();
+    });
 });
