@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
 import Page from "../../contracts/Page";
