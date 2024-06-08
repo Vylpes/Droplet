@@ -11,6 +11,7 @@ export default class View implements Page {
 
         if (!itemId) {
             next(createHttpError(404));
+            return;
         }
 
         const item = await Item.FetchOneById<Item>(Item, itemId, [
@@ -22,6 +23,7 @@ export default class View implements Page {
 
         if (!item) {
             next(createHttpError(404));
+            return;
         }
 
         const notes = await Note.FetchAllForId(NoteType.Item, itemId);
