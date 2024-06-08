@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
+import createHttpError from "http-errors";
 
 export default class Update implements Page {
     public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
@@ -18,6 +19,11 @@ export default class Update implements Page {
         const name = req.body.name;
 
         const item = await Item.FetchOneById<Item>(Item, itemId);
+
+        if (!item) {
+            next(createHttpError(404));
+            return;
+        }
 
         item.EditBasicDetails(name);
 
