@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Listing } from "../../database/entities/Listing";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import createHttpError from "http-errors";
 
 export default class AssignPostagePolicy implements Page {
     public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
@@ -21,9 +21,19 @@ export default class AssignPostagePolicy implements Page {
 
         const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
 
+        if (!policy) {
+            next(createHttpError(404));
+            return;
+        }
+
         const listing = await Listing.FetchOneById(Listing, Id, [
             "PostagePolicy"
         ]);
+
+        if (!listing) {
+            next(createHttpError(404));
+            return;
+        }
 
         listing.AddPostagePolicyToListing(policy);
 
