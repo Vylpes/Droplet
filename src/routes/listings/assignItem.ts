@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { Listing } from "../../database/entities/Listing";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+import createHttpError from "http-errors";
 
 export default class AssignItem implements Page {
     public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
@@ -22,9 +22,19 @@ export default class AssignItem implements Page {
 
         const item = await Item.FetchOneById(Item, itemId);
 
+        if (!item) {
+            next(createHttpError(404));
+            return;
+        }
+
         const listing = await Listing.FetchOneById(Listing, Id, [
             "Items"
         ]);
+
+        if (!listing) {
+            next(createHttpError(404));
+            return;
+        }
 
         listing.AddItemToListing(item);
 
