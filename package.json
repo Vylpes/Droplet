@@ -45,7 +45,7 @@
     "typeorm": "^0.3.17",
     "typeorm-store": "^2.0.1",
     "typescript": "^5.2.2",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "@types/eslint": "^8.0.0",
