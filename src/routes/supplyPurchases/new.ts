@@ -11,7 +11,7 @@ export default class New implements Page {
                 .NotEmpty()
                 .Number();
 
-        if (!bodyValidation.Validate(req.body)) {
+        if (!bodyValidation.Validate(req)) {
             res.redirect('/supply-purchases/ordered');
             return;
         }

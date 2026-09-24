@@ -11,7 +11,7 @@ export default class UpdateStatus implements Page {
 
         const Id = req.params.Id;
 
-        if (!bodyValidation.Validate(req.body)) {
+        if (!bodyValidation.Validate(req)) {
             res.redirect(`/supply-purchases/view/${Id}`);
             return;
         }
