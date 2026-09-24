@@ -10,7 +10,7 @@ export default class AssignPostagePolicy implements Page {
         const bodyValidation = new BodyValidator("policyId")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/listings/view/${Id}`);

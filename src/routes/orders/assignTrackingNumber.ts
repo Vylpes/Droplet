@@ -14,7 +14,7 @@ export default class AssignTrackingNumber implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/orders/view/${Id}`);

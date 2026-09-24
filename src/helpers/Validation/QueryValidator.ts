@@ -30,10 +30,13 @@ export default class QueryValidator {
 
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
-                    if (!req.query[rule.field] || req.query[rule.field].length == 0) {
-                        await message.Error(rule.errorMessage || `${rule.field} is required`);
+                    {
+                        const value = req.query[rule.field];
+                        if (!value || value.length == 0) {
+                            await message.Error(rule.errorMessage || `${rule.field} is required`);
 
-                        return false;
+                            return false;
+                        }
                     }
                     break;
                 case ValidationRule.EqualTo:
@@ -51,14 +54,14 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.EqualToField:
-                    if (req.query[rule.field] != req.query[rule.to]) {
+                    if (req.query[rule.field] != req.query[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.NotEqualToField:
-                    if (req.query[rule.field] == req.query[rule.to]) {
+                    if (req.query[rule.field] == req.query[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`);
 
                         return false;
@@ -87,14 +90,14 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.query[rule.field]) <= rule.length) {
+                    if (Number(req.query[rule.field]) <= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.query[rule.field]) >= rule.length) {
+                    if (Number(req.query[rule.field]) >= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;

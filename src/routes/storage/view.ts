@@ -6,7 +6,7 @@ import { Storage } from "../../database/entities/Storage";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response) {
-        let id = req.params.Id;
+        let id = (req.params.Id as string);
 
         const bin = await Storage.FetchOneById(Storage, id, [
             "Items",

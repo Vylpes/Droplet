@@ -1,9 +1,9 @@
 import { readFileSync } from "fs";
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 
 export default class EmailHelper {
     public static async SendEmail(to: string, template: string, variables: IEmailVariable[]) {
-        let transporter: nodemailer.Transporter;
+        let transporter: Transporter;
 
         if (process.env.EMAIL_AUTH_ENABLE == "true") {
             transporter = nodemailer.createTransport({

@@ -41,7 +41,7 @@ export default class New implements Page {
             "PostagePolicy"
         ]);
 
-        let postagePolicy: PostagePolicy;
+        let postagePolicy: PostagePolicy | null = null;
 
         if (postagePolicyId == "INHERIT") {
             if (listing.PostagePolicy != null) {

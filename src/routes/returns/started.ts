@@ -9,7 +9,7 @@ export default class Started implements Page {
         const bodyValidation = new BodyValidator("returnBy")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/returns/view/${Id}`);

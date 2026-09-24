@@ -96,9 +96,9 @@ export class App {
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
             store: new TypeormStore({ repository: sessionRepository }),
-        }));
+        }) as unknown as express.RequestHandler);
 
-        this._app.use(connectFlash());
+        this._app.use(connectFlash() as unknown as express.RequestHandler);
 
         this._app.use(PugMiddleware.GetBaseString);
     }

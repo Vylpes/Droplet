@@ -6,15 +6,15 @@ import { Storage } from "../../database/entities/Storage";
 
 export default class List implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        let type = req.params.type;
-        let Id = req.params.id;
+        let type = (req.params.type as string);
+        let Id = (req.params.id as string);
 
         const storages = await Storage.FetchAll(Storage, [
             "Items",
             "Children"
         ]);
 
-        let storage: Storage;
+        let storage: Storage | undefined;
 
         if (type != 'building' && Id) {
             storage = await Storage.FetchOneById(Storage, Id, [

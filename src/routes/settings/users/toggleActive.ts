@@ -5,10 +5,10 @@ import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class ToggleActive implements Page {
     public async OnGetAsync(req: Request, res: Response) {
-        const id = req.params.id;
+        const id = (req.params.id as string);
         const currentUser = req.session.User;
 
-        if (!id) {
+        if (!id || !currentUser) {
             const message = new MessageHelper(req);
             await message.Error('User not found');
 

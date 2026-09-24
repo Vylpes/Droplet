@@ -11,7 +11,7 @@ export default class Update implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!bodyValidation.Validate(req.body)) {
             res.redirect(`/supply-purchases/view/${Id}`);

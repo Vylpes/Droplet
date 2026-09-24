@@ -9,7 +9,7 @@ export default class AddNote implements Page {
         const bodyValidation = new BodyValidator("text")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/orders/view/${Id}`);

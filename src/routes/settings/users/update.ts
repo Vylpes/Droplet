@@ -18,7 +18,7 @@ export default class Update implements Page {
                 .NotEmpty()
                 .Boolean();
 
-        const id = req.params.id;
+        const id = (req.params.id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/settings/users/${id}`);

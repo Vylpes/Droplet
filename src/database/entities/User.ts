@@ -1,5 +1,5 @@
 import { compare } from "bcryptjs";
-import {Entity, Column, OneToMany} from "typeorm";
+import {Entity, Column, FindOptionsRelations, OneToMany} from "typeorm";
 import BaseEntity from "../../contracts/BaseEntity";
 import UserToken from "./UserToken";
 import AppDataSource from "../dataSources/appDataSource";
@@ -78,7 +78,7 @@ export class User extends BaseEntity {
     public static async FetchOneByUsername(username: string, relations?: string[]): Promise<User | undefined> {
         const repository = AppDataSource.getRepository(User);
 
-        const single = await repository.findOne({ where: { Username: username }, relations: relations || [] });
+        const single = await repository.findOne({ where: { Username: username }, relations: (relations || []) as unknown as FindOptionsRelations<User> });
 
         if (!single) {
             return undefined;
@@ -90,7 +90,7 @@ export class User extends BaseEntity {
     public static async FetchOneByEmail(email: string, relations?: string[]): Promise<User | undefined> {
         const repository = AppDataSource.getRepository(User);
 
-        const single = await repository.findOne({ where: { Email: email }, relations: relations || [] });
+        const single = await repository.findOne({ where: { Email: email }, relations: (relations || []) as unknown as FindOptionsRelations<User> });
 
         if (!single) {
             return undefined;

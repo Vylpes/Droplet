@@ -24,7 +24,7 @@ export default class Verify implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         if (!token) {
             next(createHttpError(401));
@@ -69,7 +69,7 @@ export default class Verify implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         const bodyValidation = new BodyValidator("password")
                 .NotEmpty()

@@ -11,7 +11,7 @@ export default class AssignItem implements Page {
         const bodyValidation = new BodyValidator("itemId")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/listings/view/${Id}`);

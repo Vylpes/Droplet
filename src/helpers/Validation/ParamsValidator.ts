@@ -51,28 +51,28 @@ export default class ParamsValidator {
                     }
                     break;
                 case ValidationRule.EqualToField:
-                    if (req.params[rule.field] != req.params[rule.to]) {
+                    if (req.params[rule.field] != req.params[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.NotEqualToField:
-                    if (req.params[rule.field] == req.params[rule.to]) {
+                    if (req.params[rule.field] == req.params[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.MaxLength:
-                    if (req.params[rule.field].length > rule.length) {
+                    if (req.params[rule.field].length > rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no more than ${rule.length} characters long`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.MinLength:
-                    if (req.params[rule.field].length < rule.length) {
+                    if (req.params[rule.field].length < rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no less than ${rule.length} characters long`);
 
                         return false;
@@ -101,14 +101,14 @@ export default class ParamsValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.params[rule.field]) <= rule.length) {
+                    if (Number(req.params[rule.field]) <= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.params[rule.field]) >= rule.length) {
+                    if (Number(req.params[rule.field]) >= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;

@@ -10,7 +10,7 @@ export default class Update implements Page {
             .ChangeField("returnBy")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/returns/view/${Id}`);

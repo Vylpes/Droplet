@@ -4,7 +4,7 @@ import { Order } from "../../database/entities/Order";
 
 export default class Paid implements Page {
     public async OnPostAsync(req: Request, res: Response) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         const order = await Order.FetchOneById(Order, Id, [
             "Listings"

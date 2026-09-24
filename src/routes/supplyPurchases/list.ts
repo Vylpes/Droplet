@@ -6,7 +6,7 @@ import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 
 export default class List implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const status = req.params.status;
+        const status = (req.params.status as string);
 
         const purchases = await SupplyPurchase.FetchAll(SupplyPurchase, [
             "Supplies"

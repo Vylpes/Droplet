@@ -19,7 +19,7 @@ export default class UpdateQuantity implements Page {
                 .NotEmpty()
                 .Number();
 
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/items/${itemId}`);

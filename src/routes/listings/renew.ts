@@ -8,7 +8,7 @@ export default class Renew implements Page {
         const bodyValidation = new BodyValidator("endDate")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/listings/view/${Id}`);

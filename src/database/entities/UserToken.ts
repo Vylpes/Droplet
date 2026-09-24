@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, FindOptionsRelations, ManyToOne } from "typeorm";
 import { UserTokenType } from "../../constants/UserTokenType";
 import BaseEntity from "../../contracts/BaseEntity";
 import { User } from "./User";
@@ -41,9 +41,9 @@ export default class UserToken extends BaseEntity {
     public static async FetchOneByToken<T>(token: string, relations?: string[]): Promise<UserToken> {
         const repository = AppDataSource.getRepository(UserToken);
 
-        const single = await repository.findOne({ where: { Token: token }, relations: relations || [] });
+        const single = await repository.findOne({ where: { Token: token }, relations: (relations || []) as unknown as FindOptionsRelations<UserToken> });
 
-        return single;
+        return single as UserToken;
     }
 
     public static async InvalidateAllTokensForUser(userId: string) {
@@ -51,7 +51,7 @@ export default class UserToken extends BaseEntity {
 
         const single = await repository.findOne({ where: { Id: userId }, relations: [
             "Tokens",
-        ]});
+        ] as unknown as FindOptionsRelations<User>});
 
         if (!single) return;
 

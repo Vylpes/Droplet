@@ -37,7 +37,7 @@ export default class Account implements Page {
         const newPassword = req.body.newPassword;
         const username = req.body.username;
 
-        if (!email || !currentPassword || !username) {
+        if (!user || !email || !currentPassword || !username) {
             const message = new MessageHelper(req);
             await message.Error('Email, Current Password, and Username are required');
 

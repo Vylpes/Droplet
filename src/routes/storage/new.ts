@@ -46,7 +46,7 @@ export default class New implements Page {
                 return 'view';
         }};
 
-        let parent: Storage;
+        let parent: Storage | undefined;
 
         if (parentId) {
             parent = await Storage.FetchOneById(Storage, parentId);

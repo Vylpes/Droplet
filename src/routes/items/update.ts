@@ -8,7 +8,7 @@ export default class Update implements Page {
         const bodyValidation = new BodyValidator("name")
                 .NotEmpty();
 
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!await bodyValidation.Validate(req.body)) {
             res.redirect(`/items/${itemId}`);

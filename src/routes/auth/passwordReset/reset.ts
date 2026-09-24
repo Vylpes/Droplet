@@ -24,7 +24,7 @@ export default class Reset implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         const tokens = await UserToken.FetchAll(UserToken, [
             "User"
@@ -64,7 +64,7 @@ export default class Reset implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         const bodyValidation = new BodyValidator("password")
                 .NotEmpty()

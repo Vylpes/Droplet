@@ -7,7 +7,7 @@ import Note from "../../database/entities/Note";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!itemId) {
             next(createHttpError(404));
