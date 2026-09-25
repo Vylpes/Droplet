@@ -11,7 +11,7 @@ export default class AddNote implements Page {
 
         const Id = req.params.Id;
 
-        if (!bodyValidation.Validate(req)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/supply-purchases/view/${Id}`);
             return;
         }
