@@ -11,9 +11,9 @@ export default class List implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
         const status = (req.params.status as string);
 
-        const returns = await Return.FetchAll(Return, [
-            "Order"
-        ]);
+        const returns = await Return.FetchAll(Return, {
+            Order: true
+        });
 
         const orders = await Item.FetchAll(Order);
 

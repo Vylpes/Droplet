@@ -36,10 +36,10 @@ export default class New implements Page {
         const listingId = req.body.listingId;
         const postagePolicyId = req.body.postagePolicyId;
 
-        const listing = await Listing.FetchOneById(Listing, listingId, [
-            "Items",
-            "PostagePolicy"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, listingId, {
+            Items: true,
+            PostagePolicy: true
+        });
 
         let postagePolicy: PostagePolicy | null = null;
 
@@ -55,10 +55,10 @@ export default class New implements Page {
 
         await order.Save(Order, order);
 
-        order = await Order.FetchOneById(Order, order.Id, [
-            "Listings",
-            "PostagePolicy"
-        ]);
+        order = await Order.FetchOneById(Order, order.Id, {
+            Listings: true,
+            PostagePolicy: true
+        });
 
         order.AddListingToOrder(listing);
 

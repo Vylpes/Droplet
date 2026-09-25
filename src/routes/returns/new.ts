@@ -33,10 +33,10 @@ export default class New implements Page {
 
         await ret.Save(Return, ret);
 
-        ret = await Return.FetchOneById(Return, ret.Id, [
-            "Order",
-            "TrackingNumbers"
-        ])
+        ret = await Return.FetchOneById(Return, ret.Id, {
+            Order: true,
+            TrackingNumbers: true
+        })
 
         const order = await Order.FetchOneById(Order, orderId);
 

@@ -14,9 +14,9 @@ export default class View implements Page {
             return;
         }
 
-        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-            "Items"
-        ]);
+        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, {
+            Items: true
+        });
 
         if (!purchase) {
             next(createHttpError(404));

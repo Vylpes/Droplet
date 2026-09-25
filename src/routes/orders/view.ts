@@ -18,12 +18,12 @@ export default class View implements Page {
             next(createHttpError(404));
         }
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Listings",
-            "Supplies",
-            "TrackingNumbers",
-            "PostagePolicy"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Listings: true,
+            Supplies: true,
+            TrackingNumbers: true,
+            PostagePolicy: true
+        });
 
         const listings = await Listing.FetchAll(Listing);
         const supplies = await Supply.FetchAll(Supply);

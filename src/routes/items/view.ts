@@ -13,12 +13,14 @@ export default class View implements Page {
             next(createHttpError(404));
         }
 
-        const item = await Item.FetchOneById<Item>(Item, itemId, [
-            "Purchase",
-            "Storage",
-            "Storage.Parent",
-            "Storage.Parent.Parent"
-        ]);
+        const item = await Item.FetchOneById<Item>(Item, itemId, {
+            Purchase: true,
+            Storage: {
+                Parent: {
+                    Parent: true
+                }
+            }
+        });
 
         if (!item) {
             next(createHttpError(404));

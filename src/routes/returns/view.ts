@@ -13,10 +13,10 @@ export default class View implements Page {
             next(createHttpError(404));
         }
 
-        const ret = await Return.FetchOneById(Return, Id, [
-            "TrackingNumbers",
-            "Order"
-        ]);
+        const ret = await Return.FetchOneById(Return, Id, {
+            TrackingNumbers: true,
+            Order: true
+        });
 
         if (!ret) {
             next(createHttpError(404));

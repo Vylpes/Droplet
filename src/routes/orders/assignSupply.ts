@@ -24,9 +24,9 @@ export default class AssignSupply implements Page {
 
         const supply = await Supply.FetchOneById(Supply, supplyId);
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Supplies"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Supplies: true
+        });
 
         order.AddSupplyToOrder(supply);
 

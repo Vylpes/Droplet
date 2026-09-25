@@ -15,9 +15,9 @@ export default class Renew implements Page {
             return;
         }
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            Items: true
+        });
 
         const endDate = req.body.endDate;
 

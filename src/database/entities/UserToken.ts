@@ -38,10 +38,10 @@ export default class UserToken extends BaseEntity {
         return expired;
     }
 
-    public static async FetchOneByToken<T>(token: string, relations?: string[]): Promise<UserToken> {
+    public static async FetchOneByToken<T>(token: string, relations?: FindOptionsRelations<UserToken>): Promise<UserToken> {
         const repository = AppDataSource.getRepository(UserToken);
 
-        const single = await repository.findOne({ where: { Token: token }, relations: (relations || []) as unknown as FindOptionsRelations<UserToken> });
+        const single = await repository.findOne({ where: { Token: token }, ...(relations ? { relations } : {}) });
 
         return single as UserToken;
     }
@@ -49,9 +49,9 @@ export default class UserToken extends BaseEntity {
     public static async InvalidateAllTokensForUser(userId: string) {
         const repository = AppDataSource.getRepository(User);
 
-        const single = await repository.findOne({ where: { Id: userId }, relations: [
-            "Tokens",
-        ] as unknown as FindOptionsRelations<User>});
+        const single = await repository.findOne({ where: { Id: userId }, relations: {
+            Tokens: true,
+        }});
 
         if (!single) return;
 

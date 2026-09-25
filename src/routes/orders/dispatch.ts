@@ -6,9 +6,9 @@ export default class Dispatch implements Page {
     public async OnPostAsync(req: Request, res: Response) {
         const Id = (req.params.Id as string);
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Listings"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Listings: true
+        });
 
         order.MarkAsDispatched();
 

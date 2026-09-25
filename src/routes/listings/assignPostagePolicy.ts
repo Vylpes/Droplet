@@ -21,9 +21,9 @@ export default class AssignPostagePolicy implements Page {
 
         const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "PostagePolicy"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            PostagePolicy: true
+        });
 
         listing.AddPostagePolicyToListing(policy);
 

@@ -9,17 +9,17 @@ export default class List implements Page {
         let type = (req.params.type as string);
         let Id = (req.params.id as string);
 
-        const storages = await Storage.FetchAll(Storage, [
-            "Items",
-            "Children"
-        ]);
+        const storages = await Storage.FetchAll(Storage, {
+            Items: true,
+            Children: true
+        });
 
         let storage: Storage | undefined;
 
         if (type != 'building' && Id) {
-            storage = await Storage.FetchOneById(Storage, Id, [
-                "Parent"
-            ]);
+            storage = await Storage.FetchOneById(Storage, Id, {
+            Parent: true
+        });
         }
 
         let visible: Storage[];

@@ -18,23 +18,25 @@ export default class AssignItem implements Page {
 
         const itemId = req.body.itemId;
 
-        const storage = await Storage.FetchOneById(Storage, Id, [
-            "Items"
-        ]);
+        const storage = await Storage.FetchOneById(Storage, Id, {
+            Items: true
+        });
 
-        let item = await Item.FetchOneById(Item, itemId, [
-            "Storage"
-        ]);
+        let item = await Item.FetchOneById(Item, itemId, {
+            Storage: true
+        });
 
         storage.AddItemToBin(item);
 
         await storage.Save(Storage, storage);
 
-        item = await Item.FetchOneById(Item, itemId, [
-            "Storage",
-            "Storage.Parent",
-            "Storage.Parent.Parent"
-        ]);
+        item = await Item.FetchOneById(Item, itemId, {
+            Storage: {
+                Parent: {
+                    Parent: true
+                }
+            }
+        });
 
         item.GenerateSku();
 

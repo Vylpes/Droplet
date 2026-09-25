@@ -33,18 +33,18 @@ export default class BaseEntity {
         await repository.remove(entity);
     }
 
-    public static async FetchAll<T extends ObjectLiteral>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
+    public static async FetchAll<T extends ObjectLiteral>(target: EntityTarget<T>, relations?: FindOptionsRelations<T>): Promise<T[]> {
         const repository = AppDataSource.getRepository<T>(target);
 
-        const all = await repository.find({ relations: (relations || []) as unknown as FindOptionsRelations<T> });
+        const all = await repository.find(relations ? { relations } : {});
 
         return all;
     }
 
-    public static async FetchOneById<T extends BaseEntity>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T> {
+    public static async FetchOneById<T extends BaseEntity>(target: EntityTarget<T>, id: string, relations?: FindOptionsRelations<T>): Promise<T> {
         const repository = AppDataSource.getRepository<T>(target);
 
-        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), relations: (relations || []) as unknown as FindOptionsRelations<T> });
+        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), ...(relations ? { relations } : {}) });
 
         return single as T;
     }

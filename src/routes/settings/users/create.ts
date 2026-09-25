@@ -44,9 +44,9 @@ export default class Create implements Page {
 
         await user.Save(User, user);
 
-        user = await User.FetchOneById(User, user.Id, [
-            "Tokens"
-        ]);
+        user = await User.FetchOneById(User, user.Id, {
+            Tokens: true
+        });
 
         const now = new Date();
 

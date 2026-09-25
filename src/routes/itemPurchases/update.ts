@@ -22,9 +22,9 @@ export default class Update implements Page {
         const description = req.body.description;
         const price = req.body.price;
 
-        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-            "Items"
-        ]);
+        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, {
+            Items: true
+        });
 
         purchase.UpdateBasicDetails(description, price);
 

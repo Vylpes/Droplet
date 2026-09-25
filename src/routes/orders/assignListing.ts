@@ -24,13 +24,13 @@ export default class AssignListing implements Page {
         const listingId = req.body.listingId;
         const amount = req.body.amount;
 
-        const listing = await Listing.FetchOneById(Listing, listingId, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, listingId, {
+            Items: true
+        });
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Listings"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Listings: true
+        });
 
         order.AddListingToOrder(listing);
 

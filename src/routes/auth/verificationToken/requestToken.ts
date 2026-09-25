@@ -32,9 +32,9 @@ export default class RequestToken implements Page {
 
         const email = req.body.email;
 
-        const user = await User.FetchOneByEmail(email, [
-            "Tokens"
-        ]);
+        const user = await User.FetchOneByEmail(email, {
+            Tokens: true
+        });
 
         if (!user) {
             const message = new MessageHelper(req);

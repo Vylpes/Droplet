@@ -75,10 +75,10 @@ export class User extends BaseEntity {
         return same;
     }
 
-    public static async FetchOneByUsername(username: string, relations?: string[]): Promise<User | undefined> {
+    public static async FetchOneByUsername(username: string, relations?: FindOptionsRelations<User>): Promise<User | undefined> {
         const repository = AppDataSource.getRepository(User);
 
-        const single = await repository.findOne({ where: { Username: username }, relations: (relations || []) as unknown as FindOptionsRelations<User> });
+        const single = await repository.findOne({ where: { Username: username }, ...(relations ? { relations } : {}) });
 
         if (!single) {
             return undefined;
@@ -87,10 +87,10 @@ export class User extends BaseEntity {
         return single;
     }
 
-    public static async FetchOneByEmail(email: string, relations?: string[]): Promise<User | undefined> {
+    public static async FetchOneByEmail(email: string, relations?: FindOptionsRelations<User>): Promise<User | undefined> {
         const repository = AppDataSource.getRepository(User);
 
-        const single = await repository.findOne({ where: { Email: email }, relations: (relations || []) as unknown as FindOptionsRelations<User> });
+        const single = await repository.findOne({ where: { Email: email }, ...(relations ? { relations } : {}) });
 
         if (!single) {
             return undefined;

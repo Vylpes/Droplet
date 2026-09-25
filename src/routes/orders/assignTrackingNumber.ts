@@ -28,9 +28,9 @@ export default class AssignTrackingNumber implements Page {
 
         await trackingNumber.Save(TrackingNumber, trackingNumber);
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "TrackingNumbers"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            TrackingNumbers: true
+        });
 
         order.AddTrackingNumberToOrder(trackingNumber);
 

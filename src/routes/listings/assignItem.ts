@@ -22,9 +22,9 @@ export default class AssignItem implements Page {
 
         const item = await Item.FetchOneById(Item, itemId);
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            Items: true
+        });
 
         listing.AddItemToListing(item);
 

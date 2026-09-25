@@ -40,9 +40,9 @@ export default class New implements Page {
 
         await listing.Save(Listing, listing);
 
-        listing = await Listing.FetchOneById(Listing, listing.Id, [
-            "Items"
-        ]);;
+        listing = await Listing.FetchOneById(Listing, listing.Id, {
+            Items: true
+        });;
 
         listing.AddItemToListing(item);
 

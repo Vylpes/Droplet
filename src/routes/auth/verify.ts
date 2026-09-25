@@ -31,9 +31,9 @@ export default class Verify implements Page {
             return;
         }
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 
@@ -85,9 +85,9 @@ export default class Verify implements Page {
         const password = req.body.password;
         const passwordRepeat = req.body.passwordRepeat;
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 

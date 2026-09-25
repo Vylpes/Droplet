@@ -11,9 +11,9 @@ export default class View implements Page {
             next(createHttpError(404));
         }
 
-        const policy = await PostagePolicy.FetchOneById(PostagePolicy, Id, [
-            "Listings"
-        ]);
+        const policy = await PostagePolicy.FetchOneById(PostagePolicy, Id, {
+            Listings: true
+        });
 
         if (!policy) {
             next(createHttpError(404));

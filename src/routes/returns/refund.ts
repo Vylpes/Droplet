@@ -20,9 +20,9 @@ export default class Refund implements Page {
 
         const refundAmount = req.body.refundAmount;
 
-        const ret = await Return.FetchOneById(Return, Id, [
-            "Order"
-        ]);
+        const ret = await Return.FetchOneById(Return, Id, {
+            Order: true
+        });
 
         ret.MarkAsRefunded(refundAmount);
 
