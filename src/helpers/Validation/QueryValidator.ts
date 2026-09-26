@@ -113,7 +113,7 @@ export default class QueryValidator {
     public NotEmpty(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.NotEmpty,
+            rule: ValidationRule.NotEmpty
         });
 
         return this;
@@ -123,7 +123,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -133,7 +133,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -143,7 +143,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -153,7 +153,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -162,7 +162,7 @@ export default class QueryValidator {
     public Number(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Number,
+            rule: ValidationRule.Number
         });
 
         return this;
@@ -171,7 +171,7 @@ export default class QueryValidator {
     public EmailAddress(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.EmailAddress,
+            rule: ValidationRule.EmailAddress
         });
 
         return this;
@@ -180,7 +180,7 @@ export default class QueryValidator {
     public Boolean(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Boolean,
+            rule: ValidationRule.Boolean
         });
 
         return this;
@@ -190,7 +190,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.GreaterThan,
-            length: num,
+            length: num
         });
 
         return this;
@@ -200,7 +200,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.LessThan,
-            length: num,
+            length: num
         });
 
         return this;

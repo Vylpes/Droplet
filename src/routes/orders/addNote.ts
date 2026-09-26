@@ -5,7 +5,7 @@ import Note from "../../database/entities/Note";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class AddNote implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("text")
                 .NotEmpty();
 

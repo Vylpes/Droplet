@@ -55,8 +55,7 @@ export default class Account implements Page {
 
         const userFromDb = await User.FetchOneById(User, user.Id);
 
-        if (!userFromDb)
-        {
+        if (!userFromDb) {
             req.session.error = "Sorry an error has occurred.";
             res.redirect('/settings/account');
             return;

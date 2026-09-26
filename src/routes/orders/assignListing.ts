@@ -7,7 +7,7 @@ import { Order } from "../../database/entities/Order";
 import { Item } from "../../database/entities/Item";
 
 export default class AssignListing implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("listingId")
                 .NotEmpty()
             .ChangeField("amount")

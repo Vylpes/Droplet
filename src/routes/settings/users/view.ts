@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Page from "../../../contracts/Page";
 import { User } from "../../../database/entities/User";
-import { UserMiddleware } from "../../../middleware/userMiddleware";
+
 import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class View implements Page {

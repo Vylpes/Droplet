@@ -1,13 +1,12 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ItemStatus } from "../../constants/Status/ItemStatus";
 import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { Listing } from "../../database/entities/Listing";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class AssignItem implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("itemId")
                 .NotEmpty();
 

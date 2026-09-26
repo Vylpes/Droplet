@@ -6,8 +6,8 @@ function createMockRequest(body: Record<string, unknown> = {}): Request {
         body,
         flash: jest.fn(),
         session: {
-            save: (callback: (err?: string) => void) => callback(),
-        },
+            save: (callback: (err?: string) => void) => callback()
+        }
     } as unknown as Request;
 }
 
@@ -16,7 +16,7 @@ describe("BodyValidator", () => {
         it("returns true when required fields are present on the request body", async () => {
             const req = createMockRequest({
                 description: "Widget purchase",
-                price: "12.50",
+                price: "12.50"
             });
 
             const validator = new BodyValidator("description")
@@ -53,14 +53,14 @@ describe("BodyValidator", () => {
         it("throws when called with req.body instead of the request (regression for #337)", async () => {
             const req = createMockRequest({
                 description: "Widget purchase",
-                price: "12.50",
+                price: "12.50"
             });
 
             const validator = new BodyValidator("description").NotEmpty();
 
             // Passing the body object makes Validate look for body.body.description
             await expect(validator.Validate(req.body as Request)).rejects.toThrow(
-                /Cannot read properties of undefined \(reading 'description'\)/,
+                /Cannot read properties of undefined \(reading 'description'\)/
             );
         });
 
@@ -97,18 +97,18 @@ describe("BodyValidator", () => {
             await expect(mismatching.Validate(req)).resolves.toBe(false);
             expect(req.flash).toHaveBeenCalledWith(
                 "error",
-                "status must be equal to received",
+                "status must be equal to received"
             );
         });
 
         it("validates EqualToField against another body field", async () => {
             const matchingReq = createMockRequest({
                 password: "secret",
-                passwordRepeat: "secret",
+                passwordRepeat: "secret"
             });
             const mismatchingReq = createMockRequest({
                 password: "secret",
-                passwordRepeat: "different",
+                passwordRepeat: "different"
             });
 
             const validator = new BodyValidator("password").EqualToField("passwordRepeat");

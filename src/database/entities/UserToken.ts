@@ -38,7 +38,7 @@ export default class UserToken extends BaseEntity {
         return expired;
     }
 
-    public static async FetchOneByToken<T>(token: string, relations?: FindOptionsRelations<UserToken>): Promise<UserToken> {
+    public static async FetchOneByToken(token: string, relations?: FindOptionsRelations<UserToken>): Promise<UserToken> {
         const repository = AppDataSource.getRepository(UserToken);
 
         const single = await repository.findOne({ where: { Token: token }, ...(relations ? { relations } : {}) });
@@ -50,7 +50,7 @@ export default class UserToken extends BaseEntity {
         const repository = AppDataSource.getRepository(User);
 
         const single = await repository.findOne({ where: { Id: userId }, relations: {
-            Tokens: true,
+            Tokens: true
         }});
 
         if (!single) return;

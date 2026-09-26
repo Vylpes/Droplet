@@ -86,7 +86,7 @@ export class App {
 
         await AppDataSource.initialize()
             .then(() => console.log("Data Source Initialized"))
-            .catch((err) => console.error("Error Initialising Data Source", err));
+            .catch(err => console.error("Error Initialising Data Source", err));
 
         // Session
         const sessionRepository = AppDataSource.getRepository(Session);
@@ -95,7 +95,7 @@ export class App {
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
-            store: new TypeormStore({ repository: sessionRepository }),
+            store: new TypeormStore({ repository: sessionRepository })
         }) as unknown as express.RequestHandler);
 
         this._app.use(connectFlash() as unknown as express.RequestHandler);
@@ -121,7 +121,7 @@ export class App {
 
     private SetupErrors() {
         // Error Handler
-        this._app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
+        this._app.use(async (err: any, req: Request, res: Response, _next: NextFunction) => {
             // Set locals, only providing error in development
             const info = err.message;
             const error = req.app.get('env') === 'development' ? err : {};
@@ -133,7 +133,7 @@ export class App {
                 info: info,
                 error: error,
                 status: err.status || 500,
-                showDetails: showDetails,
+                showDetails: showDetails
             });
         });
     }

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import { Storage } from "../../database/entities/Storage";

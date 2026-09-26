@@ -1,5 +1,5 @@
 import { compareSync, hash } from "bcryptjs";
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../constants/UserTokenType";
 import Page from "../../contracts/Page";
@@ -83,7 +83,6 @@ export default class Verify implements Page {
         }
 
         const password = req.body.password;
-        const passwordRepeat = req.body.passwordRepeat;
 
         const tokens = await UserToken.FetchAll(UserToken, {
             User: true

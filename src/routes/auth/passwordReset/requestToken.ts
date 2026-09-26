@@ -20,7 +20,7 @@ export default class RequestToken implements Page {
         res.render('auth/password-reset/request-token');
     }
 
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("email")
             .NotEmpty()
             .EmailAddress();
@@ -73,10 +73,10 @@ export default class RequestToken implements Page {
 
         await EmailHelper.SendEmail(user.Email, "PasswordReset", [{
             key: "username",
-            value: user.Username,
+            value: user.Username
         }, {
             key: "reset_link",
-            value: resetLink,
+            value: resetLink
         }]);
 
         const message = new MessageHelper(req);

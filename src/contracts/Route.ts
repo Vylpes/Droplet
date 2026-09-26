@@ -32,7 +32,7 @@ export default class Route {
     }
 
     Route(): Router {
-        for (let page of this._pages) {
+        for (const page of this._pages) {
             if (page.page.OnGet) {
                 this._router.get(page.path, (req, res, next) => this.DoAuthorise(this._authorise || page.authorise, req, res, next), (req, res, next) => this.DoAdminAuthorise(this._adminAuthorise || page.adminAuthorise, req, res, next), page.page.OnGet);
             } else if (page.page.OnGetAsync) {
@@ -46,7 +46,7 @@ export default class Route {
             }
         }
 
-        for (let subRoute of this._subRoutes) {
+        for (const subRoute of this._subRoutes) {
             this._router.use(subRoute.path, subRoute.route.Route());
         }
 

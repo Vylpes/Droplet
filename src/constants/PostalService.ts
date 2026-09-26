@@ -5,5 +5,5 @@ export enum PostalService {
 
 export const PostalServiceNames = new Map<PostalService, string>([
     [ PostalService.RoyalMail, "Royal Mail" ],
-    [ PostalService.Hermes, "Hermes" ],
+    [ PostalService.Hermes, "Hermes" ]
 ]);

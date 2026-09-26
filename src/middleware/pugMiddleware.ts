@@ -7,7 +7,7 @@ export class PugMiddleware {
             info: req.flash('info'),
             error: req.flash('error'),
             isAuthenticated: req.session.User != null,
-            user: req.session.User,
+            user: req.session.User
         };
 
         next();

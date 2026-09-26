@@ -5,7 +5,7 @@ import { Supply } from "../../database/entities/Supply";
 import { Order } from "../../database/entities/Order";
 
 export default class AssignSupply implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("supplyId")
                 .NotEmpty()
             .ChangeField("amount")

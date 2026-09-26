@@ -11,5 +11,5 @@ export const OrderStatusNames = new Map<OrderStatus, string>([
     [ OrderStatus.AwaitingDispatch, "Awaiting Dispatch" ],
     [ OrderStatus.Dispatched, "Dispatched" ],
     [ OrderStatus.Cancelled, "Cancelled" ],
-    [ OrderStatus.Returned, "Returned" ],
+    [ OrderStatus.Returned, "Returned" ]
 ]);

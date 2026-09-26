@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs";
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import Page from "../../contracts/Page";
 import { User } from "../../database/entities/User";

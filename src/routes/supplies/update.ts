@@ -4,7 +4,7 @@ import { Supply } from "../../database/entities/Supply";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class Update implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("sku")
@@ -22,7 +22,6 @@ export default class Update implements Page {
 
         const name = req.body.name;
         const sku = req.body.sku;
-        const quantity = req.body.quantity;
 
         const supply = await Supply.FetchOneById<Supply>(Supply, Id);
 

@@ -4,7 +4,7 @@ import { SupplyPurchase } from "../../database/entities/SupplyPurchase";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class UpdateStatus implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("status")
                 .NotEmpty()
                 .Number();

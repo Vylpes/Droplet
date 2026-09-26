@@ -12,7 +12,7 @@ export default class EmailHelper {
                 secure: process.env.EMAIL_SECURE == "true",
                 auth: {
                     user: process.env.EMAIL_AUTH_USER,
-                    pass: process.env.EMAIL_AUTH_PASS,
+                    pass: process.env.EMAIL_AUTH_PASS
                 },
                 tls: {
                     rejectUnauthorized: process.env.EMAIL_TLS_REJECT_UNAUTHORISED == "true"
@@ -41,14 +41,14 @@ export default class EmailHelper {
             to: to,
             subject: subject,
             text: formattedText,
-            html: formattedHtml,
+            html: formattedHtml
         });
     }
 
     private static FormatDocument(doc: string, variables: IEmailVariable[]): string {
         let out = doc;
 
-        for (let variable of variables) {
+        for (const variable of variables) {
             const regex = new RegExp(`{${variable.key}}`, 'g');
             out = out.replace(regex, variable.value);
         }

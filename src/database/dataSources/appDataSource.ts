@@ -13,14 +13,14 @@ const AppDataSource = new DataSource({
     synchronize: process.env.DB_SYNC == "true",
     logging: process.env.DB_LOGGING == "true",
     entities: [
-        "dist/database/entities/**/*.js",
+        "dist/database/entities/**/*.js"
     ],
     migrations: [
-        "dist/database/migrations/**/*.js",
+        "dist/database/migrations/**/*.js"
     ],
     subscribers: [
-        "dist/database/subscribers/**/*.js",
-    ],
+        "dist/database/subscribers/**/*.js"
+    ]
 });
 
 export default AppDataSource;

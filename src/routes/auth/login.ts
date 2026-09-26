@@ -5,7 +5,7 @@ import BodyValidator from "../../helpers/Validation/BodyValidator";
 import MessageHelper from "../../helpers/MessageHelper";
 
 export default class Login implements Page {
-    OnGet(req: Request, res: Response, next: NextFunction) {
+    OnGet(req: Request, res: Response, _next: NextFunction) {
         if (res.locals.viewData.isAuthenticated) {
             res.redirect('/dashboard');
             return;
@@ -14,7 +14,7 @@ export default class Login implements Page {
         res.render('auth/login', res.locals.viewData);
     }
 
-    async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("email")
                 .NotEmpty()
                 .EmailAddress()
