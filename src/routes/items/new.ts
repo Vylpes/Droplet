@@ -14,7 +14,7 @@ export default class New implements Page {
             .ChangeField("purchaseId")
                 .NotEmpty();
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect("/item-purchases/ordered");
             return;
         }

@@ -24,7 +24,7 @@ export default class New implements Page {
             .ChangeField("postagePolicyId")
                 .NotEmpty();
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect("/orders/awaiting-payment");
             return;
         }

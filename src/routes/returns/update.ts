@@ -12,7 +12,7 @@ export default class Update implements Page {
 
         const Id = (req.params.Id as string);
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/returns/view/${Id}`);
             return;
         }

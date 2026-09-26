@@ -14,7 +14,7 @@ export default class New implements Page {
                 .NotEmpty()
                 .Number();
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect("/postage-policies");
             return;
         }

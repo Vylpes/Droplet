@@ -79,7 +79,6 @@ export default class BodyValidator {
                     }
                     break;
                 case ValidationRule.Number:
-                    console.log(typeof Number(0));
                     if (typeof Number(req.body[rule.field]) != "number") {
                         await message.Error(rule.errorMessage || `${rule.field} must be a number`);
 

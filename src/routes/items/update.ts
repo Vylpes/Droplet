@@ -10,7 +10,7 @@ export default class Update implements Page {
 
         const itemId = (req.params.itemId as string);
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/items/${itemId}`);
             return;
         }
