@@ -1,16 +1,15 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { NoteType } from "../../constants/NoteType";
 import Page from "../../contracts/Page";
 import Note from "../../database/entities/Note";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class AddNote implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("text")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/item-purchases/view/${Id}`);

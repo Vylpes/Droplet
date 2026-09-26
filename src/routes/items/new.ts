@@ -27,17 +27,17 @@ export default class New implements Page {
 
         await item.Save(Item, item);
 
-        let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-            "Items"
-        ]);
+        let purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, {
+            Items: true
+        });
 
         purchase.AddItemToOrder(item);
 
         await purchase.Save(ItemPurchase, purchase);
 
-        purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, [
-            "Items"
-        ]);
+        purchase = await ItemPurchase.FetchOneById(ItemPurchase, purchaseId, {
+            Items: true
+        });
 
         await purchase.CalculateItemPrices();
 

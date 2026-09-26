@@ -1,15 +1,14 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Return } from "../../database/entities/Return";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Started implements Page {
     public async OnPostAsync(req: Request, res: Response) {
         const bodyValidation = new BodyValidator("returnBy")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/returns/view/${Id}`);

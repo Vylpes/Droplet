@@ -36,9 +36,9 @@ export default class New implements Page {
 
         await supply.Save(Supply, supply);
 
-        const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, [
-            "Supplies"
-        ]);
+        const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, purchaseId, {
+            Supplies: true
+        });
 
         purchase.AddSupplyToOrder(supply);
 

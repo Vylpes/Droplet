@@ -1,4 +1,4 @@
-import { Column, DeepPartial, EntityTarget, FindOptionsWhere, PrimaryColumn } from "typeorm";
+import { Column, DeepPartial, EntityTarget, FindOptionsRelations, FindOptionsWhere, ObjectLiteral, PrimaryColumn } from "typeorm";
 import { v4 } from "uuid";
 import AppDataSource from "../database/dataSources/appDataSource";
 
@@ -19,7 +19,7 @@ export default class BaseEntity {
     @Column()
     WhenUpdated: Date;
 
-    public async Save<T>(target: EntityTarget<T>, entity: DeepPartial<T>): Promise<void> {
+    public async Save<T extends ObjectLiteral>(target: EntityTarget<T>, entity: DeepPartial<T>): Promise<void> {
         this.WhenUpdated = new Date();
 
         const repository = AppDataSource.getRepository<T>(target);
@@ -27,29 +27,29 @@ export default class BaseEntity {
         await repository.save(entity);
     }
 
-    public static async Remove<T>(target: EntityTarget<T>, entity: T): Promise<void> {
+    public static async Remove<T extends ObjectLiteral>(target: EntityTarget<T>, entity: T): Promise<void> {
         const repository = AppDataSource.getRepository<T>(target);
 
         await repository.remove(entity);
     }
 
-    public static async FetchAll<T>(target: EntityTarget<T>, relations?: string[]): Promise<T[]> {
+    public static async FetchAll<T extends ObjectLiteral>(target: EntityTarget<T>, relations?: FindOptionsRelations<T>): Promise<T[]> {
         const repository = AppDataSource.getRepository<T>(target);
 
-        const all = await repository.find({ relations: relations || [] });
+        const all = await repository.find(relations ? { relations } : {});
 
         return all;
     }
 
-    public static async FetchOneById<T extends BaseEntity>(target: EntityTarget<T>, id: string, relations?: string[]): Promise<T> {
+    public static async FetchOneById<T extends BaseEntity>(target: EntityTarget<T>, id: string, relations?: FindOptionsRelations<T>): Promise<T> {
         const repository = AppDataSource.getRepository<T>(target);
 
-        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), relations: relations || [] });
+        const single = await repository.findOne({ where: ({ Id: id } as FindOptionsWhere<T>), ...(relations ? { relations } : {}) });
 
-        return single;
+        return single as T;
     }
 
-    public static async Any<T>(target: EntityTarget<T>): Promise<boolean> {
+    public static async Any<T extends ObjectLiteral>(target: EntityTarget<T>): Promise<boolean> {
         const repository = AppDataSource.getRepository<T>(target);
 
         const any = await repository.find();

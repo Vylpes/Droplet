@@ -5,7 +5,7 @@ import AppDataSource from "../dataSources/appDataSource";
 
 @Entity()
 export default class Note extends BaseEntity {
-    constructor(text: String, type: NoteType, forId: String) {
+    constructor(text: string, type: NoteType, forId: string) {
         super();
 
         this.Text = text;
@@ -14,19 +14,19 @@ export default class Note extends BaseEntity {
     }
 
     @Column()
-    Text: String;
+    Text: string;
 
     @Column()
     Type: NoteType;
 
     @Column()
-    ForId: String;
+    ForId: string;
 
-    public UpdateBasicDetails(text: String) {
+    public UpdateBasicDetails(text: string) {
         this.Text = text;
     }
 
-    public static async FetchAllForId(type: NoteType, forId: String): Promise<Note[]> {
+    public static async FetchAllForId(type: NoteType, forId: string): Promise<Note[]> {
         const repository = AppDataSource.getRepository(Note);
 
         const all = await repository.find();

@@ -51,28 +51,28 @@ export default class BodyValidator {
                     }
                     break;
                 case ValidationRule.EqualToField:
-                    if (req.body[rule.field] != req.body[rule.to]) {
+                    if (req.body[rule.field] != req.body[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.NotEqualToField:
-                    if (req.body[rule.field] == req.body[rule.to]) {
+                    if (req.body[rule.field] == req.body[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.MaxLength:
-                    if (req.body[rule.field].length > rule.length) {
+                    if (req.body[rule.field].length > rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no more than ${rule.length} characters long`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.MinLength:
-                    if (req.body[rule.field].length < rule.length) {
+                    if (req.body[rule.field].length < rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be no less than ${rule.length} characters long`);
 
                         return false;
@@ -100,14 +100,14 @@ export default class BodyValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.body[rule.field]) <= rule.length) {
+                    if (Number(req.body[rule.field]) <= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.body[rule.field]) >= rule.length) {
+                    if (Number(req.body[rule.field]) >= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;
@@ -123,7 +123,7 @@ export default class BodyValidator {
     public NotEmpty(): BodyValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.NotEmpty,
+            rule: ValidationRule.NotEmpty
         });
 
         return this;
@@ -133,7 +133,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -143,7 +143,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -153,7 +153,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -163,7 +163,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -173,7 +173,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.MaxLength,
-            length: length,
+            length: length
         });
 
         return this;
@@ -184,7 +184,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.MinLength,
-            length: length,
+            length: length
         });
 
         return this;
@@ -193,7 +193,7 @@ export default class BodyValidator {
     public Number(): BodyValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Number,
+            rule: ValidationRule.Number
         });
 
         return this;
@@ -202,7 +202,7 @@ export default class BodyValidator {
     public EmailAddress(): BodyValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.EmailAddress,
+            rule: ValidationRule.EmailAddress
         });
 
         return this;
@@ -211,7 +211,7 @@ export default class BodyValidator {
     public Boolean(): BodyValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Boolean,
+            rule: ValidationRule.Boolean
         });
 
         return this;
@@ -221,7 +221,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.GreaterThan,
-            length: num,
+            length: num
         });
 
         return this;
@@ -231,7 +231,7 @@ export default class BodyValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.LessThan,
-            length: num,
+            length: num
         });
 
         return this;

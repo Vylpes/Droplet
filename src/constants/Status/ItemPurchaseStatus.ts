@@ -11,5 +11,5 @@ export const ItemPurchaseStatusNames = new Map<ItemPurchaseStatus, string>([
     [ ItemPurchaseStatus.Received, "Received" ],
     [ ItemPurchaseStatus.Inventoried, "Inventoried" ],
     [ ItemPurchaseStatus.Complete, "Complete" ],
-    [ ItemPurchaseStatus.Rejected, "Rejected" ],
+    [ ItemPurchaseStatus.Rejected, "Rejected" ]
 ]);

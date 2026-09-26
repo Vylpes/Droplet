@@ -4,11 +4,11 @@ import { Item } from "../../database/entities/Item";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class Update implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("name")
                 .NotEmpty();
 
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/items/${itemId}`);

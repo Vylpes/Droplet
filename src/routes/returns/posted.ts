@@ -4,7 +4,7 @@ import { Return } from "../../database/entities/Return";
 
 export default class Posted implements Page {
     public async OnPostAsync(req: Request, res: Response) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         const ret = await Return.FetchOneById(Return, Id);
 

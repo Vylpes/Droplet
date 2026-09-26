@@ -1,11 +1,10 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Item } from "../../database/entities/Item";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class UpdateQuantity implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("unlisted")
                 .NotEmpty()
                 .Number()
@@ -19,7 +18,7 @@ export default class UpdateQuantity implements Page {
                 .NotEmpty()
                 .Number();
 
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/items/${itemId}`);

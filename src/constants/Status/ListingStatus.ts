@@ -7,5 +7,5 @@ export enum ListingStatus {
 export const ListingStatusNames = new Map<ListingStatus, string>([
     [ ListingStatus.Active, "Active" ],
     [ ListingStatus.Sold, "Sold" ],
-    [ ListingStatus.Unsold, "Unsold" ],
+    [ ListingStatus.Unsold, "Unsold" ]
 ]);

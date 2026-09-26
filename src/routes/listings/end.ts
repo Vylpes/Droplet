@@ -6,11 +6,11 @@ import { Listing } from "../../database/entities/Listing";
 
 export default class End implements Page {
     public async OnPostAsync(req: Request, res: Response) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            Items: true
+        });
 
         listing.MarkAsUnsold();
 

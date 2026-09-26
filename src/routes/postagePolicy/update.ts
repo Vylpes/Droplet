@@ -14,7 +14,7 @@ export default class Update implements Page {
                 .NotEmpty()
                 .Number();
 
-        const id = req.params.id;
+        const id = (req.params.id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/postage-policies/${id}`);

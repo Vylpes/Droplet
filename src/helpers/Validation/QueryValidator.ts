@@ -30,10 +30,13 @@ export default class QueryValidator {
 
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
-                    if (!req.query[rule.field] || req.query[rule.field].length == 0) {
-                        await message.Error(rule.errorMessage || `${rule.field} is required`);
+                    {
+                        const value = req.query[rule.field];
+                        if (!value || value.length == 0) {
+                            await message.Error(rule.errorMessage || `${rule.field} is required`);
 
-                        return false;
+                            return false;
+                        }
                     }
                     break;
                 case ValidationRule.EqualTo:
@@ -51,14 +54,14 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.EqualToField:
-                    if (req.query[rule.field] != req.query[rule.to]) {
+                    if (req.query[rule.field] != req.query[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.NotEqualToField:
-                    if (req.query[rule.field] == req.query[rule.to]) {
+                    if (req.query[rule.field] == req.query[rule.to!]) {
                         await message.Error(rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`);
 
                         return false;
@@ -87,14 +90,14 @@ export default class QueryValidator {
                     }
                     break;
                 case ValidationRule.GreaterThan:
-                    if (Number(req.query[rule.field]) <= rule.length) {
+                    if (Number(req.query[rule.field]) <= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be greater than ${rule.length}`);
 
                         return false;
                     }
                     break;
                 case ValidationRule.LessThan:
-                    if (Number(req.query[rule.field]) >= rule.length) {
+                    if (Number(req.query[rule.field]) >= rule.length!) {
                         await message.Error(rule.errorMessage || `${rule.field} must be less than ${rule.length}`);
 
                         return false;
@@ -110,7 +113,7 @@ export default class QueryValidator {
     public NotEmpty(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.NotEmpty,
+            rule: ValidationRule.NotEmpty
         });
 
         return this;
@@ -120,7 +123,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -130,7 +133,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualTo,
-            to: value,
+            to: value
         });
 
         return this;
@@ -140,7 +143,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.EqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -150,7 +153,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.NotEqualToField,
-            to: field,
+            to: field
         });
 
         return this;
@@ -159,7 +162,7 @@ export default class QueryValidator {
     public Number(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Number,
+            rule: ValidationRule.Number
         });
 
         return this;
@@ -168,7 +171,7 @@ export default class QueryValidator {
     public EmailAddress(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.EmailAddress,
+            rule: ValidationRule.EmailAddress
         });
 
         return this;
@@ -177,7 +180,7 @@ export default class QueryValidator {
     public Boolean(): QueryValidator {
         this.rules.push({
             field: this.field,
-            rule: ValidationRule.Boolean,
+            rule: ValidationRule.Boolean
         });
 
         return this;
@@ -187,7 +190,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.GreaterThan,
-            length: num,
+            length: num
         });
 
         return this;
@@ -197,7 +200,7 @@ export default class QueryValidator {
         this.rules.push({
             field: this.field,
             rule: ValidationRule.LessThan,
-            length: num,
+            length: num
         });
 
         return this;

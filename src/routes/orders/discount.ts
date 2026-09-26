@@ -4,12 +4,12 @@ import BodyValidator from "../../helpers/Validation/BodyValidator";
 import { Order } from "../../database/entities/Order";
 
 export default class Discount implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("amount")
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);

@@ -24,11 +24,11 @@ export default class Reset implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 
@@ -64,7 +64,7 @@ export default class Reset implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         const bodyValidation = new BodyValidator("password")
                 .NotEmpty()
@@ -103,9 +103,9 @@ export default class Reset implements Page {
             return;
         }
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 

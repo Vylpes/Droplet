@@ -12,18 +12,18 @@ import { Supply } from "../../database/entities/Supply";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!Id) {
             next(createHttpError(404));
         }
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Listings",
-            "Supplies",
-            "TrackingNumbers",
-            "PostagePolicy"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Listings: true,
+            Supplies: true,
+            TrackingNumbers: true,
+            PostagePolicy: true
+        });
 
         const listings = await Listing.FetchAll(Listing);
         const supplies = await Supply.FetchAll(Supply);

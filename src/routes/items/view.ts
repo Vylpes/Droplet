@@ -7,18 +7,20 @@ import Note from "../../database/entities/Note";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const itemId = req.params.itemId;
+        const itemId = (req.params.itemId as string);
 
         if (!itemId) {
             next(createHttpError(404));
         }
 
-        const item = await Item.FetchOneById<Item>(Item, itemId, [
-            "Purchase",
-            "Storage",
-            "Storage.Parent",
-            "Storage.Parent.Parent"
-        ]);
+        const item = await Item.FetchOneById<Item>(Item, itemId, {
+            Purchase: true,
+            Storage: {
+                Parent: {
+                    Parent: true
+                }
+            }
+        });
 
         if (!item) {
             next(createHttpError(404));

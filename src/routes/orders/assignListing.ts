@@ -7,14 +7,14 @@ import { Order } from "../../database/entities/Order";
 import { Item } from "../../database/entities/Item";
 
 export default class AssignListing implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("listingId")
                 .NotEmpty()
             .ChangeField("amount")
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);
@@ -24,13 +24,13 @@ export default class AssignListing implements Page {
         const listingId = req.body.listingId;
         const amount = req.body.amount;
 
-        const listing = await Listing.FetchOneById(Listing, listingId, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, listingId, {
+            Items: true
+        });
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Listings"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Listings: true
+        });
 
         order.AddListingToOrder(listing);
 

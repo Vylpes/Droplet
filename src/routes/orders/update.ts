@@ -5,7 +5,7 @@ import PostagePolicy from "../../database/entities/PostagePolicy";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class Update implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("orderNumber")
                 .NotEmpty()
             .ChangeField("offerAccepted")
@@ -14,7 +14,7 @@ export default class Update implements Page {
             .ChangeField("buyer")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);

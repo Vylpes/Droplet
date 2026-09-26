@@ -8,11 +8,11 @@ import { Listing } from "../../database/entities/Listing";
 
 export default class List implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const status = req.params.status;
+        const status = (req.params.status as string);
 
-        const listings = await Listing.FetchAll(Listing, [
-            "Items"
-        ]);
+        const listings = await Listing.FetchAll(Listing, {
+            Items: true
+        });
 
         const items = await Item.FetchAll(Item);
 

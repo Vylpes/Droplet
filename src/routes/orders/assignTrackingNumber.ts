@@ -1,20 +1,20 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TrackingNumberType } from "../../constants/TrackingNumberType";
 import Page from "../../contracts/Page";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
+
 import { TrackingNumber } from "../../database/entities/TrackingNumber";
 import { Order } from "../../database/entities/Order";
 
 export default class AssignTrackingNumber implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("number")
                 .NotEmpty()
             .ChangeField("service")
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);
@@ -28,9 +28,9 @@ export default class AssignTrackingNumber implements Page {
 
         await trackingNumber.Save(TrackingNumber, trackingNumber);
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "TrackingNumbers"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            TrackingNumbers: true
+        });
 
         order.AddTrackingNumberToOrder(trackingNumber);
 

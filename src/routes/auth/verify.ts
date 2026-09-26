@@ -1,5 +1,5 @@
 import { compareSync, hash } from "bcryptjs";
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { UserTokenType } from "../../constants/UserTokenType";
 import Page from "../../contracts/Page";
@@ -24,16 +24,16 @@ export default class Verify implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         if (!token) {
             next(createHttpError(401));
             return;
         }
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 
@@ -69,7 +69,7 @@ export default class Verify implements Page {
             return;
         }
 
-        const token = req.query.token.toString();
+        const token = req.query.token!.toString();
 
         const bodyValidation = new BodyValidator("password")
                 .NotEmpty()
@@ -83,11 +83,10 @@ export default class Verify implements Page {
         }
 
         const password = req.body.password;
-        const passwordRepeat = req.body.passwordRepeat;
 
-        const tokens = await UserToken.FetchAll(UserToken, [
-            "User"
-        ]);
+        const tokens = await UserToken.FetchAll(UserToken, {
+            User: true
+        });
 
         const userToken = tokens.filter(x => compareSync(token, x.Token))[0];
 

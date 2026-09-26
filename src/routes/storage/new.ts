@@ -26,7 +26,8 @@ export default class New implements Page {
         const skuPrefix = req.body.skuPrefix;
         const parentId = req.body.parentId;
 
-        const storageType = () => { switch(type) {
+        const storageType = () => {
+ switch(type) {
             case 'bin':
                 return StorageType.Bin;
             case 'unit':
@@ -35,18 +36,21 @@ export default class New implements Page {
                 return StorageType.Building;
             default:
                 return StorageType.Building;
-        }};
+        }
+};
 
-        const nextType = () => { switch(storageType()) {
+        const nextType = () => {
+ switch(storageType()) {
             case StorageType.Building:
                 return 'unit';
             case StorageType.Unit:
                 return 'bin';
             case StorageType.Bin:
                 return 'view';
-        }};
+        }
+};
 
-        let parent: Storage;
+        let parent: Storage | undefined;
 
         if (parentId) {
             parent = await Storage.FetchOneById(Storage, parentId);

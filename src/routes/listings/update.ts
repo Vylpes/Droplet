@@ -4,7 +4,7 @@ import { Listing } from "../../database/entities/Listing";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class Update implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("listingNumber")
@@ -16,7 +16,7 @@ export default class Update implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/listings/view/${Id}`);

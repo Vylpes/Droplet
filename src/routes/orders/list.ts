@@ -9,11 +9,11 @@ import PostagePolicy from "../../database/entities/PostagePolicy";
 
 export default class List implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        let status = req.params.status;
+        const status = (req.params.status as string);
 
-        const orders = await Order.FetchAll(Order, [
-            "Listings"
-        ]);
+        const orders = await Order.FetchAll(Order, {
+            Listings: true
+        });
 
         const listings = await Listing.FetchAll(Listing);
 

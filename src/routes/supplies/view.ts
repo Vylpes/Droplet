@@ -7,15 +7,15 @@ import { Supply } from "../../database/entities/Supply";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!Id) {
             next(createHttpError(404));
         }
 
-        const supply = await Supply.FetchOneById<Supply>(Supply, Id, [
-            "Purchase"
-        ]);
+        const supply = await Supply.FetchOneById<Supply>(Supply, Id, {
+            Purchase: true
+        });
 
         if (!supply) {
             next(createHttpError(404));

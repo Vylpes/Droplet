@@ -20,7 +20,7 @@ export default class RequestToken implements Page {
         res.render('auth/verification-token/request-token');
     }
 
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("email")
                 .NotEmpty()
                 .EmailAddress();
@@ -32,9 +32,9 @@ export default class RequestToken implements Page {
 
         const email = req.body.email;
 
-        const user = await User.FetchOneByEmail(email, [
-            "Tokens"
-        ]);
+        const user = await User.FetchOneByEmail(email, {
+            Tokens: true
+        });
 
         if (!user) {
             const message = new MessageHelper(req);
@@ -81,10 +81,10 @@ export default class RequestToken implements Page {
 
         await EmailHelper.SendEmail(user.Email, "VerifyUser", [{
             key: "username",
-            value: user.Username,
+            value: user.Username
         }, {
             key: "verify_link",
-            value: verifyLink,
+            value: verifyLink
         }]);
 
         const message = new MessageHelper(req);

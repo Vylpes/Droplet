@@ -1,9 +1,8 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Order } from "../../database/entities/Order";
 import { Return } from "../../database/entities/Return";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class Refund implements Page {
     public async OnPostAsync(req: Request, res: Response) {
@@ -11,7 +10,7 @@ export default class Refund implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/returns/view/${Id}`);
@@ -20,9 +19,9 @@ export default class Refund implements Page {
 
         const refundAmount = req.body.refundAmount;
 
-        const ret = await Return.FetchOneById(Return, Id, [
-            "Order"
-        ]);
+        const ret = await Return.FetchOneById(Return, Id, {
+            Order: true
+        });
 
         ret.MarkAsRefunded(refundAmount);
 

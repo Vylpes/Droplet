@@ -1,16 +1,15 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import Page from "../../contracts/Page";
 import { Listing } from "../../database/entities/Listing";
 import PostagePolicy from "../../database/entities/PostagePolicy";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
-import { UserMiddleware } from "../../middleware/userMiddleware";
 
 export default class AssignPostagePolicy implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("policyId")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/listings/view/${Id}`);
@@ -21,9 +20,9 @@ export default class AssignPostagePolicy implements Page {
 
         const policy = await PostagePolicy.FetchOneById(PostagePolicy, policyId);
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "PostagePolicy"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            PostagePolicy: true
+        });
 
         listing.AddPostagePolicyToListing(policy);
 

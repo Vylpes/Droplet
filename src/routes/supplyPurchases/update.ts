@@ -11,7 +11,7 @@ export default class Update implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/supply-purchases/view/${Id}`);
@@ -21,9 +21,9 @@ export default class Update implements Page {
         const description = req.body.description;
         const price = req.body.price;
 
-        const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, Id, [
-            "Supplies"
-        ]);
+        const purchase = await SupplyPurchase.FetchOneById(SupplyPurchase, Id, {
+            Supplies: true
+        });
 
         purchase.UpdateBasicDetails(description, price);
 

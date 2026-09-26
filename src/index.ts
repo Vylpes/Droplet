@@ -13,4 +13,4 @@ export class Index {
     }
 }
 
-const p = new Index();
+new Index();

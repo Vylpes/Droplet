@@ -8,16 +8,16 @@ export default class Renew implements Page {
         const bodyValidation = new BodyValidator("endDate")
                 .NotEmpty();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/listings/view/${Id}`);
             return;
         }
 
-        const listing = await Listing.FetchOneById(Listing, Id, [
-            "Items"
-        ]);
+        const listing = await Listing.FetchOneById(Listing, Id, {
+            Items: true
+        });
 
         const endDate = req.body.endDate;
 

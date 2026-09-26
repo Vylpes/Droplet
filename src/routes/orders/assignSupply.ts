@@ -5,14 +5,14 @@ import { Supply } from "../../database/entities/Supply";
 import { Order } from "../../database/entities/Order";
 
 export default class AssignSupply implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("supplyId")
                 .NotEmpty()
             .ChangeField("amount")
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);
@@ -24,9 +24,9 @@ export default class AssignSupply implements Page {
 
         const supply = await Supply.FetchOneById(Supply, supplyId);
 
-        const order = await Order.FetchOneById(Order, Id, [
-            "Supplies"
-        ]);
+        const order = await Order.FetchOneById(Order, Id, {
+            Supplies: true
+        });
 
         order.AddSupplyToOrder(supply);
 

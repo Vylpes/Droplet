@@ -1,12 +1,12 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Page from "../../../contracts/Page";
 import { User } from "../../../database/entities/User";
-import { UserMiddleware } from "../../../middleware/userMiddleware";
+
 import MessageHelper from "../../../helpers/MessageHelper";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response) {
-        const id = req.params.id;
+        const id = (req.params.id as string);
 
         if (!id) {
             const message = new MessageHelper(req);

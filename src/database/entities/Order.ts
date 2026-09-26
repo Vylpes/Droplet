@@ -54,7 +54,7 @@ export class Order extends BaseEntity {
     TrackingNumbers: TrackingNumber[];
 
     @ManyToOne(() => PostagePolicy, policy => policy.Orders)
-    PostagePolicy: PostagePolicy;
+    PostagePolicy: PostagePolicy | null;
 
     @ManyToOne(() => Return, ret => ret.Order)
     Returns: Return[];

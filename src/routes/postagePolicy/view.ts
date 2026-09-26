@@ -5,15 +5,15 @@ import PostagePolicy from "../../database/entities/PostagePolicy";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!Id) {
             next(createHttpError(404));
         }
 
-        const policy = await PostagePolicy.FetchOneById(PostagePolicy, Id, [
-            "Listings"
-        ]);
+        const policy = await PostagePolicy.FetchOneById(PostagePolicy, Id, {
+            Listings: true
+        });
 
         if (!policy) {
             next(createHttpError(404));

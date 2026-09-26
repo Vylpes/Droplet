@@ -44,9 +44,9 @@ export default class Create implements Page {
 
         await user.Save(User, user);
 
-        user = await User.FetchOneById(User, user.Id, [
-            "Tokens"
-        ]);
+        user = await User.FetchOneById(User, user.Id, {
+            Tokens: true
+        });
 
         const now = new Date();
 
@@ -77,10 +77,10 @@ export default class Create implements Page {
 
         await EmailHelper.SendEmail(user.Email, "VerifyUser", [{
             key: "username",
-            value: user.Username,
+            value: user.Username
         }, {
             key: "verify_link",
-            value: verifyLink,
+            value: verifyLink
         }]);
 
         const message = new MessageHelper(req);

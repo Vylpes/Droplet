@@ -4,7 +4,7 @@ import { Supply } from "../../database/entities/Supply";
 import BodyValidator from "../../helpers/Validation/BodyValidator";
 
 export default class UpdateQuantity implements Page {
-    public async OnPostAsync(req: Request, res: Response, next: NextFunction) {
+    public async OnPostAsync(req: Request, res: Response, _next: NextFunction) {
         const bodyValidation = new BodyValidator("unused")
                 .NotEmpty()
                 .Number()
@@ -12,7 +12,7 @@ export default class UpdateQuantity implements Page {
                 .NotEmpty()
                 .Number();
 
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!await bodyValidation.Validate(req)) {
             res.redirect(`/supplies/${Id}`);

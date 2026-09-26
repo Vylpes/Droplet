@@ -4,7 +4,7 @@ import { MigrationInterface, QueryRunner } from "typeorm"
 export class CreateBase1661794060029 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        var queryFiles = [
+        const queryFiles = [
             "01-table/Item",
             "01-table/ItemPurchase",
             "01-table/Listing",
@@ -54,17 +54,17 @@ export class CreateBase1661794060029 implements MigrationInterface {
             "03-constraint/Storage",
             "03-constraint/Supply",
             "03-constraint/TrackingNumber",
-            "03-constraint/UserToken",
+            "03-constraint/UserToken"
         ]
 
-        for (let path of queryFiles) {
+        for (const path of queryFiles) {
             const query = readFileSync(`${process.cwd()}/data/0.1/1661794060029-CreateBase/${path}.sql`).toString();
 
             queryRunner.query(query);
         }
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
+    public async down(_queryRunner: QueryRunner): Promise<void> {
     }
 
 }

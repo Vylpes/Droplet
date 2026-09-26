@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { NoteType } from "../../constants/NoteType";
 import Page from "../../contracts/Page";
@@ -7,16 +7,16 @@ import Note from "../../database/entities/Note";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
-        const Id = req.params.Id;
+        const Id = (req.params.Id as string);
 
         if (!Id) {
             next(createHttpError(404));
             return;
         }
 
-        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, [
-            "Items"
-        ]);
+        const purchase = await ItemPurchase.FetchOneById(ItemPurchase, Id, {
+            Items: true
+        });
 
         if (!purchase) {
             next(createHttpError(404));
