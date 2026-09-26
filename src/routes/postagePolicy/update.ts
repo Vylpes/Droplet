@@ -16,7 +16,7 @@ export default class Update implements Page {
 
         const id = req.params.id;
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/postage-policies/${id}`);
             return;
         }

@@ -16,7 +16,7 @@ export default class AssignListing implements Page {
 
         const Id = req.params.Id;
 
-        if (!await bodyValidation.Validate(req.body)) {
+        if (!await bodyValidation.Validate(req)) {
             res.redirect(`/orders/view/${Id}`);
             return;
         }
