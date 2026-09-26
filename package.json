@@ -44,7 +44,7 @@
     "tsyringe": "^4.10.0",
     "typeorm": "^1.1.1",
     "typeorm-store": "^2.0.1",
-    "typescript": "^7.0.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "uuid": "^14.0.2"
   },
   "devDependencies": {
@@ -56,7 +56,8 @@
     "jest": "^30.5.2",
     "jest-mock-extended": "^4.0.1",
     "ts-jest": "^29.4.13",
-    "ts-mockito": "^2.6.1"
+    "ts-mockito": "^2.6.1",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "resolutions": {
     "@types/express": "^5.0.6",
