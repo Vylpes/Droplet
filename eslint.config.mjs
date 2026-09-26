@@ -8,6 +8,7 @@ export default ts.config(
             "**/public/**",
             "**/scripts/**",
             "**/node_modules/**",
+            "frontend/**",
             "eslint.config.mjs",
             "jest.config.js",
             "jest.setup.js",
