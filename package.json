@@ -27,6 +27,7 @@
     "@types/node": "^26.6.2",
     "@types/nodemailer": "^8.0.2",
     "@types/uuid": "^11.0.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "bcryptjs": "^3.0.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
@@ -44,10 +45,10 @@
     "tsyringe": "^4.10.0",
     "typeorm": "^1.1.1",
     "typeorm-store": "^2.0.1",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "uuid": "^14.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
@@ -57,7 +58,8 @@
     "jest-mock-extended": "^4.0.1",
     "ts-jest": "^29.4.13",
     "ts-mockito": "^2.6.1",
-    "typescript": "npm:@typescript/typescript6@^6.0.2"
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.70.1"
   },
   "resolutions": {
     "@types/express": "^5.0.6",
