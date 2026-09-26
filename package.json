@@ -13,8 +13,12 @@
     "start": "node dist/index.js",
     "init": "node dist/init.js",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "jest",
-    "db:up": "typeorm migration:run -d ./dist/database/dataSources/appDataSource.js"
+    "db:up": "typeorm migration:run -d ./dist/database/dataSources/appDataSource.js",
+    "db:down": "typeorm migration:revert -d dist/database/dataSources/appDataSource.js",
+    "db:create": "typeorm migration:create ./src/database/migrations",
+    "release": "np --no-publish"
   },
   "dependencies": {
     "@types/bcryptjs": "^3.0.0",
@@ -56,6 +60,7 @@
     "eslint": "^10.11.0",
     "jest": "^30.5.2",
     "jest-mock-extended": "^4.0.1",
+    "np": "^12.1.1",
     "ts-jest": "^29.4.13",
     "ts-mockito": "^2.6.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
