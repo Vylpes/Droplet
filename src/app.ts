@@ -27,6 +27,8 @@ import OrdersRouter from "./routes/orders";
 import StorageRouter from "./routes/storage";
 import ReturnsRouter from "./routes/returns";
 import PostagePolicyRouter from "./routes/postagePolicy";
+import ApiRouter from "./routes/api";
+import { ApiErrorMiddleware } from "./middleware/apiErrorMiddleware";
 
 export class App {
     private _app: Express;
@@ -44,6 +46,7 @@ export class App {
     private _storageRouter: StorageRouter;
     private _returnsRouter: ReturnsRouter;
     private _postagePolicyRouter: PostagePolicyRouter;
+    private _apiRouter: ApiRouter;
 
     constructor() {
         this._app = express();
@@ -61,6 +64,7 @@ export class App {
         this._storageRouter = new StorageRouter();
         this._returnsRouter = new ReturnsRouter();
         this._postagePolicyRouter = new PostagePolicyRouter();
+        this._apiRouter = new ApiRouter();
     }
 
     public async Start() {
@@ -106,6 +110,7 @@ export class App {
     }
 
     private SetupRoutes() {
+        this._app.use('/api', this._apiRouter.Route());
         this._app.use('/', this._indexRouter.Route());
         this._app.use('/auth', this._authRouter.Route());
         this._app.use('/dashboard', this._dashboardRouter.Route());
@@ -122,8 +127,15 @@ export class App {
     }
 
     private SetupErrors() {
-        // Error Handler
-        this._app.use(async (err: any, req: Request, res: Response, _next: NextFunction) => {
+        // JSON error handler for /api routes
+        this._app.use('/api', ApiErrorMiddleware);
+
+        // Error Handler (Pug)
+        this._app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
+            if (req.path.startsWith('/api')) {
+                return ApiErrorMiddleware(err, req, res, next);
+            }
+
             // Set locals, only providing error in development
             const info = err.message;
             const error = req.app.get('env') === 'development' ? err : {};
