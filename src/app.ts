@@ -83,6 +83,8 @@ export class App {
         this._app.use(express.urlencoded({ extended: false }));
         this._app.use(cookieParser());
         this._app.use(express.static(path.join(process.cwd(), 'public')));
+        // Vite build output; index: false so Pug keeps serving `/` until SPA cutover (#358)
+        this._app.use(express.static(path.join(process.cwd(), 'frontend/dist'), { index: false }));
 
         await AppDataSource.initialize()
             .then(() => console.log("Data Source Initialized"))

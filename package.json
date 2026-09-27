@@ -1,15 +1,21 @@
 {
   "name": "droplet",
   "version": "0.1.0",
+  "private": true,
   "description": "eBay Stock Inventory System",
   "main": "dist/index.js",
   "repository": "https://github.com/vylpes/droplet.git",
   "author": "Ethan Lane <ethan@vylpes.com>",
   "license": "MIT",
   "funding": "https://ko-fi.com/vylpes",
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
-    "clean": "rm -rf node_modules/ dist/",
-    "build": "tsc",
+    "clean": "rm -rf node_modules/ dist/ frontend/dist frontend/node_modules",
+    "build": "tsc && yarn build:frontend",
+    "build:frontend": "yarn workspace frontend build",
+    "dev:frontend": "yarn workspace frontend dev",
     "start": "node dist/index.js",
     "init": "node dist/init.js",
     "lint": "eslint",
