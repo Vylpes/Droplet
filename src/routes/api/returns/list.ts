@@ -4,7 +4,6 @@ import { OrderStatus } from "../../../constants/Status/OrderStatus";
 import { ReturnStatus } from "../../../constants/Status/ReturnStatus";
 import Page from "../../../contracts/Page";
 import { GenerateResponse } from "../../../contracts/IBasicResponse";
-import { Item } from "../../../database/entities/Item";
 import { Order } from "../../../database/entities/Order";
 import { Return } from "../../../database/entities/Return";
 import { mapOrder, mapReturn } from "../../../dto";
@@ -17,7 +16,7 @@ export default class List implements Page {
             Order: true
         });
 
-        const orders = await Item.FetchAll(Order);
+        const orders = await Order.FetchAll(Order);
 
         let visible: Return[];
 
