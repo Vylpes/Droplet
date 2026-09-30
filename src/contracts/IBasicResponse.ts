@@ -1,11 +1,25 @@
-export interface IBasicResponse {
-    IsSuccess: boolean,
-    Message?: string,
-};
+export interface IBasicResponse<T = unknown> {
+    IsSuccess: boolean;
+    Message?: string;
+    Data?: T;
+}
 
-export function GenerateResponse(isSuccess: boolean = true, message?: string): IBasicResponse {
-    return {
-        IsSuccess: isSuccess,
-        Message: message
+export function GenerateResponse<T = unknown>(
+    isSuccess: boolean = true,
+    message?: string,
+    data?: T
+): IBasicResponse<T> {
+    const response: IBasicResponse<T> = {
+        IsSuccess: isSuccess
+    };
+
+    if (message !== undefined) {
+        response.Message = message;
     }
+
+    if (data !== undefined) {
+        response.Data = data;
+    }
+
+    return response;
 }
