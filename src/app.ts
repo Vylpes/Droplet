@@ -97,11 +97,23 @@ export class App {
         // Session
         const sessionRepository = AppDataSource.getRepository(Session);
 
+        // SPA (#346): same-origin Express (prod) / Vite `/api` proxy (dev).
+        // SameSite=Lax + httpOnly cookies; CSRF middleware not required for same-site POSTs.
+        // Avoid SameSite=None / cross-origin CORS credentials — keep the Vite proxy instead.
+        if (process.env.NODE_ENV === "production") {
+            this._app.set("trust proxy", 1);
+        }
+
         this._app.use(session({
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
-            store: new TypeormStore({ repository: sessionRepository })
+            store: new TypeormStore({ repository: sessionRepository }),
+            cookie: {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production"
+            }
         }) as unknown as express.RequestHandler);
 
         this._app.use(connectFlash() as unknown as express.RequestHandler);
