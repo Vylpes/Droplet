@@ -4,6 +4,17 @@
  * through the Vite `/api` proxy (dev) and same-origin Express (prod).
  */
 
+export interface User {
+    Id: string;
+    WhenCreated: string;
+    WhenUpdated: string;
+    Email: string;
+    Username: string;
+    Verified: boolean;
+    Admin: boolean;
+    Active: boolean;
+}
+
 export interface ApiResponse<T = unknown> {
     IsSuccess: boolean;
     Message?: string;
@@ -48,9 +59,9 @@ export async function apiFetch<T = unknown>(
 }
 
 export const authApi = {
-    me: () => apiFetch("/api/auth/me"),
+    me: () => apiFetch<User>("/api/auth/me"),
     login: (email: string, password: string) =>
-        apiFetch("/api/auth/login", {
+        apiFetch<User>("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({ email, password })
         }),

@@ -1,10 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import { AlertProvider } from './alerts/AlertContext'
+import { AuthProvider } from './auth/AuthContext'
 import App from './App.tsx'
+import './index.css'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+    <StrictMode>
+        <AlertProvider>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </AlertProvider>
+    </StrictMode>
 )
