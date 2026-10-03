@@ -1,4 +1,5 @@
 import ApiRoute from "../../contracts/ApiRoute";
+import AuthRouter from "./auth";
 import DashboardRouter from "./dashboard";
 import SettingsRouter from "./settings";
 import ItemsRouter from "./items";
@@ -15,6 +16,7 @@ export default class ApiRouter extends ApiRoute {
     constructor() {
         super(false);
 
+        this.AddSubRoute("/auth", new AuthRouter());
         this.AddSubRoute("/dashboard", new DashboardRouter());
         this.AddSubRoute("/settings", new SettingsRouter());
         this.AddSubRoute("/items", new ItemsRouter());
