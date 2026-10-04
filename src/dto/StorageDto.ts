@@ -1,18 +1,9 @@
-import { StorageType } from "../constants/StorageType";
+import type { StorageDto } from "@droplet/shared";
 import { Storage } from "../database/entities/Storage";
-import { BaseDto, mapBase } from "./BaseDto";
-import { ItemDto, mapItem } from "./ItemDto";
+import { mapBase } from "./BaseDto";
+import { mapItem } from "./ItemDto";
 
-export interface StorageDto extends BaseDto {
-    Name: string;
-    SkuPrefix: string;
-    StorageType: StorageType;
-    StorageTypeName: string;
-    ItemCounter: number;
-    ParentId?: string;
-    Children?: StorageDto[];
-    Items?: ItemDto[];
-}
+export type { StorageDto } from "@droplet/shared";
 
 export function mapStorage(storage: Storage, includeChildren: boolean = false, includeItems: boolean = false): StorageDto {
     const dto: StorageDto = {

@@ -1,14 +1,8 @@
-import { PostalService } from "../constants/PostalService";
-import { TrackingNumberType } from "../constants/TrackingNumberType";
+import type { TrackingNumberDto } from "@droplet/shared";
 import { TrackingNumber } from "../database/entities/TrackingNumber";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface TrackingNumberDto extends BaseDto {
-    Number: string;
-    Service: PostalService;
-    ServiceName: string;
-    Type: TrackingNumberType;
-}
+export type { TrackingNumberDto } from "@droplet/shared";
 
 export function mapTrackingNumber(tracking: TrackingNumber): TrackingNumberDto {
     return {

@@ -1,10 +1,8 @@
+import type { SettingsDto } from "@droplet/shared";
 import { Settings } from "../database/entities/Settings";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface SettingsDto extends BaseDto {
-    Key: string;
-    Value: string;
-}
+export type { SettingsDto } from "@droplet/shared";
 
 export function mapSettings(settings: Settings): SettingsDto {
     return {

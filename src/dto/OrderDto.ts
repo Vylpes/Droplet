@@ -1,24 +1,12 @@
-import { OrderStatus } from "../constants/Status/OrderStatus";
+import type { OrderDto } from "@droplet/shared";
 import { Order } from "../database/entities/Order";
-import { BaseDto, mapBase } from "./BaseDto";
-import { ListingDto, mapListing } from "./ListingDto";
-import { PostagePolicyDto, mapPostagePolicy } from "./PostagePolicyDto";
-import { SupplyDto, mapSupply } from "./SupplyDto";
-import { TrackingNumberDto, mapTrackingNumber } from "./TrackingNumberDto";
+import { mapBase } from "./BaseDto";
+import { mapListing } from "./ListingDto";
+import { mapPostagePolicy } from "./PostagePolicyDto";
+import { mapSupply } from "./SupplyDto";
+import { mapTrackingNumber } from "./TrackingNumberDto";
 
-export interface OrderDto extends BaseDto {
-    OrderNumber: string;
-    Price: number;
-    OfferAccepted: boolean;
-    Status: OrderStatus;
-    StatusName: string;
-    DispatchBy: Date;
-    Buyer: string;
-    Listings?: ListingDto[];
-    Supplies?: SupplyDto[];
-    TrackingNumbers?: TrackingNumberDto[];
-    PostagePolicy?: PostagePolicyDto | null;
-}
+export type { OrderDto } from "@droplet/shared";
 
 export function mapOrder(order: Order, includeRelations: boolean = false): OrderDto {
     const dto: OrderDto = {

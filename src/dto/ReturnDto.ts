@@ -1,19 +1,10 @@
-import { ReturnStatus } from "../constants/Status/ReturnStatus";
+import type { ReturnDto } from "@droplet/shared";
 import { Return } from "../database/entities/Return";
-import { BaseDto, mapBase } from "./BaseDto";
-import { OrderDto, mapOrder } from "./OrderDto";
-import { TrackingNumberDto, mapTrackingNumber } from "./TrackingNumberDto";
+import { mapBase } from "./BaseDto";
+import { mapOrder } from "./OrderDto";
+import { mapTrackingNumber } from "./TrackingNumberDto";
 
-export interface ReturnDto extends BaseDto {
-    ReturnNumber: string;
-    RMA: string;
-    ReturnBy: Date;
-    Status: ReturnStatus;
-    StatusName: string;
-    RefundAmount: number;
-    Order?: OrderDto | null;
-    TrackingNumbers?: TrackingNumberDto[];
-}
+export type { ReturnDto } from "@droplet/shared";
 
 export function mapReturn(ret: Return, includeRelations: boolean = false): ReturnDto {
     const dto: ReturnDto = {

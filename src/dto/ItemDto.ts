@@ -1,20 +1,8 @@
-import { ItemStatus } from "../constants/Status/ItemStatus";
+import type { ItemDto } from "@droplet/shared";
 import { Item } from "../database/entities/Item";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface ItemDto extends BaseDto {
-    Name: string;
-    Sku: string;
-    UnlistedQuantity: number;
-    ListedQuantity: number;
-    SoldQuantity: number;
-    RejectedQuantity: number;
-    Status: ItemStatus;
-    StatusName: string;
-    BuyPrice: number;
-    PurchaseId?: string;
-    StorageId?: string;
-}
+export type { ItemDto } from "@droplet/shared";
 
 export function mapItem(item: Item): ItemDto {
     return {
