@@ -1,13 +1,8 @@
+import type { UserDto } from "@droplet/shared";
 import { User } from "../database/entities/User";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface UserDto extends BaseDto {
-    Email: string;
-    Username: string;
-    Verified: boolean;
-    Admin: boolean;
-    Active: boolean;
-}
+export type { UserDto } from "@droplet/shared";
 
 export function mapUser(user: User): UserDto {
     return {

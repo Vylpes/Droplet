@@ -1,12 +1,8 @@
-import { NoteType } from "../constants/NoteType";
+import type { NoteDto } from "@droplet/shared";
 import Note from "../database/entities/Note";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface NoteDto extends BaseDto {
-    Text: string;
-    Type: NoteType;
-    ForId: string;
-}
+export type { NoteDto } from "@droplet/shared";
 
 export function mapNote(note: Note): NoteDto {
     return {

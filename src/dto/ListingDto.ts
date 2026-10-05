@@ -1,22 +1,10 @@
-import { ListingStatus } from "../constants/Status/ListingStatus";
+import type { ListingDto } from "@droplet/shared";
 import { Listing } from "../database/entities/Listing";
-import { BaseDto, mapBase } from "./BaseDto";
-import { ItemDto, mapItem } from "./ItemDto";
-import { PostagePolicyDto, mapPostagePolicy } from "./PostagePolicyDto";
+import { mapBase } from "./BaseDto";
+import { mapItem } from "./ItemDto";
+import { mapPostagePolicy } from "./PostagePolicyDto";
 
-export interface ListingDto extends BaseDto {
-    Name: string;
-    ListingNumber: string;
-    Price: number;
-    Status: ListingStatus;
-    StatusName: string;
-    EndDate: Date;
-    RelistedTimes: number;
-    Quantity: number;
-    OriginalQuantity: number;
-    Items?: ItemDto[];
-    PostagePolicy?: PostagePolicyDto | null;
-}
+export type { ListingDto } from "@droplet/shared";
 
 export function mapListing(listing: Listing, includeItems: boolean = false): ListingDto {
     const dto: ListingDto = {

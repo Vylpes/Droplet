@@ -1,15 +1,9 @@
-import { ItemPurchaseStatus } from "../constants/Status/ItemPurchaseStatus";
+import type { ItemPurchaseDto } from "@droplet/shared";
 import { ItemPurchase } from "../database/entities/ItemPurchase";
-import { BaseDto, mapBase } from "./BaseDto";
-import { ItemDto, mapItem } from "./ItemDto";
+import { mapBase } from "./BaseDto";
+import { mapItem } from "./ItemDto";
 
-export interface ItemPurchaseDto extends BaseDto {
-    Description: string;
-    Status: ItemPurchaseStatus;
-    StatusName: string;
-    Price: number;
-    Items?: ItemDto[];
-}
+export type { ItemPurchaseDto } from "@droplet/shared";
 
 export function mapItemPurchase(purchase: ItemPurchase, includeItems: boolean = false): ItemPurchaseDto {
     const dto: ItemPurchaseDto = {

@@ -9,13 +9,15 @@
   "license": "MIT",
   "funding": "https://ko-fi.com/vylpes",
   "workspaces": [
-    "frontend"
+    "frontend",
+    "shared"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules/ dist/ frontend/dist frontend/node_modules",
-    "build": "tsc && yarn build:frontend",
-    "build:frontend": "yarn workspace frontend build",
-    "dev:frontend": "yarn workspace frontend dev",
+    "clean": "rm -rf node_modules/ dist/ frontend/dist frontend/node_modules shared/dist shared/node_modules",
+    "build": "yarn build:shared && tsc && yarn build:frontend",
+    "build:shared": "yarn workspace @droplet/shared build",
+    "build:frontend": "yarn workspace @droplet/frontend build",
+    "dev:frontend": "yarn workspace @droplet/frontend dev",
     "start": "node dist/index.js",
     "init": "node dist/init.js",
     "lint": "eslint",
@@ -27,6 +29,7 @@
     "release": "np --no-publish"
   },
   "dependencies": {
+    "@droplet/shared": "*",
     "@types/bcryptjs": "^3.0.0",
     "@types/connect-flash": "^0.0.40",
     "@types/cookie-parser": "^1.4.10",

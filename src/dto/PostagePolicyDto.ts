@@ -1,12 +1,8 @@
+import type { PostagePolicyDto } from "@droplet/shared";
 import PostagePolicy from "../database/entities/PostagePolicy";
-import { BaseDto, mapBase } from "./BaseDto";
+import { mapBase } from "./BaseDto";
 
-export interface PostagePolicyDto extends BaseDto {
-    Name: string;
-    CostToBuyer: number;
-    ActualCost: number;
-    Archived: boolean;
-}
+export type { PostagePolicyDto } from "@droplet/shared";
 
 export function mapPostagePolicy(policy: PostagePolicy): PostagePolicyDto {
     return {

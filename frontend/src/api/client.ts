@@ -4,22 +4,10 @@
  * through the Vite `/api` proxy (dev) and same-origin Express (prod).
  */
 
-export interface User {
-    Id: string;
-    WhenCreated: string;
-    WhenUpdated: string;
-    Email: string;
-    Username: string;
-    Verified: boolean;
-    Admin: boolean;
-    Active: boolean;
-}
+import type { IBasicResponse, UserDto } from "@droplet/shared";
 
-export interface ApiResponse<T = unknown> {
-    IsSuccess: boolean;
-    Message?: string;
-    Data?: T;
-}
+export type { UserDto as User } from "@droplet/shared";
+export type ApiResponse<T = unknown> = IBasicResponse<T>;
 
 export class ApiError extends Error {
     status: number;
@@ -59,9 +47,9 @@ export async function apiFetch<T = unknown>(
 }
 
 export const authApi = {
-    me: () => apiFetch<User>("/api/auth/me"),
+    me: () => apiFetch<UserDto>("/api/auth/me"),
     login: (email: string, password: string) =>
-        apiFetch<User>("/api/auth/login", {
+        apiFetch<UserDto>("/api/auth/login", {
             method: "POST",
             body: JSON.stringify({ email, password })
         }),

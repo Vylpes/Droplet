@@ -1,8 +1,6 @@
-export interface IBasicResponse<T = unknown> {
-    IsSuccess: boolean;
-    Message?: string;
-    Data?: T;
-}
+import type { IBasicResponse } from "@droplet/shared";
+
+export type { IBasicResponse } from "@droplet/shared";
 
 export function GenerateResponse<T = unknown>(
     isSuccess: boolean = true,
