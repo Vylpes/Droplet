@@ -1,4 +1,9 @@
 import { useState } from 'react'
+import Container from 'react-bootstrap/Container'
+import Nav from 'react-bootstrap/Nav'
+import NavbarBS from 'react-bootstrap/Navbar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCalculator, faCog } from '@fortawesome/free-solid-svg-icons'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { useAlerts } from '../alerts/useAlerts'
 import { useAuth } from '../auth/useAuth'
@@ -7,9 +12,9 @@ export function Navbar() {
     const { isAuthenticated, user, logout } = useAuth()
     const { showError } = useAlerts()
     const navigate = useNavigate()
-    const [open, setOpen] = useState(false)
+    const [expanded, setExpanded] = useState(false)
 
-    const closeMenu = () => setOpen(false)
+    const closeMenu = () => setExpanded(false)
 
     const handleLogout = async () => {
         closeMenu()
@@ -22,126 +27,126 @@ export function Navbar() {
     }
 
     return (
-        <nav className="navbar">
-            <div className="navbar-inner">
-                <Link
+        <NavbarBS
+            expand="lg"
+            bg="light"
+            expanded={expanded}
+            onToggle={setExpanded}
+        >
+            <Container fluid>
+                <NavbarBS.Brand
+                    as={Link}
                     to={isAuthenticated ? '/dashboard' : '/'}
-                    className="navbar-brand"
                     onClick={closeMenu}
                 >
                     Droplet
-                </Link>
-
-                <button
-                    type="button"
-                    className="navbar-toggler"
-                    aria-label="Toggle navigation"
-                    aria-expanded={open}
-                    onClick={() => setOpen((value) => !value)}
-                >
-                    <span className="navbar-toggler-icon" />
-                </button>
-
-                <div className={`navbar-collapse${open ? ' is-open' : ''}`}>
+                </NavbarBS.Brand>
+                <NavbarBS.Toggle aria-controls="main-navbar" />
+                <NavbarBS.Collapse id="main-navbar">
                     {isAuthenticated ? (
                         <>
-                            <ul className="navbar-nav">
-                                <li>
-                                    <NavLink to="/dashboard" onClick={closeMenu}>
-                                        Dashboard
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/item-purchases/ordered" onClick={closeMenu}>
-                                        Items
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/supply-purchases/ordered" onClick={closeMenu}>
-                                        Supplies
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/storage/list/building/all" onClick={closeMenu}>
-                                        Storage
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/listings/active" onClick={closeMenu}>
-                                        Listings
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/orders/awaiting-payment" onClick={closeMenu}>
-                                        Orders
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/returns/opened" onClick={closeMenu}>
-                                        Returns
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/postage-policies" end onClick={closeMenu}>
-                                        Postage Policies
-                                    </NavLink>
-                                </li>
-                            </ul>
+                            <Nav className="me-auto mb-2 mb-lg-0">
+                                <Nav.Link as={NavLink} to="/dashboard" onClick={closeMenu}>
+                                    Dashboard
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/item-purchases/ordered"
+                                    onClick={closeMenu}
+                                >
+                                    Items
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/supply-purchases/ordered"
+                                    onClick={closeMenu}
+                                >
+                                    Supplies
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/storage/list/building/all"
+                                    onClick={closeMenu}
+                                >
+                                    Storage
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/listings/active"
+                                    onClick={closeMenu}
+                                >
+                                    Listings
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/orders/awaiting-payment"
+                                    onClick={closeMenu}
+                                >
+                                    Orders
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/returns/opened"
+                                    onClick={closeMenu}
+                                >
+                                    Returns
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/postage-policies"
+                                    end
+                                    onClick={closeMenu}
+                                >
+                                    Postage Policies
+                                </Nav.Link>
+                            </Nav>
 
-                            <ul className="navbar-nav navbar-nav-end">
-                                <li>
-                                    <button
-                                        type="button"
-                                        className="nav-button"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </button>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/calculator"
-                                        onClick={closeMenu}
-                                        title="Calculator"
-                                    >
-                                        Calculator
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/settings/account"
-                                        onClick={closeMenu}
-                                        title="Settings"
-                                    >
-                                        Settings
-                                    </NavLink>
-                                </li>
-                                <li className="navbar-text">
+                            <Nav className="ms-auto mb-2 mb-lg-0">
+                                <Nav.Link as="button" type="button" onClick={handleLogout}>
+                                    Logout
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/dashboard/calculator"
+                                    onClick={closeMenu}
+                                    title="Calculator"
+                                >
+                                    <FontAwesomeIcon icon={faCalculator} />
+                                </Nav.Link>
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/settings/account"
+                                    onClick={closeMenu}
+                                    title="Settings"
+                                >
+                                    <FontAwesomeIcon icon={faCog} />
+                                </Nav.Link>
+                                <NavbarBS.Text className="ms-1">
                                     Logged in as {user?.Username}
-                                </li>
-                            </ul>
+                                </NavbarBS.Text>
+                            </Nav>
                         </>
                     ) : (
                         <>
-                            <ul className="navbar-nav">
-                                <li>
-                                    <NavLink to="/" end onClick={closeMenu}>
-                                        Home
-                                    </NavLink>
-                                </li>
-                            </ul>
+                            <Nav className="me-auto mb-2 mb-lg-0">
+                                <Nav.Link as={NavLink} to="/" end onClick={closeMenu}>
+                                    Home
+                                </Nav.Link>
+                            </Nav>
 
-                            <ul className="navbar-nav navbar-nav-end">
-                                <li>
-                                    <NavLink to="/auth/login" onClick={closeMenu}>
-                                        Login
-                                    </NavLink>
-                                </li>
-                            </ul>
+                            <Nav className="ms-auto mb-2 mb-lg-0">
+                                <Nav.Link
+                                    as={NavLink}
+                                    to="/auth/login"
+                                    onClick={closeMenu}
+                                >
+                                    Login
+                                </Nav.Link>
+                            </Nav>
                         </>
                     )}
-                </div>
-            </div>
-        </nav>
+                </NavbarBS.Collapse>
+            </Container>
+        </NavbarBS>
     )
 }

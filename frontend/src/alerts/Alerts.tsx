@@ -1,3 +1,4 @@
+import Alert from 'react-bootstrap/Alert'
 import { useAlerts } from './useAlerts'
 
 export function Alerts() {
@@ -8,23 +9,17 @@ export function Alerts() {
     }
 
     return (
-        <div className="alerts" role="region" aria-label="Notifications">
+        <div className="mb-3" role="region" aria-label="Notifications">
             {alerts.map((alert) => (
-                <div
+                <Alert
                     key={alert.id}
-                    className={`alert alert-${alert.type}`}
+                    variant={alert.type === 'error' ? 'danger' : 'info'}
+                    dismissible
+                    onClose={() => dismiss(alert.id)}
                     role={alert.type === 'error' ? 'alert' : 'status'}
                 >
-                    <span>{alert.message}</span>
-                    <button
-                        type="button"
-                        className="alert-dismiss"
-                        aria-label="Dismiss"
-                        onClick={() => dismiss(alert.id)}
-                    >
-                        ×
-                    </button>
-                </div>
+                    {alert.message}
+                </Alert>
             ))}
         </div>
     )

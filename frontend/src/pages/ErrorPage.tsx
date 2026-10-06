@@ -1,3 +1,4 @@
+import Container from 'react-bootstrap/Container'
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router'
 import { Alerts } from '../alerts/Alerts'
 import { Navbar } from '../layout/Navbar'
@@ -19,11 +20,11 @@ export function ErrorPage() {
     }
 
     return (
-        <div className="app-shell">
+        <>
             <Navbar />
-            <main className="app-container">
+            <Container className="mt-3 mb-4">
                 <Alerts />
-                <section className="error-page">
+                <section>
                     <h1>Error {status}</h1>
                     {isDev ? (
                         <>
@@ -37,7 +38,7 @@ export function ErrorPage() {
                         <Link to="/">Return home</Link>
                     </p>
                 </section>
-            </main>
-        </div>
+            </Container>
+        </>
     )
 }
