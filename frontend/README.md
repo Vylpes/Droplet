@@ -1,14 +1,24 @@
 # Droplet frontend
 
-React + Vite SPA for Droplet (see #336 / #344 / #347).
+React + Vite SPA for Droplet (see #336 / #344 / #347 / #349).
 
 ## What's here
 
 - Vite + React scaffold
 - JSON API client with cookie sessions (`credentials: 'include'`)
 - App shell: React Router, auth-aware layout/navbar, alerts, route guards (#347)
+- Styling: Bootstrap 5 + React Bootstrap + Font Awesome via npm (#349)
 
-Domain page UIs land in later stories (#352–#356). Bootstrap/FontAwesome via npm is #349. Express SPA fallback is #358.
+Domain page UIs land in later stories (#352–#356). Express SPA fallback is #358.
+
+## Styling
+
+- `bootstrap` CSS imported in `src/main.tsx`
+- UI primitives from `react-bootstrap` (Navbar, Alert, Card, Button, Container, …)
+- Icons from `@fortawesome/react-fontawesome` + `@fortawesome/free-solid-svg-icons`
+- App overrides / ported `public/css/style.css` rules live in `src/index.css` and `src/App.css`
+
+Vendored copies under `public/lib/` remain for Pug SSR until #358.
 
 ## Scripts
 
