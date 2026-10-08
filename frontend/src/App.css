@@ -13,3 +13,27 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* TanStack DataTable chrome (#350) — replaces DataTables controls */
+.data-table__sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.data-table__sort-icon {
+  opacity: 0.45;
+  font-size: 0.75em;
+}
+
+th[aria-sort='ascending'] .data-table__sort-icon,
+th[aria-sort='descending'] .data-table__sort-icon {
+  opacity: 0.9;
+}
