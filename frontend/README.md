@@ -1,6 +1,6 @@
 # Droplet frontend
 
-React + Vite SPA for Droplet (see #336 / #344 / #347 / #349).
+React + Vite SPA for Droplet (see #336 / #344 / #347 / #349 / #350).
 
 ## What's here
 
@@ -8,6 +8,7 @@ React + Vite SPA for Droplet (see #336 / #344 / #347 / #349).
 - JSON API client with cookie sessions (`credentials: 'include'`)
 - App shell: React Router, auth-aware layout/navbar, alerts, route guards (#347)
 - Styling: Bootstrap 5 + React Bootstrap + Font Awesome via npm (#349)
+- Tables: TanStack Table (`@tanstack/react-table`) via shared `DataTable` (#350)
 
 Domain page UIs land in later stories (#352–#356). Express SPA fallback is #358.
 
@@ -19,6 +20,41 @@ Domain page UIs land in later stories (#352–#356). Express SPA fallback is #35
 - App overrides / ported `public/css/style.css` rules live in `src/index.css` and `src/App.css`
 
 Vendored copies under `public/lib/` remain for Pug SSR until #358.
+
+## Tables (#350)
+
+List/view tables use TanStack Table instead of jQuery DataTables:
+
+- Shared hook + features: `src/components/table/tableHook.ts` (sort, global search, pagination)
+- UI wrapper: `src/components/table/DataTable.tsx` (Bootstrap table + length menu + search + pager)
+- Column helper: `createAppColumnHelper()` from `src/components/table`
+- Common “View” action cell: `ViewLink`
+
+Example:
+
+```tsx
+import { DataTable, ViewLink, createAppColumnHelper } from '../components/table'
+
+type Order = { Id: string; OrderNumber: string; Buyer: string }
+
+const helper = createAppColumnHelper<Order>()
+const columns = helper.columns([
+    helper.accessor('OrderNumber', { header: 'Order Number' }),
+    helper.accessor('Buyer', { header: 'Buyer' }),
+    helper.display({
+        id: 'actions',
+        enableSorting: false,
+        enableGlobalFilter: false,
+        cell: ({ row }) => <ViewLink to={`/orders/view/${row.original.Id}`} />,
+    }),
+])
+
+export function OrdersTable({ orders }: { orders: Order[] }) {
+    return <DataTable data={orders} columns={columns} />
+}
+```
+
+This replaces the former `public/js/**` `$('#…').DataTable()` enhancers. React does not load jQuery or DataTables; those stay vendored for Pug until #358.
 
 ## Scripts
 
