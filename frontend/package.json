@@ -14,13 +14,16 @@
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
+    "@hookform/resolvers": "^5.9.1",
     "@popperjs/core": "^2.11.8",
     "@tanstack/react-table": "^9.2.6",
     "bootstrap": "^5.3.8",
     "react": "^19.2.8",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.8",
-    "react-router": "^8.4.0"
+    "react-hook-form": "^7.89.0",
+    "react-router": "^8.4.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.11",

@@ -19,6 +19,11 @@ export class ApiError extends Error {
         this.status = status;
         this.body = body;
     }
+
+    /** Field-keyed validation errors from ApiBodyValidator (#351). */
+    get fieldErrors(): Record<string, string> | undefined {
+        return this.body.Errors;
+    }
 }
 
 export async function apiFetch<T = unknown>(

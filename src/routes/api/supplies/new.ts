@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import { Supply } from "../../../database/entities/Supply";
 import { SupplyPurchase } from "../../../database/entities/SupplyPurchase";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
@@ -13,7 +13,7 @@ export default class New implements Page {
 
         const purchaseIdError = bodyValidationWithId.Validate(req);
         if (purchaseIdError) {
-            res.status(400).json(GenerateResponse(false, purchaseIdError));
+            res.status(400).json(GenerateValidationResponse(purchaseIdError));
             return;
         }
 
@@ -32,7 +32,7 @@ export default class New implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 

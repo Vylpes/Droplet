@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StorageType } from "../../../constants/StorageType";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import { Storage } from "../../../database/entities/Storage";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
 import { mapStorage } from "../../../dto";
@@ -20,7 +20,7 @@ export default class New implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 

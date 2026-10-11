@@ -1,7 +1,7 @@
 import { hash } from "bcryptjs";
 import { Request, Response } from "express";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import { User } from "../../../database/entities/User";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
 import { mapUser } from "../../../dto";
@@ -36,7 +36,7 @@ export default class AdminRegister implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 
