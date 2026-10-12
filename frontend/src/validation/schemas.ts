@@ -2,13 +2,13 @@ import { z } from 'zod'
 import {
     emailAddress,
     equalToField,
-    equalToFieldMessage,
+    minLength,
     requiredString,
 } from './rules'
 
 /**
- * Example schemas mirroring ApiBodyValidator chains (#351).
- * Prefer co-locating schemas with pages; these cover common auth shapes for #352.
+ * Auth / account form schemas (#352).
+ * Prefer co-locating page-specific extras with pages when needed.
  */
 
 export const loginSchema = z.object({
@@ -18,17 +18,57 @@ export const loginSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>
 
+export const emailOnlySchema = z.object({
+    email: emailAddress('email'),
+})
+
+export type EmailOnlyFormValues = z.infer<typeof emailOnlySchema>
+
+/** Verify / password-reset: API requires min 8 chars. */
 export const passwordPairSchema = z
     .object({
+        password: minLength('password', 8),
+        passwordRepeat: requiredString('passwordRepeat'),
+    })
+    .refine(equalToField('passwordRepeat', 'password'), {
+        path: ['passwordRepeat'],
+        error: 'Passwords must match',
+    })
+
+export type PasswordPairFormValues = z.infer<typeof passwordPairSchema>
+
+export const adminRegisterSchema = z
+    .object({
+        username: requiredString('username'),
+        email: emailAddress('email'),
         password: requiredString('password'),
         passwordRepeat: requiredString('passwordRepeat'),
     })
     .refine(equalToField('passwordRepeat', 'password'), {
         path: ['passwordRepeat'],
-        error: equalToFieldMessage('passwordRepeat', 'password'),
+        error: 'Passwords do not match',
     })
 
-export type PasswordPairFormValues = z.infer<typeof passwordPairSchema>
+export type AdminRegisterFormValues = z.infer<typeof adminRegisterSchema>
+
+export const accountSettingsSchema = z
+    .object({
+        email: emailAddress('email'),
+        username: requiredString('username'),
+        newPassword: z.string().optional().default(''),
+        passwordConfirm: z.string().optional().default(''),
+        currentPassword: requiredString('currentPassword'),
+    })
+    .refine(
+        (data) =>
+            !data.newPassword || data.newPassword === data.passwordConfirm,
+        {
+            path: ['passwordConfirm'],
+            error: 'Passwords must match',
+        }
+    )
+
+export type AccountSettingsFormValues = z.infer<typeof accountSettingsSchema>
 
 export const addNoteSchema = z.object({
     text: requiredString('text'),

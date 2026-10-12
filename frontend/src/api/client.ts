@@ -62,24 +62,66 @@ export const authApi = {
         apiFetch("/api/auth/logout", {
             method: "POST"
         }),
+    checkAdminRegister: () => apiFetch("/api/auth/admin-register"),
+    adminRegister: (
+        username: string,
+        email: string,
+        password: string,
+        passwordRepeat: string
+    ) =>
+        apiFetch<UserDto>("/api/auth/admin-register", {
+            method: "POST",
+            body: JSON.stringify({ username, email, password, passwordRepeat })
+        }),
+    validateVerifyToken: (token: string) =>
+        apiFetch<UserDto>(
+            `/api/auth/verify?token=${encodeURIComponent(token)}`
+        ),
+    verify: (token: string, password: string, passwordRepeat: string) =>
+        apiFetch<UserDto>(
+            `/api/auth/verify?token=${encodeURIComponent(token)}`,
+            {
+                method: "POST",
+                body: JSON.stringify({ password, passwordRepeat })
+            }
+        ),
     requestPasswordReset: (email: string) =>
         apiFetch("/api/auth/password-reset/request", {
             method: "POST",
             body: JSON.stringify({ email })
         }),
+    validateResetToken: (token: string) =>
+        apiFetch<UserDto>(
+            `/api/auth/password-reset/reset?token=${encodeURIComponent(token)}`
+        ),
     resetPassword: (token: string, password: string, passwordRepeat: string) =>
-        apiFetch(`/api/auth/password-reset/reset?token=${encodeURIComponent(token)}`, {
-            method: "POST",
-            body: JSON.stringify({ password, passwordRepeat })
-        }),
-    verify: (token: string, password: string, passwordRepeat: string) =>
-        apiFetch(`/api/auth/verify?token=${encodeURIComponent(token)}`, {
-            method: "POST",
-            body: JSON.stringify({ password, passwordRepeat })
-        }),
+        apiFetch<UserDto>(
+            `/api/auth/password-reset/reset?token=${encodeURIComponent(token)}`,
+            {
+                method: "POST",
+                body: JSON.stringify({ password, passwordRepeat })
+            }
+        ),
     requestVerificationToken: (email: string) =>
         apiFetch("/api/auth/verification-token/request", {
             method: "POST",
             body: JSON.stringify({ email })
+        })
+};
+
+export interface AccountUpdatePayload {
+    email: string;
+    username: string;
+    currentPassword: string;
+    newPassword?: string;
+    passwordConfirm?: string;
+}
+
+export const settingsApi = {
+    getAccount: () => apiFetch<UserDto>("/api/settings/account"),
+    updateAccount: (payload: AccountUpdatePayload) =>
+        apiFetch<UserDto>("/api/settings/account", {
+            method: "POST",
+            body: JSON.stringify(payload)
         })
 };
