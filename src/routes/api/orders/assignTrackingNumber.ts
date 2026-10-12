@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { TrackingNumberType } from "../../../constants/TrackingNumberType";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
 import { TrackingNumber } from "../../../database/entities/TrackingNumber";
 import { Order } from "../../../database/entities/Order";
@@ -19,7 +19,7 @@ export default class AssignTrackingNumber implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import { Listing } from "../../../database/entities/Listing";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
 import { mapListing } from "../../../dto";
@@ -14,7 +14,7 @@ export default class Renew implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ItemStatus } from "../../../constants/Status/ItemStatus";
 import Page from "../../../contracts/Page";
-import { GenerateResponse } from "../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
 import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
 import { Listing } from "../../../database/entities/Listing";
 import { Order } from "../../../database/entities/Order";
@@ -20,7 +20,7 @@ export default class AssignListing implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 

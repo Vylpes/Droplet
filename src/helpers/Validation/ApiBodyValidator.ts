@@ -2,8 +2,14 @@ import { Request } from "express";
 import { ValidationRule } from "../../constants/ValidationRule";
 import IValidationRule from "../../contracts/IValidationRule";
 
+/** First failing rule from ApiBodyValidator — includes field for FE mapping (#351). */
+export interface ApiValidationFailure {
+    field: string;
+    message: string;
+}
+
 /**
- * JSON-capable body validator. Returns an error message string on failure,
+ * JSON-capable body validator. Returns a field + message on failure,
  * or null on success — does not write flash messages.
  */
 export default class ApiBodyValidator {
@@ -15,7 +21,7 @@ export default class ApiBodyValidator {
         this.field = field;
     }
 
-    public Validate(req: Request): string | null {
+    public Validate(req: Request): ApiValidationFailure | null {
         for (let i = 0; i < this.rules.length; i++) {
             const rule = this.rules[i];
 
@@ -29,69 +35,76 @@ export default class ApiBodyValidator {
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
                     if (!req.body[rule.field] || req.body[rule.field].length == 0) {
-                        return rule.errorMessage || `${rule.field} is required`;
+                        return this.fail(rule, `${rule.field} is required`);
                     }
                     break;
                 case ValidationRule.EqualTo:
                     if (req.body[rule.field] != rule.to) {
-                        return rule.errorMessage || `${rule.field} must be equal to ${rule.to}`;
+                        return this.fail(rule, `${rule.field} must be equal to ${rule.to}`);
                     }
                     break;
                 case ValidationRule.NotEqualTo:
                     if (req.body[rule.field] == rule.to) {
-                        return rule.errorMessage || `${rule.field} must not be equal to ${rule.to}`;
+                        return this.fail(rule, `${rule.field} must not be equal to ${rule.to}`);
                     }
                     break;
                 case ValidationRule.EqualToField:
                     if (req.body[rule.field] != req.body[rule.to!]) {
-                        return rule.errorMessage || `${rule.field} must be equal to field ${rule.to}`;
+                        return this.fail(rule, `${rule.field} must be equal to field ${rule.to}`);
                     }
                     break;
                 case ValidationRule.NotEqualToField:
                     if (req.body[rule.field] == req.body[rule.to!]) {
-                        return rule.errorMessage || `${rule.field} must not be equal to field ${rule.to}`;
+                        return this.fail(rule, `${rule.field} must not be equal to field ${rule.to}`);
                     }
                     break;
                 case ValidationRule.MaxLength:
                     if (req.body[rule.field].length > rule.length!) {
-                        return rule.errorMessage || `${rule.field} must be no more than ${rule.length} characters long`;
+                        return this.fail(rule, `${rule.field} must be no more than ${rule.length} characters long`);
                     }
                     break;
                 case ValidationRule.MinLength:
                     if (req.body[rule.field].length < rule.length!) {
-                        return rule.errorMessage || `${rule.field} must be no less than ${rule.length} characters long`;
+                        return this.fail(rule, `${rule.field} must be no less than ${rule.length} characters long`);
                     }
                     break;
                 case ValidationRule.Number:
                     if (typeof Number(req.body[rule.field]) != "number" || isNaN(Number(req.body[rule.field]))) {
-                        return rule.errorMessage || `${rule.field} must be a number`;
+                        return this.fail(rule, `${rule.field} must be a number`);
                     }
                     break;
                 case ValidationRule.EmailAddress:
                     if (!String(req.body[rule.field]).match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-                        return rule.errorMessage || `${rule.field} must be an email address`;
+                        return this.fail(rule, `${rule.field} must be an email address`);
                     }
                     break;
                 case ValidationRule.Boolean:
                     if (req.body[rule.field] != "true" && req.body[rule.field] != "false"
                         && req.body[rule.field] !== true && req.body[rule.field] !== false) {
-                        return rule.errorMessage || `${rule.field} must be a boolean`;
+                        return this.fail(rule, `${rule.field} must be a boolean`);
                     }
                     break;
                 case ValidationRule.GreaterThan:
                     if (Number(req.body[rule.field]) <= rule.length!) {
-                        return rule.errorMessage || `${rule.field} must be greater than ${rule.length}`;
+                        return this.fail(rule, `${rule.field} must be greater than ${rule.length}`);
                     }
                     break;
                 case ValidationRule.LessThan:
                     if (Number(req.body[rule.field]) >= rule.length!) {
-                        return rule.errorMessage || `${rule.field} must be less than ${rule.length}`;
+                        return this.fail(rule, `${rule.field} must be less than ${rule.length}`);
                     }
                     break;
             }
         }
 
         return null;
+    }
+
+    private fail(rule: IValidationRule, defaultMessage: string): ApiValidationFailure {
+        return {
+            field: rule.field,
+            message: rule.errorMessage || defaultMessage
+        };
     }
 
     public ChangeField(field: string): ApiBodyValidator {

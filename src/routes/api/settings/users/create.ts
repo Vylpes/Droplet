@@ -2,7 +2,7 @@ import { hash } from "bcryptjs";
 import { Request, Response } from "express";
 import { UserTokenType } from "../../../../constants/UserTokenType";
 import Page from "../../../../contracts/Page";
-import { GenerateResponse } from "../../../../contracts/IBasicResponse";
+import { GenerateResponse, GenerateValidationResponse } from "../../../../contracts/IBasicResponse";
 import { User } from "../../../../database/entities/User";
 import UserToken from "../../../../database/entities/UserToken";
 import EmailHelper from "../../../../helpers/EmailHelper";
@@ -23,7 +23,7 @@ export default class Create implements Page {
 
         const error = bodyValidation.Validate(req);
         if (error) {
-            res.status(400).json(GenerateResponse(false, error));
+            res.status(400).json(GenerateValidationResponse(error));
             return;
         }
 
