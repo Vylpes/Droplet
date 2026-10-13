@@ -2,10 +2,17 @@ import { Navigate, createBrowserRouter } from 'react-router'
 import { GuestRoute } from './auth/GuestRoute'
 import { ProtectedRoute } from './auth/ProtectedRoute'
 import { Layout } from './layout/Layout'
+import { AdminRegisterPage } from './pages/auth/AdminRegisterPage'
+import { LoginPage } from './pages/auth/LoginPage'
+import { RequestPasswordResetPage } from './pages/auth/RequestPasswordResetPage'
+import { RequestVerificationTokenPage } from './pages/auth/RequestVerificationTokenPage'
+import { ResetPasswordPage } from './pages/auth/ResetPasswordPage'
+import { VerifyPage } from './pages/auth/VerifyPage'
 import { ErrorPage } from './pages/ErrorPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { AccountPage } from './pages/settings/AccountPage'
 
 function placeholder(title: string) {
     return <PlaceholderPage title={title} />
@@ -21,23 +28,23 @@ export const router = createBrowserRouter([
             {
                 element: <GuestRoute />,
                 children: [
-                    { path: 'auth/login', element: placeholder('Login') },
+                    { path: 'auth/login', element: <LoginPage /> },
                     {
                         path: 'auth/admin-register',
-                        element: placeholder('Admin Register')
+                        element: <AdminRegisterPage />
                     },
-                    { path: 'auth/verify', element: placeholder('Verify Account') },
+                    { path: 'auth/verify', element: <VerifyPage /> },
                     {
                         path: 'auth/password-reset/request',
-                        element: placeholder('Request Password Reset')
+                        element: <RequestPasswordResetPage />
                     },
                     {
                         path: 'auth/password-reset/reset',
-                        element: placeholder('Reset Password')
+                        element: <ResetPasswordPage />
                     },
                     {
                         path: 'auth/verification-token/request',
-                        element: placeholder('Request Verification Token')
+                        element: <RequestVerificationTokenPage />
                     }
                 ]
             },
@@ -115,7 +122,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: 'settings/account',
-                        element: placeholder('Account Settings')
+                        element: <AccountPage />
                     }
                 ]
             },
