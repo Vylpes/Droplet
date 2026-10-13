@@ -12,6 +12,8 @@ import { ErrorPage } from './pages/ErrorPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { CalculatorPage } from './pages/dashboard/CalculatorPage'
+import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { AccountPage } from './pages/settings/AccountPage'
 
 function placeholder(title: string) {
@@ -51,10 +53,10 @@ export const router = createBrowserRouter([
             {
                 element: <ProtectedRoute />,
                 children: [
-                    { path: 'dashboard', element: placeholder('Dashboard') },
+                    { path: 'dashboard', element: <DashboardPage /> },
                     {
                         path: 'dashboard/calculator',
-                        element: placeholder('Calculator')
+                        element: <CalculatorPage />
                     },
                     {
                         path: 'item-purchases/new',
