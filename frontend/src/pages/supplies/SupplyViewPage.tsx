@@ -218,6 +218,7 @@ export function SupplyViewPage() {
                     label="Unused"
                     type="number"
                     step="1"
+                    min={0}
                 />
                 <FormField
                     control={quantityForm.form.control}
@@ -225,6 +226,7 @@ export function SupplyViewPage() {
                     label="Used"
                     type="number"
                     step="1"
+                    min={0}
                 />
             </FormModal>
 

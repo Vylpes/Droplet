@@ -8,9 +8,13 @@ export default class UpdateQuantity implements Page {
         const bodyValidation = new BodyValidator("unused")
                 .NotEmpty()
                 .Number()
+                .GreaterThan(-1)
+                .WithMessage("unused must be 0 or greater")
             .ChangeField("used")
                 .NotEmpty()
-                .Number();
+                .Number()
+                .GreaterThan(-1)
+                .WithMessage("used must be 0 or greater");
 
         const Id = (req.params.Id as string);
 

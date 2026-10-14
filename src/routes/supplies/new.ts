@@ -20,7 +20,9 @@ export default class New implements Page {
                 .NotEmpty()
             .ChangeField("quantity")
                 .NotEmpty()
-                .Number();
+                .Number()
+                .GreaterThan(-1)
+                .WithMessage("quantity must be 0 or greater");
 
         const name = req.body.name;
         const sku = req.body.sku;

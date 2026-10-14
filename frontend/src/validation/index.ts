@@ -7,6 +7,7 @@ export {
     lessThan,
     maxLength,
     minLength,
+    minNumber,
     notEqualToField,
     notEqualToFieldMessage,
     numberField,

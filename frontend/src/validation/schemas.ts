@@ -3,6 +3,7 @@ import {
     emailAddress,
     equalToField,
     minLength,
+    minNumber,
     numberField,
     requiredString,
 } from './rules'
@@ -92,7 +93,7 @@ export type PurchaseStatusFormValues = z.infer<typeof purchaseStatusSchema>
 
 export const newItemSchema = z.object({
     name: requiredString('name'),
-    quantity: numberField('quantity'),
+    quantity: minNumber('quantity', 0),
 })
 
 export type NewItemFormValues = z.infer<typeof newItemSchema>
@@ -104,10 +105,10 @@ export const editItemSchema = z.object({
 export type EditItemFormValues = z.infer<typeof editItemSchema>
 
 export const itemQuantitySchema = z.object({
-    unlisted: numberField('unlisted'),
-    listed: numberField('listed'),
-    sold: numberField('sold'),
-    rejected: numberField('rejected'),
+    unlisted: minNumber('unlisted', 0),
+    listed: minNumber('listed', 0),
+    sold: minNumber('sold', 0),
+    rejected: minNumber('rejected', 0),
 })
 
 export type ItemQuantityFormValues = z.infer<typeof itemQuantitySchema>
@@ -115,7 +116,7 @@ export type ItemQuantityFormValues = z.infer<typeof itemQuantitySchema>
 export const newSupplySchema = z.object({
     name: requiredString('name'),
     sku: requiredString('sku'),
-    quantity: numberField('quantity'),
+    quantity: minNumber('quantity', 0),
 })
 
 export type NewSupplyFormValues = z.infer<typeof newSupplySchema>
@@ -128,8 +129,8 @@ export const editSupplySchema = z.object({
 export type EditSupplyFormValues = z.infer<typeof editSupplySchema>
 
 export const supplyQuantitySchema = z.object({
-    unused: numberField('unused'),
-    used: numberField('used'),
+    unused: minNumber('unused', 0),
+    used: minNumber('used', 0),
 })
 
 export type SupplyQuantityFormValues = z.infer<typeof supplyQuantitySchema>

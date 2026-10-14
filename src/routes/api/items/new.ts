@@ -13,6 +13,8 @@ export default class New implements Page {
             .ChangeField("quantity")
                 .NotEmpty()
                 .Number()
+                .GreaterThan(-1)
+                .WithMessage("quantity must be 0 or greater")
             .ChangeField("purchaseId")
                 .NotEmpty();
 

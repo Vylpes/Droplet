@@ -316,6 +316,7 @@ export function ItemPurchaseViewPage() {
                     label="Quantity"
                     type="number"
                     step="1"
+                    min={0}
                 />
             </FormModal>
 

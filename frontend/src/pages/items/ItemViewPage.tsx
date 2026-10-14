@@ -270,6 +270,7 @@ export function ItemViewPage() {
                     label="Unlisted"
                     type="number"
                     step="1"
+                    min={0}
                 />
                 <FormField
                     control={quantityForm.form.control}
@@ -277,6 +278,7 @@ export function ItemViewPage() {
                     label="Listed"
                     type="number"
                     step="1"
+                    min={0}
                 />
                 <FormField
                     control={quantityForm.form.control}
@@ -284,6 +286,7 @@ export function ItemViewPage() {
                     label="Sold"
                     type="number"
                     step="1"
+                    min={0}
                 />
                 <FormField
                     control={quantityForm.form.control}
@@ -291,6 +294,7 @@ export function ItemViewPage() {
                     label="Rejected"
                     type="number"
                     step="1"
+                    min={0}
                 />
             </FormModal>
 

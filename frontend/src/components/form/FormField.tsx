@@ -31,6 +31,8 @@ export interface FormFieldProps<TFieldValues extends FieldValues> {
     className?: string
     rows?: number
     step?: string | number
+    min?: string | number
+    max?: string | number
     children?: ReactNode
     rules?: RegisterOptions<TFieldValues, FieldPath<TFieldValues>>
 }
@@ -50,6 +52,8 @@ export function FormField<TFieldValues extends FieldValues>({
     className,
     rows = 3,
     step,
+    min,
+    max,
     children,
     rules,
 }: FormFieldProps<TFieldValues>) {
@@ -86,7 +90,13 @@ export function FormField<TFieldValues extends FieldValues>({
                     )
                 } else {
                     controlEl = (
-                        <Form.Control {...common} type={type} step={step} />
+                        <Form.Control
+                            {...common}
+                            type={type}
+                            step={step}
+                            min={min}
+                            max={max}
+                        />
                     )
                 }
 
