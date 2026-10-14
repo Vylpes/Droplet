@@ -8,10 +8,7 @@ export default class Update implements Page {
         const bodyValidation = new BodyValidator("name")
                 .NotEmpty()
             .ChangeField("sku")
-                .NotEmpty()
-            .ChangeField("quantity")
-                .NotEmpty()
-                .Number();
+                .NotEmpty();
 
         const Id = (req.params.Id as string);
 

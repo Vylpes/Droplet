@@ -10,7 +10,15 @@ React + Vite SPA for Droplet (see #336 / #344 / #347 / #349 / #350).
 - Styling: Bootstrap 5 + React Bootstrap + Font Awesome via npm (#349)
 - Tables: TanStack Table (`@tanstack/react-table`) via shared `DataTable` (#350)
 
-Domain page UIs land in later stories (#352–#356). Express SPA fallback is #358.
+Domain page UIs: auth/account (#352), dashboard (#353), inventory (#354). Sales/ops (#355–#356) and Express SPA fallback (#358) still open.
+
+## Inventory (#354)
+
+List + detail pages for item/supply purchases and item/supply detail:
+
+- `pages/item-purchases/**`, `pages/items/**`, `pages/supply-purchases/**`, `pages/supplies/**`
+- Status tabs share `components/StatusTabList.tsx` (one list page per domain instead of five Pug clones)
+- Modals use `FormModal` + `useApiForm`; nested tables use `DataTable`
 
 ## Styling
 

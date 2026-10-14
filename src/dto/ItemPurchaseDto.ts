@@ -15,7 +15,7 @@ export function mapItemPurchase(purchase: ItemPurchase, includeItems: boolean = 
     };
 
     if (includeItems && purchase.Items) {
-        dto.Items = purchase.Items.map(mapItem);
+        dto.Items = purchase.Items.map((item) => mapItem(item));
     }
 
     return dto;

@@ -22,7 +22,7 @@ export function mapListing(listing: Listing, includeItems: boolean = false): Lis
     };
 
     if (includeItems && listing.Items) {
-        dto.Items = listing.Items.map(mapItem);
+        dto.Items = listing.Items.map((item) => mapItem(item));
     }
 
     return dto;

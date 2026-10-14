@@ -33,7 +33,7 @@ export default class View implements Page {
         const notes = await Note.FetchAllForId(NoteType.Item, itemId);
 
         res.json(GenerateResponse(true, undefined, {
-            Item: mapItem(item),
+            Item: mapItem(item, true),
             Notes: notes
                 .sort((a, b) => a.WhenCreated < b.WhenCreated ? -1 : a.WhenCreated > b.WhenCreated ? 1 : 0)
                 .map(mapNote)
