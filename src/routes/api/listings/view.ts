@@ -37,7 +37,7 @@ export default class View implements Page {
 
         res.json(GenerateResponse(true, undefined, {
             Listing: mapListing(listing, true),
-            Items: items.filter(x => x.Status == ItemStatus.Unlisted).map(mapItem),
+            Items: items.filter(x => x.Status == ItemStatus.Unlisted).map((item) => mapItem(item)),
             PostagePolicies: postagePolicies.filter(x => !x.Archived).map(mapPostagePolicy),
             Notes: notes.map(mapNote)
         }));

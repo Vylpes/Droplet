@@ -14,7 +14,13 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { CalculatorPage } from './pages/dashboard/CalculatorPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
+import { ItemPurchasesListPage } from './pages/item-purchases/ItemPurchasesListPage'
+import { ItemPurchaseViewPage } from './pages/item-purchases/ItemPurchaseViewPage'
+import { ItemViewPage } from './pages/items/ItemViewPage'
 import { AccountPage } from './pages/settings/AccountPage'
+import { SupplyViewPage } from './pages/supplies/SupplyViewPage'
+import { SupplyPurchasesListPage } from './pages/supply-purchases/SupplyPurchasesListPage'
+import { SupplyPurchaseViewPage } from './pages/supply-purchases/SupplyPurchaseViewPage'
 
 function placeholder(title: string) {
     return <PlaceholderPage title={title} />
@@ -59,33 +65,23 @@ export const router = createBrowserRouter([
                         element: <CalculatorPage />
                     },
                     {
-                        path: 'item-purchases/new',
-                        element: placeholder('New Item Purchase')
-                    },
-                    {
                         path: 'item-purchases/view/:Id',
-                        element: placeholder('Item Purchase')
+                        element: <ItemPurchaseViewPage />
                     },
                     {
                         path: 'item-purchases/:status',
-                        element: placeholder('Item Purchases')
+                        element: <ItemPurchasesListPage />
                     },
-                    { path: 'items/new', element: placeholder('New Item') },
-                    { path: 'items/:itemId', element: placeholder('Item') },
-                    {
-                        path: 'supply-purchases/new',
-                        element: placeholder('New Supply Purchase')
-                    },
+                    { path: 'items/:itemId', element: <ItemViewPage /> },
                     {
                         path: 'supply-purchases/view/:Id',
-                        element: placeholder('Supply Purchase')
+                        element: <SupplyPurchaseViewPage />
                     },
                     {
                         path: 'supply-purchases/:status',
-                        element: placeholder('Supply Purchases')
+                        element: <SupplyPurchasesListPage />
                     },
-                    { path: 'supplies/new', element: placeholder('New Supply') },
-                    { path: 'supplies/:Id', element: placeholder('Supply') },
+                    { path: 'supplies/:Id', element: <SupplyViewPage /> },
                     { path: 'storage/new', element: placeholder('New Storage') },
                     {
                         path: 'storage/list/:type/:id',

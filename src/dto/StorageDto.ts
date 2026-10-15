@@ -5,7 +5,12 @@ import { mapItem } from "./ItemDto";
 
 export type { StorageDto } from "@droplet/shared";
 
-export function mapStorage(storage: Storage, includeChildren: boolean = false, includeItems: boolean = false): StorageDto {
+export function mapStorage(
+    storage: Storage,
+    includeChildren: boolean = false,
+    includeItems: boolean = false,
+    includeParent: boolean = false
+): StorageDto {
     const dto: StorageDto = {
         ...mapBase(storage),
         Name: storage.Name,
@@ -16,12 +21,16 @@ export function mapStorage(storage: Storage, includeChildren: boolean = false, i
         ParentId: storage.Parent?.Id
     };
 
+    if (includeParent && storage.Parent) {
+        dto.Parent = mapStorage(storage.Parent, false, false, true);
+    }
+
     if (includeChildren && storage.Children) {
         dto.Children = storage.Children.map(c => mapStorage(c));
     }
 
     if (includeItems && storage.Items) {
-        dto.Items = storage.Items.map(mapItem);
+        dto.Items = storage.Items.map((item) => mapItem(item));
     }
 
     return dto;

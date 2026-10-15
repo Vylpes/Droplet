@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { ValidationRule } from "../../constants/ValidationRule";
 import IValidationRule from "../../contracts/IValidationRule";
+import { isEmptyValue } from "./isEmptyValue";
 
 /** First failing rule from ApiBodyValidator — includes field for FE mapping (#351). */
 export interface ApiValidationFailure {
@@ -34,7 +35,7 @@ export default class ApiBodyValidator {
 
             switch (rule.rule) {
                 case ValidationRule.NotEmpty:
-                    if (!req.body[rule.field] || req.body[rule.field].length == 0) {
+                    if (isEmptyValue(req.body[rule.field])) {
                         return this.fail(rule, `${rule.field} is required`);
                     }
                     break;

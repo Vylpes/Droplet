@@ -27,7 +27,7 @@ export default class View implements Page {
 
         res.json(GenerateResponse(true, undefined, {
             Storage: mapStorage(bin, false, true),
-            Items: items.filter(x => x.Storage == null).map(mapItem),
+            Items: items.filter(x => x.Storage == null).map((item) => mapItem(item)),
             Storages: storages.filter(x => x.StorageType == StorageType.Bin).map(s => mapStorage(s, false, true))
         }));
     }

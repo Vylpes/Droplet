@@ -73,6 +73,62 @@ describe("ApiBodyValidator", () => {
 
             expect(validator.Validate(req)).toBeNull();
         });
+
+        it("treats numeric 0 as present for NotEmpty + Number fields", () => {
+            const req = createMockRequest({
+                unlisted: 0,
+                listed: 0,
+                sold: 0,
+                rejected: 0
+            });
+
+            const validator = new ApiBodyValidator("unlisted")
+                .NotEmpty()
+                .Number()
+                .GreaterThan(-1)
+                .ChangeField("listed")
+                .NotEmpty()
+                .Number()
+                .GreaterThan(-1)
+                .ChangeField("sold")
+                .NotEmpty()
+                .Number()
+                .GreaterThan(-1)
+                .ChangeField("rejected")
+                .NotEmpty()
+                .Number()
+                .GreaterThan(-1);
+
+            expect(validator.Validate(req)).toBeNull();
+        });
+
+        it("rejects negative quantities", () => {
+            const req = createMockRequest({ unlisted: -1 });
+
+            const validator = new ApiBodyValidator("unlisted")
+                .NotEmpty()
+                .Number()
+                .GreaterThan(-1)
+                .WithMessage("unlisted must be 0 or greater");
+
+            expect(validator.Validate(req)).toEqual({
+                field: "unlisted",
+                message: "unlisted must be 0 or greater"
+            });
+        });
+
+        it("still rejects missing number fields", () => {
+            const req = createMockRequest({ listed: 1 });
+
+            const validator = new ApiBodyValidator("unlisted")
+                .NotEmpty()
+                .Number();
+
+            expect(validator.Validate(req)).toEqual({
+                field: "unlisted",
+                message: "unlisted is required"
+            });
+        });
     });
 });
 

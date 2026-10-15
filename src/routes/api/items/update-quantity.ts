@@ -10,15 +10,23 @@ export default class UpdateQuantity implements Page {
         const bodyValidation = new ApiBodyValidator("unlisted")
                 .NotEmpty()
                 .Number()
+                .GreaterThan(-1)
+                .WithMessage("unlisted must be 0 or greater")
             .ChangeField("listed")
                 .NotEmpty()
                 .Number()
+                .GreaterThan(-1)
+                .WithMessage("listed must be 0 or greater")
             .ChangeField("sold")
                 .NotEmpty()
                 .Number()
+                .GreaterThan(-1)
+                .WithMessage("sold must be 0 or greater")
             .ChangeField("rejected")
                 .NotEmpty()
-                .Number();
+                .Number()
+                .GreaterThan(-1)
+                .WithMessage("rejected must be 0 or greater");
 
         const itemId = (req.params.itemId as string);
 

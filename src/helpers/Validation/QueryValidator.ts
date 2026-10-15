@@ -2,6 +2,7 @@ import { Request } from "express";
 import { ValidationRule } from "../../constants/ValidationRule";
 import IValidationRule from "../../contracts/IValidationRule";
 import MessageHelper from "../MessageHelper";
+import { isEmptyValue } from "./isEmptyValue";
 
 export default class QueryValidator {
     private rules: IValidationRule[];
@@ -32,7 +33,7 @@ export default class QueryValidator {
                 case ValidationRule.NotEmpty:
                     {
                         const value = req.query[rule.field];
-                        if (!value || value.length == 0) {
+                        if (isEmptyValue(value)) {
                             await message.Error(rule.errorMessage || `${rule.field} is required`);
 
                             return false;

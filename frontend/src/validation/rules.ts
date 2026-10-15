@@ -49,6 +49,16 @@ export function lessThan(field: string, max: number) {
     })
 }
 
+/** Inclusive minimum (e.g. quantities must be 0 or greater). */
+export function minNumber(field: string, min: number) {
+    return numberField(field).refine((value) => value >= min, {
+        error:
+            min === 0
+                ? `${field} must be 0 or greater`
+                : `${field} must be at least ${min}`,
+    })
+}
+
 /** Object-level refine: `field` must equal `otherField` (EqualToField). */
 export function equalToField<T extends Record<string, unknown>>(
     field: keyof T & string,
