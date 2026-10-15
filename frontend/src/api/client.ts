@@ -8,7 +8,11 @@ import type {
     IBasicResponse,
     ItemDto,
     ItemPurchaseDto,
+    ListingDto,
     NoteDto,
+    OrderDto,
+    PostagePolicyDto,
+    ReturnDto,
     SupplyDto,
     SupplyPurchaseDto,
     UserDto
@@ -309,6 +313,282 @@ export const suppliesApi = {
         }),
     addNote: (id: string, payload: AddNotePayload) =>
         apiFetch<NoteDto>(`/api/supplies/${id}/add-note`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+};
+
+export interface ListingsListData {
+    Listings: ListingDto[];
+    Items: ItemDto[];
+}
+
+export interface ListingViewData {
+    Listing: ListingDto;
+    Items: ItemDto[];
+    PostagePolicies: PostagePolicyDto[];
+    Notes: NoteDto[];
+}
+
+export interface ListingCreatePayload {
+    listingNumber: string;
+    name: string;
+    itemId: string;
+    price: number;
+    endDate: string;
+    quantity: number;
+}
+
+export interface ListingUpdatePayload {
+    name: string;
+    listingNumber: string;
+    price: number;
+    quantity: number;
+}
+
+export interface ListingRenewPayload {
+    endDate: string;
+}
+
+export interface ListingAssignItemPayload {
+    itemId: string;
+}
+
+export interface ListingAssignPostagePolicyPayload {
+    policyId: string;
+}
+
+export interface OrdersListData {
+    Orders: OrderDto[];
+    Listings: ListingDto[];
+    PostagePolicies: PostagePolicyDto[];
+}
+
+export interface OrderViewData {
+    Order: OrderDto;
+    Listings: ListingDto[];
+    Supplies: SupplyDto[];
+    PostagePolicies: PostagePolicyDto[];
+    Notes: NoteDto[];
+}
+
+export interface OrderCreatePayload {
+    orderNumber: string;
+    buyer: string;
+    offerAccepted: boolean | string;
+    listingId: string;
+    postagePolicyId: string;
+    amount: number;
+}
+
+export interface OrderUpdatePayload {
+    orderNumber: string;
+    buyer: string;
+    /** API compares with `== "true"`; send string flags. */
+    offerAccepted: string;
+    postagePolicyId: string;
+}
+
+export interface OrderAssignListingPayload {
+    listingId: string;
+    amount: number;
+}
+
+export interface OrderAssignSupplyPayload {
+    supplyId: string;
+    amount: number;
+}
+
+export interface OrderAssignTrackingPayload {
+    number: string;
+    service: number;
+}
+
+export interface OrderDiscountPayload {
+    amount: number;
+}
+
+export interface ReturnsListData {
+    Returns: ReturnDto[];
+    Orders: OrderDto[];
+}
+
+export interface ReturnViewData {
+    Return: ReturnDto;
+    Notes: NoteDto[];
+}
+
+export interface ReturnCreatePayload {
+    returnNumber: string;
+    orderId: string;
+    trackingService: number;
+    trackingNumber: string;
+}
+
+export interface ReturnUpdatePayload {
+    returnNumber: string;
+    returnBy: string;
+}
+
+export interface ReturnStartedPayload {
+    returnBy: string;
+}
+
+export interface ReturnReceivedPayload {
+    returnBy: string;
+}
+
+export interface ReturnRefundPayload {
+    refundAmount: number;
+}
+
+export const listingsApi = {
+    list: (status: string) =>
+        apiFetch<ListingsListData>(`/api/listings/${status}`),
+    get: (id: string) =>
+        apiFetch<ListingViewData>(`/api/listings/view/${id}`),
+    create: (payload: ListingCreatePayload) =>
+        apiFetch<ListingDto>("/api/listings/new", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    update: (id: string, payload: ListingUpdatePayload) =>
+        apiFetch<ListingDto>(`/api/listings/view/${id}/update`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    end: (id: string) =>
+        apiFetch<ListingDto>(`/api/listings/view/${id}/end`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    renew: (id: string, payload: ListingRenewPayload) =>
+        apiFetch<ListingDto>(`/api/listings/view/${id}/renew`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignItem: (id: string, payload: ListingAssignItemPayload) =>
+        apiFetch<ListingDto>(`/api/listings/view/${id}/assign-item`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignPostagePolicy: (
+        id: string,
+        payload: ListingAssignPostagePolicyPayload
+    ) =>
+        apiFetch<ListingDto>(
+            `/api/listings/view/${id}/assign-postage-policy`,
+            {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }
+        ),
+    addNote: (id: string, payload: AddNotePayload) =>
+        apiFetch<NoteDto>(`/api/listings/${id}/add-note`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+};
+
+export const ordersApi = {
+    list: (status: string) =>
+        apiFetch<OrdersListData>(`/api/orders/${status}`),
+    get: (id: string) => apiFetch<OrderViewData>(`/api/orders/view/${id}`),
+    create: (payload: OrderCreatePayload) =>
+        apiFetch<OrderDto>("/api/orders/new", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    update: (id: string, payload: OrderUpdatePayload) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/update`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    paid: (id: string) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/paid`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    dispatch: (id: string) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/dispatch`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    discount: (id: string, payload: OrderDiscountPayload) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/discount`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignListing: (id: string, payload: OrderAssignListingPayload) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/assign-listing`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignSupply: (id: string, payload: OrderAssignSupplyPayload) =>
+        apiFetch<OrderDto>(`/api/orders/view/${id}/assign-supply`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignTrackingNumber: (
+        id: string,
+        payload: OrderAssignTrackingPayload
+    ) =>
+        apiFetch<OrderDto>(
+            `/api/orders/view/${id}/assign-tracking-number`,
+            {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }
+        ),
+    addNote: (id: string, payload: AddNotePayload) =>
+        apiFetch<NoteDto>(`/api/orders/${id}/add-note`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+};
+
+export const returnsApi = {
+    list: (status: string) =>
+        apiFetch<ReturnsListData>(`/api/returns/${status}`),
+    get: (id: string) =>
+        apiFetch<ReturnViewData>(`/api/returns/view/${id}`),
+    create: (payload: ReturnCreatePayload) =>
+        apiFetch<ReturnDto>("/api/returns/new", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    update: (id: string, payload: ReturnUpdatePayload) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/update`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    started: (id: string, payload: ReturnStartedPayload) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/started`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    posted: (id: string) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/posted`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    received: (id: string, payload: ReturnReceivedPayload) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/received`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    refund: (id: string, payload: ReturnRefundPayload) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/refund`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    close: (id: string) =>
+        apiFetch<ReturnDto>(`/api/returns/view/${id}/close`, {
+            method: "POST",
+            body: JSON.stringify({})
+        }),
+    addNote: (id: string, payload: AddNotePayload) =>
+        apiFetch<NoteDto>(`/api/returns/${id}/add-note`, {
             method: "POST",
             body: JSON.stringify(payload)
         })
