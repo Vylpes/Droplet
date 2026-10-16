@@ -134,3 +134,129 @@ export const supplyQuantitySchema = z.object({
 })
 
 export type SupplyQuantityFormValues = z.infer<typeof supplyQuantitySchema>
+
+/** Confirm-only workflow modals (end listing, mark paid, etc.). */
+export const confirmActionSchema = z.object({})
+
+export type ConfirmActionFormValues = z.infer<typeof confirmActionSchema>
+
+export const newListingSchema = z.object({
+    listingNumber: requiredString('listingNumber'),
+    name: requiredString('name'),
+    itemId: requiredString('itemId'),
+    price: numberField('price'),
+    endDate: requiredString('endDate'),
+    quantity: minNumber('quantity', 0),
+})
+
+export type NewListingFormValues = z.infer<typeof newListingSchema>
+
+export const editListingSchema = z.object({
+    name: requiredString('name'),
+    listingNumber: requiredString('listingNumber'),
+    price: numberField('price'),
+    quantity: minNumber('quantity', 0),
+})
+
+export type EditListingFormValues = z.infer<typeof editListingSchema>
+
+export const renewListingSchema = z.object({
+    endDate: requiredString('endDate'),
+})
+
+export type RenewListingFormValues = z.infer<typeof renewListingSchema>
+
+export const assignListingItemSchema = z.object({
+    itemId: requiredString('itemId'),
+})
+
+export type AssignListingItemFormValues = z.infer<
+    typeof assignListingItemSchema
+>
+
+export const assignPostagePolicySchema = z.object({
+    policyId: requiredString('policyId'),
+})
+
+export type AssignPostagePolicyFormValues = z.infer<
+    typeof assignPostagePolicySchema
+>
+
+export const newOrderSchema = z.object({
+    orderNumber: requiredString('orderNumber'),
+    buyer: requiredString('buyer'),
+    offerAccepted: requiredString('offerAccepted'),
+    listingId: requiredString('listingId'),
+    postagePolicyId: requiredString('postagePolicyId'),
+    amount: numberField('amount'),
+})
+
+export type NewOrderFormValues = z.infer<typeof newOrderSchema>
+
+export const editOrderSchema = z.object({
+    orderNumber: requiredString('orderNumber'),
+    buyer: requiredString('buyer'),
+    offerAccepted: requiredString('offerAccepted'),
+    postagePolicyId: z.string().optional().default(''),
+})
+
+export type EditOrderFormValues = z.infer<typeof editOrderSchema>
+
+export const assignOrderListingSchema = z.object({
+    listingId: requiredString('listingId'),
+    amount: numberField('amount'),
+})
+
+export type AssignOrderListingFormValues = z.infer<
+    typeof assignOrderListingSchema
+>
+
+export const assignOrderSupplySchema = z.object({
+    supplyId: requiredString('supplyId'),
+    amount: numberField('amount'),
+})
+
+export type AssignOrderSupplyFormValues = z.infer<
+    typeof assignOrderSupplySchema
+>
+
+export const assignTrackingSchema = z.object({
+    number: requiredString('number'),
+    service: numberField('service'),
+})
+
+export type AssignTrackingFormValues = z.infer<typeof assignTrackingSchema>
+
+export const orderDiscountSchema = z.object({
+    amount: numberField('amount'),
+})
+
+export type OrderDiscountFormValues = z.infer<typeof orderDiscountSchema>
+
+export const newReturnSchema = z.object({
+    returnNumber: requiredString('returnNumber'),
+    orderId: requiredString('orderId'),
+    trackingService: numberField('trackingService'),
+    trackingNumber: requiredString('trackingNumber'),
+})
+
+export type NewReturnFormValues = z.infer<typeof newReturnSchema>
+
+export const editReturnSchema = z.object({
+    returnNumber: requiredString('returnNumber'),
+    returnBy: requiredString('returnBy'),
+})
+
+export type EditReturnFormValues = z.infer<typeof editReturnSchema>
+
+export const returnBySchema = z.object({
+    returnBy: requiredString('returnBy'),
+})
+
+export type ReturnByFormValues = z.infer<typeof returnBySchema>
+
+export const returnRefundSchema = z.object({
+    refundAmount: numberField('refundAmount'),
+})
+
+export type ReturnRefundFormValues = z.infer<typeof returnRefundSchema>

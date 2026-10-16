@@ -17,6 +17,12 @@ import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { ItemPurchasesListPage } from './pages/item-purchases/ItemPurchasesListPage'
 import { ItemPurchaseViewPage } from './pages/item-purchases/ItemPurchaseViewPage'
 import { ItemViewPage } from './pages/items/ItemViewPage'
+import { ListingViewPage } from './pages/listings/ListingViewPage'
+import { ListingsListPage } from './pages/listings/ListingsListPage'
+import { OrderViewPage } from './pages/orders/OrderViewPage'
+import { OrdersListPage } from './pages/orders/OrdersListPage'
+import { ReturnViewPage } from './pages/returns/ReturnViewPage'
+import { ReturnsListPage } from './pages/returns/ReturnsListPage'
 import { AccountPage } from './pages/settings/AccountPage'
 import { SupplyViewPage } from './pages/supplies/SupplyViewPage'
 import { SupplyPurchasesListPage } from './pages/supply-purchases/SupplyPurchasesListPage'
@@ -91,21 +97,30 @@ export const router = createBrowserRouter([
                         path: 'storage/view/:Id',
                         element: placeholder('Storage')
                     },
-                    { path: 'listings/new', element: placeholder('New Listing') },
                     {
                         path: 'listings/view/:Id',
-                        element: placeholder('Listing')
+                        element: <ListingViewPage />
                     },
                     {
                         path: 'listings/:status',
-                        element: placeholder('Listings')
+                        element: <ListingsListPage />
                     },
-                    { path: 'orders/new', element: placeholder('New Order') },
-                    { path: 'orders/view/:Id', element: placeholder('Order') },
-                    { path: 'orders/:status', element: placeholder('Orders') },
-                    { path: 'returns/new', element: placeholder('New Return') },
-                    { path: 'returns/view/:Id', element: placeholder('Return') },
-                    { path: 'returns/:status', element: placeholder('Returns') },
+                    {
+                        path: 'orders/view/:Id',
+                        element: <OrderViewPage />
+                    },
+                    {
+                        path: 'orders/:status',
+                        element: <OrdersListPage />
+                    },
+                    {
+                        path: 'returns/view/:Id',
+                        element: <ReturnViewPage />
+                    },
+                    {
+                        path: 'returns/:status',
+                        element: <ReturnsListPage />
+                    },
                     {
                         path: 'postage-policies',
                         element: placeholder('Postage Policies')
