@@ -40,7 +40,7 @@ export default class List implements Page {
 
         res.json(GenerateResponse(true, undefined, {
             Listings: listingsVisible.map(l => mapListing(l, true)),
-            Items: items.filter(x => x.Status == ItemStatus.Unlisted).map((item) => mapItem(item))
+            Items: items.filter(x => x.Status == ItemStatus.Unlisted).map(item => mapItem(item))
         }));
     }
 }

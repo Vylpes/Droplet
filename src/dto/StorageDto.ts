@@ -30,7 +30,7 @@ export function mapStorage(
     }
 
     if (includeItems && storage.Items) {
-        dto.Items = storage.Items.map((item) => mapItem(item));
+        dto.Items = storage.Items.map(item => mapItem(item));
     }
 
     return dto;
