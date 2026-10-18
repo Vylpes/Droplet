@@ -11,7 +11,6 @@ import { VerifyPage } from './pages/auth/VerifyPage'
 import { ErrorPage } from './pages/ErrorPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
 import { CalculatorPage } from './pages/dashboard/CalculatorPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { ItemPurchasesListPage } from './pages/item-purchases/ItemPurchasesListPage'
@@ -23,14 +22,16 @@ import { OrderViewPage } from './pages/orders/OrderViewPage'
 import { OrdersListPage } from './pages/orders/OrdersListPage'
 import { ReturnViewPage } from './pages/returns/ReturnViewPage'
 import { ReturnsListPage } from './pages/returns/ReturnsListPage'
+import { PostagePoliciesListPage } from './pages/postage-policies/PostagePoliciesListPage'
+import { PostagePolicyViewPage } from './pages/postage-policies/PostagePolicyViewPage'
 import { AccountPage } from './pages/settings/AccountPage'
+import { UsersListPage } from './pages/settings/UsersListPage'
+import { UserViewPage } from './pages/settings/UserViewPage'
+import { StorageListPage } from './pages/storage/StorageListPage'
+import { StorageViewPage } from './pages/storage/StorageViewPage'
 import { SupplyViewPage } from './pages/supplies/SupplyViewPage'
 import { SupplyPurchasesListPage } from './pages/supply-purchases/SupplyPurchasesListPage'
 import { SupplyPurchaseViewPage } from './pages/supply-purchases/SupplyPurchaseViewPage'
-
-function placeholder(title: string) {
-    return <PlaceholderPage title={title} />
-}
 
 export const router = createBrowserRouter([
     {
@@ -88,14 +89,13 @@ export const router = createBrowserRouter([
                         element: <SupplyPurchasesListPage />
                     },
                     { path: 'supplies/:Id', element: <SupplyViewPage /> },
-                    { path: 'storage/new', element: placeholder('New Storage') },
                     {
                         path: 'storage/list/:type/:id',
-                        element: placeholder('Storage List')
+                        element: <StorageListPage />
                     },
                     {
                         path: 'storage/view/:Id',
-                        element: placeholder('Storage')
+                        element: <StorageViewPage />
                     },
                     {
                         path: 'listings/view/:Id',
@@ -123,15 +123,11 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: 'postage-policies',
-                        element: placeholder('Postage Policies')
-                    },
-                    {
-                        path: 'postage-policies/new',
-                        element: placeholder('New Postage Policy')
+                        element: <PostagePoliciesListPage />
                     },
                     {
                         path: 'postage-policies/:id',
-                        element: placeholder('Postage Policy')
+                        element: <PostagePolicyViewPage />
                     },
                     {
                         path: 'settings/account',
@@ -142,14 +138,13 @@ export const router = createBrowserRouter([
             {
                 element: <ProtectedRoute admin />,
                 children: [
-                    { path: 'settings/users', element: placeholder('Users') },
                     {
-                        path: 'settings/users/create',
-                        element: placeholder('Create User')
+                        path: 'settings/users',
+                        element: <UsersListPage />
                     },
                     {
                         path: 'settings/users/:id',
-                        element: placeholder('User')
+                        element: <UserViewPage />
                     }
                 ]
             },

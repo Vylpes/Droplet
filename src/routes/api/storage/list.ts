@@ -13,7 +13,8 @@ export default class List implements Page {
 
         const storages = await Storage.FetchAll(Storage, {
             Items: true,
-            Children: true
+            Children: true,
+            Parent: true
         });
 
         let storage: Storage | undefined;
@@ -28,10 +29,16 @@ export default class List implements Page {
 
         switch(type) {
             case 'bin':
-                visible = storages.filter(x => x.StorageType == StorageType.Bin);
+                visible = storages.filter(x =>
+                    x.StorageType == StorageType.Bin
+                    && (!storage || x.Parent?.Id == storage.Id)
+                );
                 break;
             case 'unit':
-                visible = storages.filter(x => x.StorageType == StorageType.Unit);
+                visible = storages.filter(x =>
+                    x.StorageType == StorageType.Unit
+                    && (!storage || x.Parent?.Id == storage.Id)
+                );
                 break;
             case 'building':
                 visible = storages.filter(x => x.StorageType == StorageType.Building);

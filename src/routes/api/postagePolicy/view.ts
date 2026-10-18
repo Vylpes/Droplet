@@ -3,7 +3,7 @@ import createHttpError from "http-errors";
 import Page from "../../../contracts/Page";
 import { GenerateResponse } from "../../../contracts/IBasicResponse";
 import PostagePolicy from "../../../database/entities/PostagePolicy";
-import { mapPostagePolicy } from "../../../dto";
+import { mapListing, mapPostagePolicy } from "../../../dto";
 
 export default class View implements Page {
     public async OnGetAsync(req: Request, res: Response, next: NextFunction) {
@@ -23,6 +23,9 @@ export default class View implements Page {
             return;
         }
 
-        res.json(GenerateResponse(true, undefined, mapPostagePolicy(policy)));
+        res.json(GenerateResponse(true, undefined, {
+            ...mapPostagePolicy(policy),
+            Listings: (policy.Listings ?? []).map(listing => mapListing(listing))
+        }));
     }
 }
