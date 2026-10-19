@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, apiFetch, authApi, itemPurchasesApi } from './client'
+import {
+    ApiError,
+    apiFetch,
+    authApi,
+    itemPurchasesApi,
+    ordersApi,
+} from './client'
 
 describe('apiFetch', () => {
     afterEach(() => {
@@ -112,6 +118,28 @@ describe('API wrappers', () => {
 
         expect(fetchMock.mock.calls[0][0]).toBe(
             '/api/auth/verify?token=a%20b%2Fc'
+        )
+    })
+
+    it('ordersApi.paid and dispatch post to lifecycle endpoints', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ IsSuccess: true, Data: {} }),
+        })
+        vi.stubGlobal('fetch', fetchMock)
+
+        await ordersApi.paid('o1')
+        await ordersApi.dispatch('o1')
+
+        expect(fetchMock).toHaveBeenNthCalledWith(
+            1,
+            '/api/orders/view/o1/paid',
+            expect.objectContaining({ method: 'POST' })
+        )
+        expect(fetchMock).toHaveBeenNthCalledWith(
+            2,
+            '/api/orders/view/o1/dispatch',
+            expect.objectContaining({ method: 'POST' })
         )
     })
 })
