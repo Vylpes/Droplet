@@ -21,6 +21,7 @@ jobs:
       run: yarn test:backend
     - name: Frontend tests
       run: yarn test:frontend
+    - run: yarn lint
 
     - name: "Copy files over to location"
       run: cp -r . ${{ secrets.PROD_REPO_PATH }}
