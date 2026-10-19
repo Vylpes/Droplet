@@ -260,3 +260,43 @@ export const returnRefundSchema = z.object({
 })
 
 export type ReturnRefundFormValues = z.infer<typeof returnRefundSchema>
+
+export const newStorageSchema = z.object({
+    name: requiredString('name'),
+    skuPrefix: requiredString('skuPrefix'),
+})
+
+export type NewStorageFormValues = z.infer<typeof newStorageSchema>
+
+export const assignStorageItemSchema = z.object({
+    itemId: requiredString('itemId'),
+})
+
+export type AssignStorageItemFormValues = z.infer<
+    typeof assignStorageItemSchema
+>
+
+export const postagePolicyFormSchema = z.object({
+    name: requiredString('name'),
+    costToBuyer: numberField('costToBuyer'),
+    actualCost: numberField('actualCost'),
+})
+
+export type PostagePolicyFormValues = z.infer<typeof postagePolicyFormSchema>
+
+export const newUserSchema = z.object({
+    username: requiredString('username'),
+    email: emailAddress('email'),
+    admin: requiredString('admin'),
+})
+
+export type NewUserFormValues = z.infer<typeof newUserSchema>
+
+export const editUserSchema = z.object({
+    username: requiredString('username'),
+    email: emailAddress('email'),
+    admin: requiredString('admin'),
+    active: requiredString('active'),
+})
+
+export type EditUserFormValues = z.infer<typeof editUserSchema>

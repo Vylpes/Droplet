@@ -13,6 +13,7 @@ import type {
     OrderDto,
     PostagePolicyDto,
     ReturnDto,
+    StorageDto,
     SupplyDto,
     SupplyPurchaseDto,
     UserDto
@@ -129,13 +130,42 @@ export interface AccountUpdatePayload {
     passwordConfirm?: string;
 }
 
+export interface UserCreatePayload {
+    username: string;
+    email: string;
+    /** API compares with `== "true"`; send string flags. */
+    admin: string;
+}
+
+export interface UserUpdatePayload {
+    username: string;
+    email: string;
+    /** API compares with `== "true"`; send string flags. */
+    admin: string;
+    active: string;
+}
+
 export const settingsApi = {
     getAccount: () => apiFetch<UserDto>("/api/settings/account"),
     updateAccount: (payload: AccountUpdatePayload) =>
         apiFetch<UserDto>("/api/settings/account", {
             method: "POST",
             body: JSON.stringify(payload)
-        })
+        }),
+    listUsers: () => apiFetch<UserDto[]>("/api/settings/users/"),
+    getUser: (id: string) => apiFetch<UserDto>(`/api/settings/users/${id}`),
+    createUser: (payload: UserCreatePayload) =>
+        apiFetch<UserDto>("/api/settings/users/create", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    updateUser: (id: string, payload: UserUpdatePayload) =>
+        apiFetch<UserDto>(`/api/settings/users/${id}/update`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    toggleUserActive: (id: string) =>
+        apiFetch<UserDto>(`/api/settings/users/${id}/toggle-active`)
 };
 
 export interface PurchaseViewData<TPurchase> {
@@ -591,5 +621,74 @@ export const returnsApi = {
         apiFetch<NoteDto>(`/api/returns/${id}/add-note`, {
             method: "POST",
             body: JSON.stringify(payload)
+        })
+};
+
+export interface StorageListData {
+    Storages: StorageDto[];
+    Storage?: StorageDto;
+}
+
+export interface StorageViewData {
+    Storage: StorageDto;
+    Items: ItemDto[];
+    Storages: StorageDto[];
+}
+
+export interface StorageCreatePayload {
+    type: "building" | "unit" | "bin";
+    name: string;
+    skuPrefix: string;
+    parentId?: string;
+}
+
+export interface StorageAssignItemPayload {
+    itemId: string;
+}
+
+export const storageApi = {
+    list: (type: string, id: string) =>
+        apiFetch<StorageListData>(`/api/storage/list/${type}/${id}`),
+    get: (id: string) =>
+        apiFetch<StorageViewData>(`/api/storage/view/${id}`),
+    create: (payload: StorageCreatePayload) =>
+        apiFetch<StorageDto>("/api/storage/new", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    assignItem: (id: string, payload: StorageAssignItemPayload) =>
+        apiFetch<{ Storage: StorageDto; Item: ItemDto }>(
+            `/api/storage/view/${id}/assign-item`,
+            {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }
+        )
+};
+
+export interface PostagePolicyFormPayload {
+    name: string;
+    costToBuyer: number;
+    actualCost: number;
+}
+
+export const postagePoliciesApi = {
+    list: () => apiFetch<PostagePolicyDto[]>("/api/postage-policies/"),
+    get: (id: string) =>
+        apiFetch<PostagePolicyDto>(`/api/postage-policies/${id}`),
+    create: (payload: PostagePolicyFormPayload) =>
+        apiFetch<PostagePolicyDto>("/api/postage-policies/new", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    update: (id: string, payload: PostagePolicyFormPayload) =>
+        apiFetch<PostagePolicyDto>(`/api/postage-policies/${id}/update`, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }),
+    archive: (id: string) =>
+        apiFetch<PostagePolicyDto>(`/api/postage-policies/${id}/archive`, {
+            method: "POST",
+            body: JSON.stringify({})
         })
 };
