@@ -19,4 +19,7 @@ jobs:
         node-version: 24.x
     - run: yarn install --frozen-lockfile
     - run: yarn build
-    - run: yarn test
+    - name: Backend tests
+      run: yarn test:backend
+    - name: Frontend tests
+      run: yarn test:frontend
