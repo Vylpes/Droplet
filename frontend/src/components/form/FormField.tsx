@@ -66,13 +66,18 @@ export function FormField<TFieldValues extends FieldValues>({
             rules={rules}
             render={({ field, fieldState }) => {
                 const isInvalid = Boolean(fieldState.error)
+                // Let Form.Group `controlId` set the input id + label htmlFor.
+                // Passing both controlId and id triggers a react-bootstrap warning.
+                const { ref, onChange, onBlur, name: fieldName, value } = field
                 const common = {
-                    ...field,
-                    id: inputId,
+                    ref,
+                    onChange,
+                    onBlur,
+                    name: fieldName,
                     disabled,
                     placeholder,
                     isInvalid,
-                    value: field.value ?? '',
+                    value: value ?? '',
                 }
 
                 let controlEl: ReactNode

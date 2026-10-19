@@ -23,6 +23,8 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // Reuse one jsdom per worker instead of one per file (Vitest perf tip).
+    pool: 'vmThreads',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     css: false,
