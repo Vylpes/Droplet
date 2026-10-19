@@ -1,6 +1,6 @@
 import { render, type RenderOptions } from '@testing-library/react'
 import type { ReactElement, ReactNode } from 'react'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, type InitialEntry } from 'react-router'
 import {
     AuthContext,
     type AuthContextValue,
@@ -29,7 +29,7 @@ const defaultAlerts: AlertContextValue = {
 export interface RenderWithProvidersOptions extends Omit<RenderOptions, 'wrapper'> {
     auth?: Partial<AuthContextValue>
     alerts?: Partial<AlertContextValue>
-    initialEntries?: string[]
+    initialEntries?: InitialEntry[]
 }
 
 function Providers({
@@ -41,7 +41,7 @@ function Providers({
     children: ReactNode
     auth?: Partial<AuthContextValue>
     alerts?: Partial<AlertContextValue>
-    initialEntries?: string[]
+    initialEntries?: InitialEntry[]
 }) {
     return (
         <AuthContext.Provider value={{ ...defaultAuth, ...auth }}>
