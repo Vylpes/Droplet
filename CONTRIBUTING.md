@@ -163,7 +163,9 @@ yarn start
 You can also run the linter and tests using:
 
 ```bash
-yarn test
+yarn test            # backend Jest + frontend Vitest
+yarn test:backend    # Express / shared Jest suites
+yarn test:frontend   # React Testing Library (Vitest)
 ```
 
 #### Pull Requests

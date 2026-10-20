@@ -78,8 +78,27 @@ From the repo root:
 
 - `yarn dev:frontend` — Vite HMR dev server (proxies `/api` to Express)
 - `yarn build:frontend` — production build to `frontend/dist`
+- `yarn test:frontend` — Vitest + React Testing Library (`vitest run`)
+
+From `frontend/`:
+
+- `yarn test` — single CI run
+- `yarn test:watch` — watch mode
 
 Express serves built assets from `frontend/dist` (without SPA fallback yet; that lands in #358).
+
+## Tests (#357)
+
+Unit/component tests use **Vitest** + **React Testing Library** (jsdom). Co-locate specs next to source as `*.test.ts(x)`. Shared helpers live in `src/test/` (`setup.ts`, `render.tsx` with auth/alert/router providers).
+
+Coverage focus:
+
+- Shared UI: `DataTable`, forms (`useApiForm` / `FormField` / `FormModal`), alerts, route guards
+- API client (`apiFetch` + representative wrappers)
+- Domain smoke: login, item-purchase list/view
+- Pure helpers: fees calculator, dates, external links, status tab slugs
+
+`yarn test` at the repo root runs backend Jest then frontend Vitest. Forgejo workflows call `yarn test:backend` and `yarn test:frontend` explicitly after `yarn build`.
 
 ## Local setup
 
