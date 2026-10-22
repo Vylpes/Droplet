@@ -3,6 +3,8 @@
 export PATH="$HOME/.yarn/bin:$PATH"
 export PATH="$HOME/.nodeuse/bin/:$PATH"
 
+# Stage deploy: builds shared + Express (tsc) + React (frontend/dist).
+# Express serves the SPA from frontend/dist with client-route fallback (#358).
 cd ~/apps/droplet/droplet_stage \
 && git checkout develop \
 && git fetch \

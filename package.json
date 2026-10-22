@@ -33,7 +33,6 @@
   "dependencies": {
     "@droplet/shared": "*",
     "@types/bcryptjs": "^3.0.0",
-    "@types/connect-flash": "^0.0.40",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
@@ -44,7 +43,6 @@
     "@types/uuid": "^11.0.0",
     "@typescript/native": "npm:typescript@^7.0.2",
     "bcryptjs": "^3.0.3",
-    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
     "core-js": "^3.50.0",
     "dotenv": "^18.0.3",
@@ -54,7 +52,6 @@
     "morgan": "^1.12.1",
     "mysql2": "^3.24.4",
     "nodemailer": "^10.0.10",
-    "pug": "^3.0.4",
     "reflect-metadata": "^0.2.0",
     "reflection": "^0.0.1",
     "tsyringe": "^4.10.0",

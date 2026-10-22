@@ -24,9 +24,9 @@ Droplet uses [NodeJS](https://nodejs.org/) and TypeScript. You should know how t
 
 Droplet uses [ExpressJS](http://expressjs.com) as its framework. Although you could contribute without much knowledge of this if you know NodeJS well, however it is recommended to know this.
 
-### Pug
+### React
 
-Droplet uses [PugJS](https://pugjs.org/api/getting-started.html) as its View Engine. This would also be useful to know but if you know HTML it should be easy to pickup
+Droplet's UI is a React + Vite SPA under `frontend/`. Express serves the production build from `frontend/dist` (with SPA fallback for client routes) and exposes JSON under `/api`.
 
 ## Conventions
 
@@ -140,7 +140,7 @@ If you want to understand how Droplet works or want to debug an issue, you'll wa
 First, fork the Droplet repository so that you can make a pull request. Then, clone your fork locally:
 
 ```bash
-git clone https://gitea.vylpes.xyz/<your-gitea-account>/droplet.git
+git clone https://git.vylpes.xyz/<your-account>/droplet.git
 ```
 
 Occasionally, you will want to merge changes in the upstream repository (the official code repo) with your fork.
@@ -148,7 +148,7 @@ Occasionally, you will want to merge changes in the upstream repository (the off
 ```bash
 cd droplet
 git checkout main
-git pull https://gitea.vylpes.xyz/rabbitlabs/droplet.git master
+git pull https://git.vylpes.xyz/RabbitLabs/Droplet.git main
 ```
 
 Manage any merge conflicts, commit them, and then push them to your fork.
@@ -158,6 +158,15 @@ Go into `droplet` then build and run:
 ```bash
 yarn build
 yarn start
+```
+
+`yarn build` compiles shared packages, the Express backend (`dist/`), and the React SPA (`frontend/dist`). Production/stage deploys use the same build; Express serves the SPA from `frontend/dist`.
+
+For UI work with Vite HMR, run Express and the frontend separately:
+
+```bash
+yarn start           # or your usual backend watch
+yarn dev:frontend    # proxies /api to Express
 ```
 
 You can also run the linter and tests using:

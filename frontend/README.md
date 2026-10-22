@@ -10,7 +10,7 @@ React + Vite SPA for Droplet (see #336 / #344 / #347 / #349 / #350).
 - Styling: Bootstrap 5 + React Bootstrap + Font Awesome via npm (#349)
 - Tables: TanStack Table (`@tanstack/react-table`) via shared `DataTable` (#350)
 
-Domain page UIs: auth/account (#352), dashboard (#353), inventory (#354), sales (#355). Ops (#356) and Express SPA fallback (#358) still open.
+Domain page UIs: auth/account (#352), dashboard (#353), inventory (#354), sales (#355), ops/admin (#356). Express serves `frontend/dist` with SPA fallback (#358).
 
 ## Inventory (#354)
 
@@ -33,9 +33,7 @@ List + detail pages for listings, orders, and returns:
 - `bootstrap` CSS imported in `src/main.tsx`
 - UI primitives from `react-bootstrap` (Navbar, Alert, Card, Button, Container, …)
 - Icons from `@fortawesome/react-fontawesome` + `@fortawesome/free-solid-svg-icons`
-- App overrides / ported `public/css/style.css` rules live in `src/index.css` and `src/App.css`
-
-Vendored copies under `public/lib/` remain for Pug SSR until #358.
+- App overrides / ported legacy stylesheet rules live in `src/index.css` and `src/App.css`
 
 ## Tables (#350)
 
@@ -70,7 +68,7 @@ export function OrdersTable({ orders }: { orders: Order[] }) {
 }
 ```
 
-This replaces the former `public/js/**` `$('#…').DataTable()` enhancers. React does not load jQuery or DataTables; those stay vendored for Pug until #358.
+This replaces the former jQuery DataTables enhancers. React does not load jQuery or DataTables.
 
 ## Scripts
 
@@ -85,7 +83,7 @@ From `frontend/`:
 - `yarn test` — single CI run
 - `yarn test:watch` — watch mode
 
-Express serves built assets from `frontend/dist` (without SPA fallback yet; that lands in #358).
+Express serves built assets from `frontend/dist` and falls back to `index.html` for client routes (#358). Deploy scripts run `yarn build`, which includes `yarn build:frontend`.
 
 ## Tests (#357)
 
