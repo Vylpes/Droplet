@@ -11,7 +11,7 @@ export interface ApiValidationFailure {
 
 /**
  * JSON-capable body validator. Returns a field + message on failure,
- * or null on success — does not write flash messages.
+ * or null on success.
  */
 export default class ApiBodyValidator {
     private rules: IValidationRule[];

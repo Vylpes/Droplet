@@ -1,6 +1,8 @@
 # Droplet
 Droplet is a **business inventory management system for eBay** I made for my eBay business to help keep track of items in my inventory, their orders, and estimated profit for each item. Although I have written this primarily for my usage, I have hopefully made it as usable for others as I could.
 
+The UI is a React SPA (`frontend/`). Express serves the production build from `frontend/dist` and provides the JSON API under `/api`.
+
 ## Installation
 Right now there's no official binary package, and might not be until the official v1.0 release. However you can build and run it yourself, see `CONTRIBUTING.md` for details.
 
@@ -14,7 +16,7 @@ See CONTRIBUTING.md for more details.
 ## Feedback
 Feedback is also welcome. Any improvements/bug reports please either:
 
-- [create an issue](https://gitea.vylpes.xyz/rabbitlabs/droplet/issues/new)
+- [create an issue](https://git.vylpes.xyz/RabbitLabs/Droplet/issues/new)
 - [email me](mailto:helpdesk@vylpes.com)
 - [join our discord server](https://go.vylpes.xyz/A6HcA)
 
