@@ -1,0 +1,15 @@
+/* Ported from public/css/style.css (#349) */
+body {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+.required::after {
+  content: '*';
+  color: red;
+  padding-left: 2px;
+}

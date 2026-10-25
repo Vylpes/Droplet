@@ -1,0 +1,53 @@
+import { Request, Response } from "express";
+import Page from "../../../contracts/Page";
+import { GenerateResponse, GenerateValidationResponse } from "../../../contracts/IBasicResponse";
+import { Item } from "../../../database/entities/Item";
+import { Storage } from "../../../database/entities/Storage";
+import ApiBodyValidator from "../../../helpers/Validation/ApiBodyValidator";
+import { mapItem, mapStorage } from "../../../dto";
+
+export default class AssignItem implements Page {
+    public async OnPostAsync(req: Request, res: Response) {
+        const bodyValidation = new ApiBodyValidator("itemId")
+                .NotEmpty();
+
+        const Id = (req.params.Id as string);
+
+        const error = bodyValidation.Validate(req);
+        if (error) {
+            res.status(400).json(GenerateValidationResponse(error));
+            return;
+        }
+
+        const itemId = req.body.itemId;
+
+        const storage = await Storage.FetchOneById(Storage, Id, {
+            Items: true
+        });
+
+        let item = await Item.FetchOneById(Item, itemId, {
+            Storage: true
+        });
+
+        storage.AddItemToBin(item);
+
+        await storage.Save(Storage, storage);
+
+        item = await Item.FetchOneById(Item, itemId, {
+            Storage: {
+                Parent: {
+                    Parent: true
+                }
+            }
+        });
+
+        item.GenerateSku();
+
+        await item.Save(Item, item);
+
+        res.json(GenerateResponse(true, "Item assigned", {
+            Storage: mapStorage(storage, false, true),
+            Item: mapItem(item)
+        }));
+    }
+}

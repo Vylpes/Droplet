@@ -10,62 +10,26 @@ import * as dotenv from "dotenv";
 import { readFileSync } from "fs";
 import Session from "./database/entities/Session";
 import { TypeormStore } from "typeorm-store";
-import connectFlash from "connect-flash";
-import { PugMiddleware } from "./middleware/pugMiddleware";
 import AppDataSource from "./database/dataSources/appDataSource";
 
-import AuthRouter from "./routes/auth";
-import DashboardRouter from "./routes/dashboard";
-import IndexRouter from "./routes/index";
-import SettingsRouter from "./routes/settings";
-import ItemsRouter from "./routes/items";
-import ItemPurchasesRouter from "./routes/itemPurchases";
-import SuppliesRouters from "./routes/supplies";
-import SupplyPurchasesRouter from "./routes/supplyPurchases";
-import ListingsRouter from "./routes/listings";
-import OrdersRouter from "./routes/orders";
-import StorageRouter from "./routes/storage";
-import ReturnsRouter from "./routes/returns";
-import PostagePolicyRouter from "./routes/postagePolicy";
+import ApiRouter from "./routes/api";
+import { ApiErrorMiddleware } from "./middleware/apiErrorMiddleware";
+import { GenerateResponse } from "./contracts/IBasicResponse";
 
 export class App {
     private _app: Express;
-
-    private _authRouter: AuthRouter;
-    private _dashboardRouter: DashboardRouter;
-    private _indexRouter: IndexRouter;
-    private _settingsRouter: SettingsRouter;
-    private _itemsRouter: ItemsRouter;
-    private _itemPurchaseRouter: ItemPurchasesRouter;
-    private _suppliesRouter: SuppliesRouters;
-    private _supplyPurchasesRouter: SupplyPurchasesRouter;
-    private _listingsRouter: ListingsRouter;
-    private _ordersRouter: OrdersRouter;
-    private _storageRouter: StorageRouter;
-    private _returnsRouter: ReturnsRouter;
-    private _postagePolicyRouter: PostagePolicyRouter;
+    private _apiRouter: ApiRouter;
+    private readonly _frontendDist = path.join(process.cwd(), "frontend/dist");
 
     constructor() {
         this._app = express();
-
-        this._authRouter = new AuthRouter();
-        this._dashboardRouter = new DashboardRouter();
-        this._indexRouter = new IndexRouter();
-        this._settingsRouter = new SettingsRouter();
-        this._itemsRouter = new ItemsRouter();
-        this._itemPurchaseRouter = new ItemPurchasesRouter();
-        this._suppliesRouter = new SuppliesRouters();
-        this._supplyPurchasesRouter = new SupplyPurchasesRouter();
-        this._listingsRouter = new ListingsRouter();
-        this._ordersRouter = new OrdersRouter();
-        this._storageRouter = new StorageRouter();
-        this._returnsRouter = new ReturnsRouter();
-        this._postagePolicyRouter = new PostagePolicyRouter();
+        this._apiRouter = new ApiRouter();
     }
 
     public async Start() {
         await this.SetupApp();
         this.SetupRoutes();
+        this.SetupSpa();
         this.SetupErrors();
         this.SetupListen();
     }
@@ -75,14 +39,10 @@ export class App {
 
         const expressSessionSecret = process.env.EXPRESS_SECRET || readFileSync(`${process.cwd()}/secret.txt`).toString();
 
-        this._app.set('views', path.join(process.cwd(), 'views'));
-        this._app.set('view engine', 'pug');
-
         this._app.use(logger('dev'));
         this._app.use(express.json());
         this._app.use(express.urlencoded({ extended: false }));
         this._app.use(cookieParser());
-        this._app.use(express.static(path.join(process.cwd(), 'public')));
 
         await AppDataSource.initialize()
             .then(() => console.log("Data Source Initialized"))
@@ -91,49 +51,67 @@ export class App {
         // Session
         const sessionRepository = AppDataSource.getRepository(Session);
 
+        // SPA (#346/#358): same-origin Express (prod) / Vite `/api` proxy (dev).
+        // SameSite=Lax + httpOnly cookies; CSRF middleware not required for same-site POSTs.
+        // Avoid SameSite=None / cross-origin CORS credentials — keep the Vite proxy instead.
+        if (process.env.NODE_ENV === "production") {
+            this._app.set("trust proxy", 1);
+        }
+
         this._app.use(session({
             resave: false, // don't save session if unmodified
             saveUninitialized: false, // don't create session until something stored
             secret: expressSessionSecret,
-            store: new TypeormStore({ repository: sessionRepository })
+            store: new TypeormStore({ repository: sessionRepository }),
+            cookie: {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production"
+            }
         }) as unknown as express.RequestHandler);
-
-        this._app.use(connectFlash() as unknown as express.RequestHandler);
-
-        this._app.use(PugMiddleware.GetBaseString);
     }
 
     private SetupRoutes() {
-        this._app.use('/', this._indexRouter.Route());
-        this._app.use('/auth', this._authRouter.Route());
-        this._app.use('/dashboard', this._dashboardRouter.Route());
-        this._app.use('/settings', this._settingsRouter.Route());
-        this._app.use('/items', this._itemsRouter.Route());
-        this._app.use('/item-purchases', this._itemPurchaseRouter.Route());
-        this._app.use('/supplies', this._suppliesRouter.Route());
-        this._app.use('/supply-purchases', this._supplyPurchasesRouter.Route());
-        this._app.use('/listings', this._listingsRouter.Route());
-        this._app.use('/orders', this._ordersRouter.Route());
-        this._app.use('/storage', this._storageRouter.Route());
-        this._app.use('/returns/', this._returnsRouter.Route());
-        this._app.use('/postage-policies', this._postagePolicyRouter.Route());
+        this._app.use('/api', this._apiRouter.Route());
+
+        // Unmatched /api requests stay JSON (do not fall through to the SPA).
+        this._app.use('/api', (_req: Request, res: Response) => {
+            res.status(404).json(GenerateResponse(false, "Not found"));
+        });
+    }
+
+    private SetupSpa() {
+        // Built React assets (yarn build:frontend → frontend/dist)
+        this._app.use(express.static(this._frontendDist));
+
+        // Client-side routes: serve index.html for any non-file GET
+        this._app.get("/{*path}", (_req: Request, res: Response) => {
+            res.sendFile(path.join(this._frontendDist, "index.html"));
+        });
     }
 
     private SetupErrors() {
-        // Error Handler
-        this._app.use(async (err: any, req: Request, res: Response, _next: NextFunction) => {
-            // Set locals, only providing error in development
-            const info = err.message;
-            const error = req.app.get('env') === 'development' ? err : {};
-            const showDetails = req.app.get('env') === 'development';
+        this._app.use('/api', ApiErrorMiddleware);
 
-            // Render the error page
-            res.status(err.status || 500);
-            res.render('error', {
-                info: info,
-                error: error,
-                status: err.status || 500,
-                showDetails: showDetails
+        this._app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
+            if (req.path.startsWith('/api')) {
+                return ApiErrorMiddleware(err, req, res, next);
+            }
+
+            const status = err.status || err.statusCode || 500;
+            const message = err.message || "Internal Server Error";
+
+            if (req.accepts("json") && !req.accepts("html")) {
+                res.status(status).json(GenerateResponse(false, message));
+                return;
+            }
+
+            // Prefer SPA shell so the React error page can render when useful
+            res.status(status);
+            res.sendFile(path.join(this._frontendDist, "index.html"), sendErr => {
+                if (sendErr) {
+                    res.type("text").send(message);
+                }
             });
         });
     }

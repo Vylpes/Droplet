@@ -1,9 +1,1 @@
-export enum NoteType {
-    Item,
-    ItemPurchase,
-    SupplyPurchase,
-    Supply,
-    Listing,
-    Order,
-    Return,
-}
+export { NoteType } from "@droplet/shared";

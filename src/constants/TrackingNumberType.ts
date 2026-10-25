@@ -1,4 +1,1 @@
-export enum TrackingNumberType {
-    Order,
-    Return
-}
+export { TrackingNumberType } from "@droplet/shared";
